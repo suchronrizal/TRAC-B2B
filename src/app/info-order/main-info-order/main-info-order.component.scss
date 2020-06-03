@@ -1,0 +1,108 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+.wrap-ifo-order{
+    display: block;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    min-height: 100vh;
+    position: relative;
+
+    &:before{
+        position: absolute;
+        content: "";
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-image: url('/assets/images/bg/light-wool.png');
+    }
+
+    .content{
+        width: 500px;
+        padding: 50px;
+        background: #fff;
+        border: solid 1px #efefef;
+        display: block;
+        margin: auto;
+        overflow: hidden;
+        @include border-radius(5px);
+        position: relative;
+        z-index: 3;
+        -webkit-box-shadow: 0 0 20px 0 rgba(62,28,131,0.1);
+        -o-box-shadow: 0 0 20px 0 rgba(62,28,131,0.1);
+        box-shadow: 0 0 20px 0 rgba(62,28,131,0.1);
+
+        .brand{
+            display: block;
+
+            img{
+                width: 100px;
+            }
+        }
+
+        .img-icon{
+            float: right;
+            position: relative;
+            top: 5px;
+        }
+    }
+
+    .content-bottom{
+        margin-top: 50px;
+        font-size: 12px;
+        color: #999;
+    }
+
+    .wrap-loading{
+
+        .content-loading{
+            display: table;
+            margin: auto;
+            text-align: center;
+
+            p{
+                margin-top: 10px;
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .table-info{
+        margin-top: 50px;
+        width: 100%;
+        border-top: dotted 1px #dfdfdf;
+
+        td{
+            padding: 8px 0 10px;
+            border-bottom: dotted 1px #dfdfdf;
+
+            &.value{
+                font-weight: 500;
+                color: $color-title;
+            }
+    
+            &.label{
+                text-align: right;
+            }
+        }
+    }
+}
+
+
+
+
+@media (max-width:767px){
+    .wrap-ifo-order{
+        padding: 30px 15px;
+
+        .content{
+            width: 100%;
+            padding: 30px 20px;
+        }
+    }
+}

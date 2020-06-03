@@ -1,0 +1,57 @@
+ /*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+/*
+Wrap List
+=========================== */
+ .wrap-list{
+    border: solid 1px #efefef;
+    padding: 0;
+
+    .ui-md-3{
+        border-right: solid 1px #efefef;
+        padding: 0;
+        height: 750px;
+        overflow-y: auto;
+    }
+
+    .ui-md-9{
+        padding: 25px 30px;
+        height: 750px;
+        overflow-y: auto;
+    }
+}
+
+.list-location{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    li{
+        display: block;
+        border-bottom: solid 1px #efefef;
+
+        &.all{
+            padding: 15px 20px;
+        }
+
+        &.active a{
+            color: $color-primary;
+            font-weight: 500;
+        }
+
+        a{
+            display: block;
+            color: $color-content;
+            padding: 15px 20px;
+            text-decoration: none !important;
+        }
+    }
+}
+
+.col{
+    border: solid 1px #efefef;
+}

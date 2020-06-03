@@ -1,0 +1,51 @@
+.ui-progressbar{
+    background-color: #f0f0f0;
+    height: 23px;
+    border-radius: 4px;
+
+    .ui-progressbar-value{
+        background: $color-primary;
+    }
+
+    .ui-progressbar-label{
+        color: #fff;
+        font-weight: 500;
+    }
+}
+
+.loading-page{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9;
+
+    .ui-progressbar{
+        height: 3px;
+    }
+}
+
+.primary .ui-progressbar-value{
+    background: $color-primary;
+}
+
+.info .ui-progressbar-value{
+    background: #3498db;
+}
+
+.warning .ui-progressbar-value{
+    background: #f1c40f;
+}
+
+.danger .ui-progressbar-value{
+    background: #e74c3c;
+}
+
+.success .ui-progressbar-value{
+    background: #2ecc71
+}
+
+.counter .ui-progressbar{
+    height: 5px;
+    background: #efefef;
+}

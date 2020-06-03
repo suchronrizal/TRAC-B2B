@@ -1,0 +1,49 @@
+.ui-inputswitch-on{
+    border-left: solid 1px #dfdfdf;
+    border-right: solid 1px #dfdfdf;
+    background: #fff;
+    @include opacity(1);
+    @extend .panel-shadow;
+    background: #fff;
+    font-weight: 400 !important;
+    padding: 3px 0;
+    text-align: left;
+    width: 35px !important;
+
+    .ui-inputswitch-onlabel{
+        position: relative;
+        left: -4px;
+    }
+}
+
+.ui-inputswitch-off{
+    background-color: #efefef;
+    font-weight: 400 !important;
+    padding: 3px 0;
+    text-align: center;
+    width: 35px !important;
+    @include opacity(.4);
+
+    .ui-inputswitch-onlabel{
+        position: relative;
+        left: -4px;
+    }
+}
+
+.ui-inputswitch{
+    border: solid 1px #efefef;
+    background: #fff;
+    @include border-radius(4px);
+    padding: 10px 0;
+    width: 70px !important;
+    height: 27px;
+
+    &.ui-inputswitch-checked{
+        border: solid 1px $color-primary;
+
+        .ui-inputswitch-on{
+            background: $color-primary;
+            color: #fff;
+        }
+    }
+}

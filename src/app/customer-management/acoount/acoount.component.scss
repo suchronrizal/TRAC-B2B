@@ -1,0 +1,17 @@
+ /*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+.border-input{
+    border: solid 1px #dfdfdf;
+    background: #fff;
+    padding: 20px;
+    @include border-radius(5px);
+    @extend .panel-shadow;
+}   
+
+.wrap-table{
+    margin: 0 -1px;
+}

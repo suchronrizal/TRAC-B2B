@@ -1,0 +1,12 @@
+.inner-page{
+    padding: 15px 30px;
+    background: #fff;
+    border-bottom: solid 1px #efefef;
+    @extend .panel-shadow;
+
+    .title{
+        font-weight: 300;
+        margin-bottom: 10px;
+        text-transform: capitalize;
+    }
+}

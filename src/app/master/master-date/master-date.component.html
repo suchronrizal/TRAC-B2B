@@ -1,0 +1,188 @@
+<!-- Start Wrap Panel -->
+<div class="wrap-panel">
+    <div class="item-panel">
+		<!-- Start Head Panel -->
+        <div class="head-panel">
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-10">
+					<h5 class="title has-input">Master Date</h5>
+				</div>
+				<div class="ui-g-12 ui-md-2 text-right">
+					<div class="ui-inputgroup">
+						<input type="text" #gb class="form-control input-sm" placeholder="Global Search">   
+						<button class="ui-inputgroup-addon"><i class="fa fa-search"></i></button>      
+					</div>
+				</div>
+			</div> 
+		</div>
+		<!-- End Head Panel -->
+
+        <div class="body-panel">
+			<div class="ui-g custom">
+				<div class="ui-g-12 ui-md-8">
+					<!-- <button class="btn btn-default" (click)="download.toggle($event)"><span class="fa fa-download icon-left"></span> Download File</button> -->
+					<button class="btn btn-default" (click)="formRef.reset();showDialog(); "><span class="fa fa-plus icon-left"></span> Add New</button>
+					<button class="btn btn-default" (click)="op.toggle($event)"><span class="fa fa-toggle-off icon-left"></span> Toggle Column</button>	
+				</div>
+			</div>	
+		</div>
+		<!-- Start Table -->
+		<div class="body-panel table-panel">
+			<!-- Start Table -->
+			<p-dataTable 
+				[value]="data" 
+				[loading]="loading"
+				[globalFilter]="gb"
+				[rows]="10" 
+				[paginator]="true" 
+				[pageLinks]="3" 
+				[responsive]="true"
+				[rowsPerPageOptions]="[5,10,20]"
+				#dt>
+
+				<p-column *ngFor="let column of cols" 
+					[hidden]="!column.checked"
+					[field]="column.field" 
+					[header]="column.header"
+					[filter]="column.filter" 
+					[filterMatchMode]="column.filterMatchMode">
+					
+					<!-- Start Filter -->
+					<ng-template pTemplate="filter" let-col>
+						<ng-container 
+							[ngTemplateOutlet]="column.ref"
+							[ngTemplateOutletContext]="col">
+						</ng-container>
+					</ng-template>
+					<!-- End Filter -->
+				</p-column>
+				<!-- Start Price Column -->
+				<p-column header="Options" styleClass="text-center" [style]="{'width':'120px'}">
+					<ng-template let-col="rowData" pTemplate="body">
+						<button class="btn-icon" (click)="selectUpdate(col)" pTooltip="Update Master Date" tooltipPosition="left"><span class="fa fa-gear"></span></button>
+						<button class="btn-icon" (click)="selectRemove(col)" pTooltip="Remove Master Date" tooltipPosition="left"><span class="fa fa-trash"></span></button>
+					</ng-template>
+				</p-column>
+				<!-- End Year Column -->
+			</p-dataTable>
+			<!-- End Table -->
+		</div>
+		<!-- End Table -->
+	</div>
+	
+	
+</div>
+<!-- End Wrap Panel -->
+
+<!-- Start Filter Contains -->
+<ng-template #filterSearch let-field="field" let-filterMatchMode="filterMatchMode">
+	<input type="text" 
+		placeholder="Search"
+		ngModel 
+		class="form-control margin-top10"
+		(ngModelChange)="dt.filter($event,field,filterMatchMode)"/>
+</ng-template>
+<!-- End Filter Contains -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel" #op>
+	<ul class="clear-list">
+		<li *ngFor="let col of cols">
+			<p-checkbox
+				[disabled]="col.disableCol"
+				[value]="col.field" 
+				[label]="col.header" 
+				[(ngModel)]="selectedValues"
+				(onChange)="checkBox(col)">
+			</p-checkbox>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dialog Update Date -->
+<p-dialog 
+	[(visible)]="displayDate" 
+	appendTo="body"
+	[draggable]="false"
+	[modal]="true"
+	[width]="500">
+	
+	<p-header>
+		<h5 class="title">Form Master Date</h5>
+	</p-header>
+
+	<!-- Start Form -->
+	<form #formRef="ngForm">
+		<div class="margin-bottom20">
+			<label>Date</label>
+			<p-calendar 
+				name="Date"
+				readonlyInput="true"
+				inputStyleClass="form-control"
+				dateFormat="d M yy"
+				[(ngModel)]="Date"
+				#DateRef="ngModel"
+				placeholder="Select date"
+				appendTo="body"
+				[required]="true"
+			></p-calendar> 
+			<span class="error" *ngIf="DateRef.errors?.required && DateRef.touched">This field is required</span>	
+		</div>
+		<div class="margin-bottom20">
+			<label>Description</label>
+			<input 
+				type="text" 
+				class="form-control" 
+				name="Description"
+				[(ngModel)]="Description"
+				#DescriptionRef="ngModel"
+				required
+				placeholder="Description"/>
+			<span class="error" *ngIf="DescriptionRef.errors?.required && DescriptionRef.touched">This field is required</span>	
+		</div>
+	</form>
+	<!-- End Form -->
+
+	<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+	<p-footer>
+		<button class="btn btn-default" [disabled]="onSubmitBtn" (click)="closeDisplayDate()">Close</button>
+		<button class="btn btn-primary"  [disabled]="onSubmitBtn || formRef.invalid" (click)="onSubmit(formRef.value)">
+			<p-progressSpinner *ngIf="onSubmitBtn" strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+			<span *ngIf="!onSubmitBtn && selectedDateItem == null">Submit</span>
+			<span *ngIf="!onSubmitBtn && selectedDateItem != null">Update</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Update Date -->
+
+<!-- Start Dialog Remove -->
+<p-dialog 
+	[(visible)]="displayConfirm" 
+	appendTo="body"
+	[draggable]="false"
+	[modal]="true"
+	[width]="400">
+	<p-header>
+		<h5 class="title">{{titleRemove}}</h5>
+	</p-header>
+
+	<p *ngIf="selectedDateItem != null" class="margin-bottom0">
+		<strong>Description:</strong> {{selectedDateItem.Description}}
+	</p>
+
+	<!-- Masseage Error -->
+	<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+	
+	<p-footer>
+		<button class="btn btn-default" [disabled]="submitButtonRemove" (click)="closeDialogConfirm()">Cancel</button>
+		<button class="btn btn-danger"  [disabled]="submitButtonRemove" (click)="removeData()">
+			<p-progressSpinner *ngIf="submitButtonRemove" strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+			<span *ngIf="!submitButtonRemove">Delete</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Remove -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

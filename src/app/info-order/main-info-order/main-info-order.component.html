@@ -1,0 +1,105 @@
+<!-- Start Wrapper -->
+<div class="wrap-ifo-order">
+	<div class="content">
+		<!-- Start Loading Content -->
+		<div *ngIf="loading" class="wrap-loading">
+			<div class="content-loading">
+				<p-progressSpinner
+					strokeWidth="5"
+					[style]="{ width: '30px', height: '30px' }"
+				></p-progressSpinner>
+				<p>Loading...</p>
+			</div>
+		</div>
+		<!-- End Loading Content -->
+
+		<div *ngIf="!loading">
+			<a routerLink="/" class="brand"
+				><img src="./assets/images/brand.png" alt=""
+			/></a>
+
+			<!-- Start Contetn Error Info Order -->
+			<div *ngIf="hasUpdated" class="alert alert-danger margin-top30">
+				<h6 class="margin-bottom5">Oops</h6>
+				<p class="margin-bottom0">Failed booking order</p>
+			</div>
+
+			<table *ngIf="hasUpdated" class="table-info">
+				<tr>
+					<td class="value">Email</td>
+					<td class="label">{{ objParam.Email }}</td>
+				</tr>
+				<tr>
+					<td class="value">Booking Order Id</td>
+					<td class="label">{{ objParam.BookingOrderId }}</td>
+				</tr>
+				<tr>
+					<td class="value">Status</td>
+					<td class="label">{{ status }}</td>
+				</tr>
+			</table>
+
+			<!-- End Contetn Error Info Order -->
+
+			<!-- Start Contetn Success Info Order -->
+			<div *ngIf="!hasUpdated" class="alert alert-success margin-top30">
+				<span *ngIf="objParam.Status == 1">
+					<h6 class="margin-bottom5">Congratulation</h6>
+					<p class="margin-bottom0">Success booking order</p>
+				</span>
+				<span *ngIf="objParam.Status == 0">
+					<p class="margin-bottom0">Rejected booking order</p>
+				</span>
+			</div>
+
+			<table *ngIf="infoOrder != null && !hasUpdated" class="table-info">
+				<tr>
+					<td class="value">Email</td>
+					<td class="label">{{ infoOrder.EmailApproval }}</td>
+				</tr>
+				<tr>
+					<td class="value">Reservation Id</td>
+					<td class="label">{{ infoOrder.ReservationId }}</td>
+				</tr>
+				<tr>
+					<td class="value">Booking Order Id</td>
+					<td class="label">{{ infoOrder.BookingOrderId }}</td>
+				</tr>
+				<tr>
+					<td class="value">Quantity OLC</td>
+					<td class="label">{{ infoOrder.QuantityOLC }}</td>
+				</tr>
+				<tr>
+					<td class="value">Price OLC</td>
+					<td class="label">{{ infoOrder.PriceOLC }}</td>
+				</tr>
+				<tr>
+					<td class="value">Quantity Trip</td>
+					<td class="label">{{ infoOrder.QuantityTrip }}</td>
+				</tr>
+				<tr>
+					<td class="value">Price Trip</td>
+					<td class="label">{{ infoOrder.PriceTrip }}</td>
+				</tr>
+				<tr>
+					<td class="value">Date</td>
+					<td class="label">{{ infoOrder.Date }}</td>
+				</tr>
+				<tr>
+					<td class="value">Status</td>
+					<td class="label">{{ status }}</td>
+				</tr>
+			</table>
+
+			<!-- End Contetn Success Info Order -->
+		</div>
+	</div>
+
+	<div class="content-bottom text-center">
+		<p class="margin-bottom0">
+			Copyright © 2018 TRAC. All rights reserved<br />
+			Build by CIST SERA
+		</p>
+	</div>
+</div>
+<!-- End Wrapper -->

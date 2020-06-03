@@ -1,0 +1,83 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+/*
+Produst
+=========================== */
+.wrap-product{
+    background: transparent;
+    padding: 30px 35px 0 35px;
+    position: relative;
+    border-right: solid 1px #efefef;
+
+    .ui-g{
+        margin: 0;
+
+        .col{
+            padding: 0;
+            border: solid 1px #efefef;
+            margin: -1px;
+            position: relative;
+            background: #fff;
+            z-index: 1;
+            @extend .panel-shadow;
+
+            .content{
+                padding: 35px 25px;
+                text-align: center;
+                position: relative;
+
+                .title{
+                    margin-bottom: 0;
+                    color: $color-content;
+                }
+
+                img{
+                    height: 70px;
+                    width: auto;
+                    display: block;
+                    margin: 0 auto 15px;
+                }
+            }
+
+            a{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+            }
+
+            &:hover{
+                background: #fff;
+                @include opacity(1);
+            }
+
+            span.disabled{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background: #f0f0f0;
+                @include opacity(0.5);
+            }
+        }
+    }
+}
+
+.empty-service-type{
+    font-style: italic;
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    display: block;
+    width: 100%;
+}
+
+@media(max-width:920px){
+    
+}

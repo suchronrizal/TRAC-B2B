@@ -1,0 +1,26 @@
+.ui-chkbox{
+    border: solid 1px #dfdfdf;
+    @include border-radius(4px);
+    height: 18px !important;
+    width: 18px !important;
+    background: #fff;
+}
+
+.ui-chkbox-icon{
+    color: $color-primary;
+    font-size: 12px;
+    position: relative;
+    top: 2px;
+}
+
+.ui-state-disabled{
+    background: #fafafa;
+    @include opacity(.3);
+}
+
+.ui-chkbox-label{
+    color: $color-content;
+    position: relative;
+    top: 2px;
+    display: inline-block !important;
+}

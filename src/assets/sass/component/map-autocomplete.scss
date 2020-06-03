@@ -1,0 +1,62 @@
+.custom-autocomplete{
+    float: none !important;
+
+    input{
+        height: 45px !important; 
+        border: solid 1px #efefef !important;
+        font-size: 14px !important;
+        padding: 15px 20px !important;
+        @extend .form-control;
+    }
+
+    button{
+        border-left: solid 1px #efefef !important;
+        display: none !important;
+
+        .search-default-icon{
+            width: 14px !important;
+            height: 14px !important;
+            @include opacity(.8);
+        }
+    }
+
+    .search-default-icon{
+        display: none !important;
+    }
+}
+
+
+.custom-autocomplete__loader{
+    height: 45px !important; 
+    border: solid 1px #efefef !important;
+    font-size: 14px !important;
+    padding: 15px 20px !important;
+    @extend .form-control;
+    margin-top: 0px;
+}
+
+.custom-autocomplete__dropdown{
+    border: solid 1px #efefef !important;
+    @extend .panel-shadow;
+    font-size: 14px !important;
+}
+
+/*
+Autocomplete Google Map
+=========================== */
+.custom-autocomplete__dropdown .main-text{
+    font-weight: 400 !important;
+    font-size: 14px !important;
+}
+
+.custom-autocomplete__dropdown li{
+    border-top: solid 1px #efefef;
+}
+
+.custom-autocomplete__dropdown .custom-icon{
+    display: none !important;
+}
+
+.custom-autocomplete__loader{
+    display: none;
+}

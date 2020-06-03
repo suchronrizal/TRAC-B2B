@@ -1,0 +1,60 @@
+.ui-multiselect{
+    @extend .form-control;
+
+    .ui-multiselect-label{
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        color: #9f9f9f !important;
+        position: relative;
+        top: -10px;
+    }
+
+    .ui-multiselect-trigger{
+        padding-top: 10px;
+        background: #fafafa;
+    
+        .ui-clickable{
+            position: relative;
+            top: -2px;
+        }
+    }
+
+    &.custom{
+        .ui-multiselect-panel{
+            .ui-widget-header{
+                display: none;
+            }
+        }
+    }
+}
+
+.ui-multiselect-panel{
+    background: #fff;
+    border: solid 1px #efefef;
+    width: 200px !important;
+    padding: 10px 15px;
+    @extend .panel-shadow;
+
+    .ui-multiselect-close{
+        display: none;
+    }
+}
+
+.ui-multiselect-filter-container {
+    input{
+        @extend .form-control;
+        height: 30px;
+        padding-left: 30px !important;
+    }
+
+    .fa-search{
+        color: #9f9f9f;
+        position: relative;
+        top: 7px !important;
+        left: 7px !important;
+    }
+}
+
+.ui-multiselect-close{
+    color: $color-title;
+}

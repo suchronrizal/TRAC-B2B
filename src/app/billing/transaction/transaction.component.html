@@ -1,0 +1,374 @@
+<div class="wrap-panel">
+	<!-- Start Item Panel -->
+	<div class="item-panel">
+		<div class="head-panel">
+			<div class="ui-g custom">
+				<div class="ui-g-12 ui-md-6">
+					<h5 class="title has-input">Report Transaction</h5>
+				</div>
+				<div class="ui-g-12 ui-md-6 text-right">
+					<button class="btn btn-default" (click)="download.toggle($event)">
+						<span class="fa fa-download icon-left"></span> Download File
+					</button>
+					<button class="btn btn-default" (click)="op.toggle($event)">
+						<span class="fa fa-toggle-off icon-left"></span> Toggle Column
+					</button>
+					<!-- <button class="btn btn-default" (click)="resetFilter()">
+            <span class="fa fa-refresh icon-left"></span> Reset Filter
+          </button> -->
+				</div>
+			</div>
+		</div>
+		<div class="body-panel">
+			<div class="ui-g">
+				<div *ngIf="dataUser.RoleId != 'RL-009'" class="ui-g-12 ui-md-2">
+					<p-dropdown
+						[filter]="true"
+						[options]="customers"
+						[disabled]="dataUser.RoleId == 'RL-007' || dataUser.RoleId == 'RL-008'"
+						styleClass="form-control"
+						placeholder="Select Customer"
+						(onChange)="selectCustomer($event)"
+						[(ngModel)]="selectedCustomer"
+						appendTo="body"
+					>
+					</p-dropdown>
+				</div>
+				<div *ngIf="dataUser.RoleId != 'RL-009'" class="ui-g-12 ui-md-2">
+					<p-dropdown
+						[filter]="true"
+						[options]="PICList"
+						styleClass="form-control"
+						placeholder="Select PIC"
+						[(ngModel)]="selectedPIC"
+						[disabled]="selectedCustomer == null || arrCostCenter.length == 1"
+					>
+					</p-dropdown>
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p-dropdown
+						[filter]="true"
+						[options]="cities"
+						styleClass="form-control"
+						placeholder="Select City"
+						[(ngModel)]="selectedCity"
+						[disabled]="selectedCustomer == null || cities.length == 1"
+						appendTo="body"
+					>
+					</p-dropdown>
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p-dropdown
+						[filter]="true"
+						[options]="arrCostCenter"
+						styleClass="form-control"
+						placeholder="Select Cost Center"
+						[(ngModel)]="selectedCostCenter"
+						[disabled]="selectedCustomer == null || arrCostCenter.length == 1"
+						appendTo="body"
+					>
+					</p-dropdown>
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p-calendar
+						name="selectDate"
+						inputStyleClass="form-control"
+						dateFormat="d M yy"
+						selectionMode="range"
+						[(ngModel)]="selectedDate"
+						[monthNavigator]="true"
+						[yearNavigator]="true"
+						yearRange="2000:2030"
+						placeholder="Select date periode"
+						appendTo="body"
+						[readonlyInput]="true"
+					></p-calendar>
+					<span *ngIf="errorHandling.errStatus" class="error ng-star-inserted">{{ errorHandling.msg }}</span>
+				</div>
+			</div>
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-2">
+					<p-dropdown
+						[options]="categoryFilterTransaction"
+						styleClass="form-control"
+						placeholder="Category Filter"
+						name="categoryFilterTransaction"
+						[(ngModel)]="categoryFilter"
+						appendTo="body"
+					>
+					</p-dropdown>
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<input
+						type="text"
+						class="form-control"
+						name="searchValue"
+						[(ngModel)]="searchValue"
+						data-ng-trim="false"
+						placeholder="Search value"
+						[disabled]="categoryFilter == null || categoryFilter.length == 0"
+					/>
+				</div>
+				<div class="ui-g-12 col-sm-3 ui-md-4">
+					<button class="btn btn-primary" (click)="submitFilter($event)" style="min-width: 90px!important;">
+						<span class="fa fa-search"></span>
+					</button>
+
+					<button class="btn btn-default" (click)="resetFilter($event)" style="min-width: 90px!important;">
+						<span class="fa fa-refresh"></span>
+					</button>
+				</div>
+				<!-- <div class="ui-g-12 ui-md-6">
+          <button class="btn btn-default" (click)="showFilterDialog()">
+            <span class="fa fa-filter icon-left"></span> Filter by City or Cost Center
+          </button>
+        </div> -->
+			</div>
+		</div>
+		<div class="body-panel table-panel">
+			<!-- Start Table -->
+			<p-dataTable
+				styleClass="table-transaction"
+				[value]="data"
+				[loading]="loading"
+				[rows]="10"
+				[paginator]="false"
+				[pageLinks]="3"
+				[responsive]="true"
+				[rowsPerPageOptions]="[5, 10, 20]"
+				(onFilter)="onFilterTable()"
+				#dt
+			>
+				<p-column
+					*ngFor="let column of cols"
+					[hidden]="!column.checked"
+					[field]="column.field"
+					[header]="column.header"
+					[sortable]="column.sortable"
+					[filterMatchMode]="column.filterMatchMode"
+				>
+					<!-- Start Filter -->
+					<ng-template pTemplate="filter" let-col>
+						<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+					</ng-template>
+					<!-- End Filter -->
+				</p-column>
+
+				<!-- Start Price Column -->
+				<!-- <p-column header="Download E-Receipt" styleClass="text-center" [style]="{'width':'160px'}">
+					<ng-template let-col="rowData" pTemplate="body">
+						<div class="margin-top10 margin-bottom10 text-center">
+							<a *ngIf="col.header.Status == 'BOSID-009'" class="btn btn-default btn-sm" target="_BLANK" [href]="urlDownload + col.header.ReservationId" pTooltip="Download E-Receipt" tooltipPosition="left"><span class="fa fa-download"></span> Download</a>
+							<span *ngIf="col.header.Status != 'BOSID-009'"><span class="fa fa-warning"></span></span>
+						</div>
+					</ng-template>
+				</p-column> -->
+				<!-- End Year Column -->
+				<!-- Start Price Column -->
+				<p-column header="Options" styleClass="text-center" [style]="{ width: '160px' }">
+					<ng-template let-col="rowData" pTemplate="body">
+						<button class="btn-icon" (click)="viewItem(col)" pTooltip="View Billing" tooltipPosition="left">
+							<span class="fa fa-search"></span>
+						</button>
+					</ng-template>
+				</p-column>
+				<!-- End Year Column -->
+			</p-dataTable>
+			<!-- End Table -->
+
+			<div class="body-panel padding-clear">
+				<div *ngIf="loading" class="blockUI"></div>
+				<p-paginator
+					#p
+					pageLinkSize="3"
+					[rows]="pageRows"
+					styleClass="hide-dropdown"
+					dropdownAppendTo="body"
+					[totalRecords]="totalRecords"
+					(onPageChange)="paginate($event)"
+					[rowsPerPageOptions]="[20, 50, 100]"
+				>
+				</p-paginator>
+			</div>
+		</div>
+	</div>
+	<!-- End Item Panel -->
+</div>
+<!-- Start Filter Contains -->
+<ng-template #filterSearch let-field="field" let-filterMatchMode="filterMatchMode">
+	<input
+		type="text"
+		placeholder="Search"
+		ngModel
+		class="form-control margin-top10"
+		(ngModelChange)="dt.filter($event, field, filterMatchMode)"
+	/>
+</ng-template>
+<!-- End Filter Contains -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel" #op>
+	<ul class="clear-list">
+		<li *ngFor="let col of cols">
+			<p-checkbox
+				[disabled]="col.disableCol"
+				[value]="col.field"
+				[label]="col.header"
+				[(ngModel)]="selectedValues"
+				(onChange)="checkBox(col)"
+			>
+			</p-checkbox>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel padding-clear" #download>
+	<ul class="clear-list link">
+		<!-- <li>
+      <a (click)="dt.exportCSV()"><span class="fa fa-download"></span> Export this table</a>
+    </li> -->
+		<li>
+			<a (click)="downloadCSV()"><span class="fa fa-download"></span> Download CSV</a>
+		</li>
+		<li>
+			<a (click)="downloadXLS()"><span class="fa fa-download"></span> Download XLS</a>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dialog Filter Transaction -->
+<!-- <p-dialog
+  [(visible)]="displayFilterCustomer"
+  appendTo="body"
+  [draggable]="false"
+  [modal]="true"
+  [width]="400"
+>
+  <p-header>
+    <h5 class="title">Filter by City or Cost Center</h5>
+  </p-header>
+  <p-footer>
+    <div class="text-right">
+      <button class="btn btn-default" (click)="hideFilterDialog()">Close</button>
+      <button class="btn btn-primary" (click)="submitFilter()">Ok</button>
+    </div>
+  </p-footer>
+</p-dialog> -->
+<!-- End Dialog Filter Transaction -->
+
+<!-- Start Dialog Detail Transaction -->
+<p-dialog [(visible)]="displayTransaction" appendTo="body" [draggable]="false" [modal]="true" [width]="widthDetail">
+	<p-header>
+		<h5 class="title">Detail Transaction</h5>
+	</p-header>
+
+	<table *ngIf="selectedItem != null" width="100%">
+		<tr>
+			<td width="40%">Reservation ID</td>
+			<td>:</td>
+			<td>{{ selectedItem.header.ReservationId || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Booking Order ID</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.BookingOrderId || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Customer name</td>
+			<td>:</td>
+			<td>{{ selectedItem.header.CustomerName || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Customer ID</td>
+			<td>:</td>
+			<td>{{ selectedItem.header.CustomerId || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Service Type Name</td>
+			<td>:</td>
+			<td>{{ selectedItem.header.ServiceTypeName || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Cost Center</td>
+			<td>:</td>
+			<td>{{ selectedItem.header.CostCenterId || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Cost Center Name</td>
+			<td>:</td>
+			<td>{{ selectedItem.header.CostCenterName || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Start Date</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.StartDate || '-' }}</td>
+		</tr>
+		<tr>
+			<td>End Date</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.EndDate || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Actual End Date</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.ActualEndDate || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Duration</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.Duration || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Vehicle Type</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.UnitTypeName || '-' }}</td>
+		</tr>
+		<tr>
+			<td>City Name</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.CityName || '-' }}</td>
+		</tr>
+		<tr>
+			<td>License Plate</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.LicensePlate || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Cancelation Fee</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.CancellationFee | number: '1.0-6' || 'Rp 0' }}</td>
+		</tr>
+		<tr>
+			<td>Cancelation Time</td>
+			<td>:</td>
+			<td>{{ selectedItem.CancellationTime || '-' }}</td>
+		</tr>
+		<tr>
+			<td>Pickup Location</td>
+			<td>:</td>
+			<td>{{ selectedItem.body.PickupLocation || '-' }}</td>
+		</tr>
+		<!-- <tr>
+      <td>Price Cancelation Price</td>
+      <td>:</td>
+      <td>{{ selectedItem.mainCencelationPrice }}</td>
+    </tr> -->
+		<tr>
+			<td>Total Price</td>
+			<td>:</td>
+			<td>{{ selectedItem.header.TotalPrice || 'Rp 0' }}</td>
+		</tr>
+	</table>
+
+	<p-footer>
+		<button class="btn btn-default" (click)="closeDetailTransaction()">
+			Close
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Detail Transaction -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

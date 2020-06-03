@@ -1,0 +1,207 @@
+<div class="wrap-panel">
+	<!-- Start Item Panel -->
+	<div class="item-panel">
+		<div class="head-panel info">
+			<h5 class="title margin-bottom20">{{ CustomerName }}</h5>
+			<!-- Start Info -->
+			<!-- <table class="table-info">
+				<tr>
+					<td><label>Email</label></td>
+					<td>:</td>
+					<td>{{Email}}</td>
+				</tr>
+				<tr>
+					<td><label>Phone</label></td>
+					<td>:</td>
+					<td>{{Phone}}</td>
+				</tr>
+				<tr>
+					<td><label>Service type</label></td>
+					<td>:</td>
+					<td>
+						<div *ngIf="!loadingService">
+							<p *ngFor="let product of products" class="margin-bottom0">
+								<p-checkbox 
+									(onChange)="changeServiceType(product)"
+									[value]="product.value" 
+									name="product" 
+									[label]="product.label" 
+									[(ngModel)]="selectedProduct">
+								</p-checkbox>
+							</p>
+						</div>
+						<p *ngIf="loadingService" class="margin-bottom0">Loading...</p>
+					</td>
+				</tr>
+				<tr>
+					<td><label>Group Name</label></td>
+					<td>:</td>
+					<td class="opition-td single">
+						<p-dropdown 
+							[options]="groupconfigs" 
+							styleClass="form-control" 
+							name="group"
+							[filter]="true"
+							[disabled]="disableCustomerGroup"
+							placeholder="Select Group"
+							[(ngModel)]="selectedGroup"
+							(onChange)="changeCustomerGroup()"
+							appendTo="body"
+							[required]="true">
+						</p-dropdown>
+					</td>
+				</tr>		
+			</table> -->
+			<!-- End Info -->
+			<div class="content-section">
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12">
+						<div class="ui-g-1 ui-sm-12">
+							<strong>Email</strong>
+						</div>
+						<div class="ui-g-3">lhahmadrizaldi@gmail.com</div>
+					</div>
+					<div class="ui-g-12 ui-md-12">
+						<div class="ui-g-1 ui-sm-12">
+							<strong>Phone</strong>
+						</div>
+						<div class="ui-g-3">{{ Phone }}</div>
+					</div>
+					<div class="ui-g-12 ui-md-12">
+						<div class="ui-g-1 ui-sm-12">
+							<strong>Service Type</strong>
+						</div>
+						<div class="ui-g-3 ui-sm-12 ui-md-6">
+							<div *ngIf="!loadingService">
+								<p *ngFor="let product of products" class="margin-bottom0">
+									<p-checkbox
+										(onChange)="changeServiceType(product)"
+										[value]="product.value"
+										name="product"
+										[label]="product.label"
+										[(ngModel)]="selectedProduct"
+									>
+									</p-checkbox>
+								</p>
+							</div>
+							<span *ngIf="loadingService" class="margin-bottom0">Loading...</span>
+						</div>
+					</div>
+					<div class="ui-g-12 ui-md-12">
+						<div class="ui-g-1 ui-sm-12">
+							<strong>Group Name</strong>
+						</div>
+						<div class="ui-g-3 ui-lg-3 ui-sm-12 ui-md-6">
+							<p-dropdown
+								[options]="groupconfigs"
+								styleClass="form-control"
+								name="group"
+								[filter]="true"
+								[disabled]="disableCustomerGroup"
+								placeholder="Select Group"
+								[(ngModel)]="selectedGroup"
+								(onChange)="changeCustomerGroup()"
+								appendTo="body"
+								[required]="true"
+							>
+							</p-dropdown>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="body-panel wrap-step">
+			<p-tabView orientation="left" styleClass="tab-customer" [activeIndex]="index" (onChange)="onChageTab($event)">
+				<!-- Start Organization -->
+				<p-tabPanel header="Organization Structure" [headerStyleClass]="doneOrg">
+					<app-organization [disableNext]="disableElg" (onSave)="saveOrg($event)"></app-organization>
+				</p-tabPanel>
+				<!-- End Organization -->
+
+				<!-- Start Eligibility -->
+				<p-tabPanel header="Eligibility" [disabled]="disableElg" [headerStyleClass]="doneElg">
+					<app-eligibility
+						[disableNext]="disableAccount"
+						[isOpen]="OpenElg"
+						(onSave)="saveElg($event)"
+					></app-eligibility>
+				</p-tabPanel>
+				<!-- End Eligibility -->
+
+				<!-- Start Account -->
+				<p-tabPanel header="Account" [disabled]="disableAccount" [headerStyleClass]="doneAccount">
+					<app-acoount
+						[groupName]="selectedGroup"
+						[disableNext]="disableApproval"
+						[isOpen]="OpenAccount"
+						(onSave)="saveAccount()"
+					>
+					</app-acoount>
+				</p-tabPanel>
+				<!-- End Account -->
+
+				<!-- Start Approval -->
+				<p-tabPanel header="Approval Notif" [disabled]="disableApproval" [headerStyleClass]="doneApproval">
+					<app-approval [disableNext]="disableCity" [isOpen]="OpenApproval" (onSave)="saveApproval()"></app-approval>
+				</p-tabPanel>
+				<!-- End Approval -->
+
+				<!-- Start City -->
+				<p-tabPanel header="City Coverage" [disabled]="disableCity" [headerStyleClass]="doneCity">
+					<app-city-coverage [disableNext]="disablePrice" [isOpen]="OpenCity" (onSave)="saveCity()"></app-city-coverage>
+				</p-tabPanel>
+				<!-- End City -->
+
+				<!-- Start Price -->
+				<p-tabPanel header="Price and Payment" [disabled]="disablePrice" [headerStyleClass]="donePrice">
+					<app-price-payment
+						[isOpen]="OpenPrice"
+						[serviceType]="selectedProduct"
+						[dataServiceType]="products"
+						[disableNext]="disablePackage"
+						(onSave)="savePayment()"
+					></app-price-payment>
+				</p-tabPanel>
+				<!-- End Price -->
+
+				<!-- Start Configuration -->
+				<p-tabPanel
+					header="Finish Configuration"
+					[disabled]="disableConfiguration"
+					[headerStyleClass]="doneConfiguration"
+				>
+					<div class="finish-config">
+						<div class="content">
+							<div *ngIf="finisConfiguration">
+								<img src="./assets/images/icons/success.png" width="70" alt="" />
+								<p class="margin-top30">Congratulation! The configuration is complete.</p>
+							</div>
+							<div *ngIf="!finisConfiguration">
+								<span class="fa fa-gears"></span>
+								<h4 class="margin-bottom30">Finish Configuration</h4>
+
+								<button
+									*ngIf="!isComplete"
+									(click)="savefinishConfiguration()"
+									[disabled]="submitButton"
+									class="btn btn-primary"
+								>
+									<p-progressSpinner
+										*ngIf="submitButton"
+										strokeWidth="5"
+										[style]="{ width: '30px', height: '30px' }"
+									></p-progressSpinner>
+									<span *ngIf="!submitButton">Finish Configuration</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</p-tabPanel>
+				<!-- End Configuration -->
+			</p-tabView>
+		</div>
+	</div>
+	<!-- End Item -->
+</div>
+
+<p-growl [(value)]="msgsConfig" [life]="3000"></p-growl>

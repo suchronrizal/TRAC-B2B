@@ -1,0 +1,172 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+/*
+Wrapper
+=========================== */
+.wrapper{
+    position: relative;
+    display: block;
+    min-height: 100vh;
+    padding-left: 70px;
+    background: $bg-base;
+    overflow: hidden;
+    @include transition("all 0.3s ease-in-out");
+
+    .sidebar{
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 300px;
+        height: 100%;
+        overflow-y: auto;
+        background: #fff;
+        border-right: solid 1px #efefef;
+        margin-left: -230px;
+        @extend .panel-shadow;
+        @include transition("all 0.3s ease-in-out");
+        z-index: 2;
+
+        .toggle{
+            padding: 0;
+            border: 0;
+            background: transparent;
+            float: right;
+            position: relative;
+            right: 30px;
+            top: 35px;
+            cursor: pointer;
+            color: $color-primary;
+            font-size: 14px;
+            outline: 0;
+
+            &.active .fa:before{
+                content: "\f060";
+            }
+        }
+    }
+
+    .main{
+        position: relative;
+        z-index: 1;
+        @include transition("all 0.3s ease-in-out");
+
+        .wrap-main-content{
+            min-height: calc(100vh - 213px);                
+        }
+    }
+
+    &.on{
+        .sidebar{
+            margin-left: 0;
+        }
+    }
+
+    &.standby{
+        padding-left: 300px;
+
+        .main{
+            .wrap-main-content{
+                min-height: calc(100vh - 132px);                
+            }
+        }
+    }
+}
+
+/*
+Breadcumb
+=========================== */
+ul.breadcumb{
+    padding: 0;
+    margin: 0 0 -5px 0;
+    display: inline-block;
+
+    li{
+        float: left;
+        display: block;
+        position: relative;
+        margin-right: 40px;
+        text-transform: capitalize;
+
+        a{
+            color: $color-primary;
+            text-decoration: none !important;
+        }
+
+        &:before{
+            font-family: 'FontAwesome';
+            content: "\f105";
+            position: absolute;
+            right: -22px;
+        }
+
+        &:last-child{
+            margin-right: 0;
+
+            &:before{
+                display: none;
+            }
+        }
+    }
+}
+
+/*
+Footer
+=========================== */
+.footer{
+    padding: 25px 30px;
+    border-top: solid 1px #efefef;
+    background: #fff;
+    color: #9f9f9f;
+}
+
+.blockUI{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    @include opacity(.7);
+    background: #fff;
+    z-index: 9;
+}
+
+/*
+Responsive
+=========================== */
+@media(max-width:1024px){
+    .wrapper{
+        padding-left: 0;
+        
+        .sidebar{
+            margin-left: -300px;
+            padding-top: 0;
+
+            .toggle{
+                display: none;
+            }
+        }
+
+        &.togglemobile{
+            .sidebar{
+                margin-left: 0;
+            }
+
+            .main{
+                margin-left: 300px;
+                margin-right: -300px;
+            }
+        }
+    }
+}
+
+@media(max-width:767px){
+    .wrapper{
+        .inner-page{
+            padding: 15px;
+        }
+    }
+}

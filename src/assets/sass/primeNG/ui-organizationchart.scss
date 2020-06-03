@@ -1,0 +1,60 @@
+.ui-organizationchart {
+    .ui-organizationchart-table{
+        margin: auto;
+    }
+
+    .ui-organizationchart-line-down {
+        background-color: $color-content;
+    }
+
+    .ui-organizationchart-line-left {
+        border-right: 1px solid $color-content;
+    }
+
+    .ui-organizationchart-line-right {
+
+    }
+
+    .ui-organizationchart-line-top {
+        border-top: 1px solid $color-content;
+    }
+
+    .ui-organizationchart-node-content{
+        border: solid 1px #efefef;
+        padding: 15px 20px;
+        @include border-radius(4px);
+        @extend .panel-shadow;
+    }
+
+    .ui-organizationchart-node-content .ui-node-toggler {
+        color: $color-content;
+    }
+
+    .fa-chevron-down:before{
+        content: "\f055";
+        color: $color-primary;
+        margin-left: 2px;
+    }
+
+    .fa-chevron-up:before{
+        content: "\f056";
+        color: $color-content;
+        margin-left: 2px;
+    }
+}
+
+.org-item{
+    min-width: 250px;
+
+    .form-control{
+        text-align: left;
+        margin-top: 10px;
+    }
+
+    .table-cost-center{
+        .ui-dropdown-label{
+            position: relative;
+            top: 0px;
+        }
+    }
+}

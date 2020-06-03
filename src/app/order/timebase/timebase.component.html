@@ -1,0 +1,863 @@
+<!-- Start Wrap Panel -->
+<div class="wrap-panel">
+	<div class="ui-g wrap-order">
+		<div class="ui-g-12 ui-lg-8 main-order margin-bottom30">
+			<!-- Start Item Panel -->
+			<div class="item-panel">
+				<div class="head-panel">
+					<h5 class="title">
+						{{ productName }}
+					</h5>
+				</div>
+				<div class="body-panel padding-clear">
+					<!-- Start Tab Order -->
+					<p-tabView (onChange)="handleChange($event)" orientation="left" styleClass="tab-customer order" [activeIndex]="tabIndex">
+						
+						<!-- Start Tab Panel -->
+						<p-tabPanel header="Requester Information" [headerStyleClass]="selectedPicVehicleType != null && selectedCostCenter != null && selectedCostCenterName != null && validGuest ? 'done' : null">
+							<form #formReservator="ngForm">
+								<div *ngIf="loadingReservation" class="wrap-loading-content">
+									<div class="content">
+										<p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+									</div>
+								</div>
+				
+								<div *ngIf="!loadingReservation" class="ui-g">
+									<div *ngIf="userIndicator == 'MRI003'" class="ui-g-12 ui-md-4">
+										<label class="display-block margin-bottom5">Create For</label>
+										<p-dropdown 
+											[options]="stateOrder" 
+											styleClass="form-control" 
+											name="stateOrder"
+											appendTo="body"
+											placeholder="Select Order State"
+											[disabled]="disablestateOrder"
+											(onChange)="selectstateOrder($event)"
+											[(ngModel)]="selectedstateOrder"
+											#selectedstateOrderRef="ngModel"
+											[required]="true">
+										</p-dropdown>
+									</div>
+								</div>
+								<div *ngIf="!loadingReservation" class="ui-g">
+									<div class="ui-g-12" [class.ui-md-4]="selectedCustomer != 'CID-99999'" [class.ui-md-6]="selectedCustomer == 'CID-99999'">
+										<label class="display-block margin-bottom5">Company Name</label>
+										<p-dropdown 
+											[options]="customers" 
+											styleClass="form-control" 
+											filter="true"
+											name="customer"
+											appendTo="body"
+											placeholder="Select Company"
+											[disabled]="disableCustomer"
+											(onChange)="selectCustomer($event)"
+											[(ngModel)]="selectedCustomer"
+											#selectedCustomerRef="ngModel"
+											[required]="true">
+										</p-dropdown>
+									</div>
+									<div *ngIf="selectedCustomer != 'CID-99999'" class="ui-g-12 ui-md-4">
+										<label class="display-block margin-bottom5">Requester</label>
+										<div *ngIf="loadingUserAccount" class="input-loading">
+											<div class="content">
+												<p-progressSpinner strokeWidth="5" [style]="{width: '20px', height: '20px'}"></p-progressSpinner>
+											</div>
+										</div>
+										<!-- <p-dropdown 
+											*ngIf="!loadingUserAccount"
+											[options]="userAccount" 
+											styleClass="form-control" 
+											filter="true"
+											name="picName"
+											appendTo="body"
+											placeholder="Select PIC"
+											[disabled]="disablePic"
+											(onChange)="onSelectPic($event)"
+											[(ngModel)]="selectedPic"
+											#selectedPicRef="ngModel"
+											[required]="true">
+										</p-dropdown> -->
+										<p-autoComplete 
+											name="picName"
+											inputStyleClass="form-control" 
+											[(ngModel)]="selectedPic"
+											placeholder="Enter Your Email"
+											[disabled]="disablePic"
+											appendTo="body"
+											minLength="3"
+											[pKeyFilter]="blockSpace"
+											(onFocus)= "checkValidGuest()"
+											(onSelect)="onSelectPic($event)"
+											(completeMethod)="onSearchPicUser($event,user)"
+											[suggestions]="filterpics"
+											#selectedPicRef="ngModel"
+											[required]="true">
+										</p-autoComplete>
+									</div>
+									<div class="ui-g-12" [class.ui-md-4]="selectedCustomer != 'CID-99999'" [class.ui-md-6]="selectedCustomer == 'CID-99999'">
+										<label class="display-block margin-bottom5">Cost Center</label>
+										<div *ngIf="loadingCostCenter" class="input-loading">
+											<div class="content">
+												<p-progressSpinner strokeWidth="5" [style]="{width: '20px', height: '20px'}"></p-progressSpinner>
+											</div>
+										</div>
+										<p-dropdown 
+											*ngIf="!loadingCostCenter"
+											[options]="arrCostCenter" 
+											styleClass="form-control" 
+											filter="true"
+											name="costCenter"
+											appendTo="body"
+											placeholder="Select Cost Center"
+											[(ngModel)]="selectedCostCenter"
+											(onChange)="onChangeCostCenter($event)"
+											#selectedCostCenterRef="ngModel"
+											[required]="true">
+										</p-dropdown>
+									</div>
+								</div>
+							</form>
+				
+							<div class="ui-g">
+								<div class="ui-g-12 ui-md-6 margin-bottom10">
+									<label class="display-block margin-bottom5">Passenger Quantity</label>
+									<button 
+										[disabled]="disableAddPassengger || selectedstateOrder == '01' && userIndicator == 'MRI003' || validPhoneNumber || validTextEmail"
+										class="btn btn-default" 
+										type="button"
+										(click)="addUser(); checkValidGuest();">
+										Add Passenger <span class="fa fa-arrows-h"></span> 
+										<strong *ngIf="selectedstateOrder != '02'">({{users.length}})</strong>
+										<strong *ngIf="selectedstateOrder == '02'">({{users.length - 1}})</strong>
+									</button>
+								</div>
+								<div class="ui-g-12">
+									<table class="table-form passengger">
+										<thead>
+											<tr>
+												<th class="eligibility">Car Options</th>
+												<th>Email</th>
+												<th>Name</th>
+												<th colspan="2">Phone Number</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let user of users; let first = first; let last = last; let index = index;" [class.hide]="index == 0 && selectedstateOrder == '02'">
+												<td class="checkbox">
+													<p-radioButton 
+														name="groupname{{i}}" 
+														styleClass="checkbox"
+														[disabled]="user.UserId == null"
+														[value]="user.id" 
+														(onClick)="changePIC(user)"
+														[(ngModel)]="selectedPicVehicleType">
+													</p-radioButton>
+												</td>
+												<td>
+													<div *ngIf="selectedstateOrder == '02'">
+														<input 
+															type="text" 
+															name="email{{i}}"
+															[disabled]="user.isDisable"
+															class="form-control"
+															[ngClass]="{invalidPhone: user.validEmail && user.validEmail=='error'}"
+															[pKeyFilter]="blockSpace"
+															[(ngModel)]="user.email" 
+															(change)="checkValidGuest(); checkDuplicateEmail()"
+															[required]="true"
+															placeholder="Enter email address"/>
+													</div>
+													<div *ngIf="selectedstateOrder != '02'">
+														<p-autoComplete 
+															name="email{{i}}"
+															[ngClass]="{invalidPhone: user.validEmail && user.validEmail=='error'}"
+															inputStyleClass="form-control" 
+															[(ngModel)]="user.email" 
+															placeholder="Enter email address"
+															[disabled]="user.isDisable"
+															appendTo="body"
+															minLength="3"
+															[pKeyFilter]="blockSpace"
+															(onFocus)="checkValidGuest();"
+															(onSelect)="onChangePicUser($event,user); checkValidGuest()"
+															(completeMethod)="onSearchPicUser($event,user)"
+															[suggestions]="filterpics"
+															[required]="true">
+														</p-autoComplete>
+													</div>
+												</td>
+												<td>
+													<input 
+														type="text" 
+														name="userAccount{{i}}" 
+														[disabled]="user.isDisable" 
+														class="form-control" 
+														placeholder="Enter your fullname"
+														(change)="checkValidGuest(); checkDuplicateEmail()"
+														[(ngModel)]="user.PICName"/>
+												</td>
+												<td>
+													<input 
+														type="text" 
+														name="phone{{i}}" 
+														minlength="10"
+														pInputText
+														pKeyFilter="num"
+														class="form-control"
+														[ngClass]="{invalidPhone: user.validPhone && user.validPhone=='error'}"
+														placeholder="Enter your phone number"
+														(change)="checkValidGuest(); checkDuplicateEmail()"
+														[(ngModel)]="user.phone"/>
+												</td>
+												<td class="action">
+													<div *ngIf="selectedstateOrder==02">
+														<button 
+															*ngIf="index > 1" 
+															[disabled]="selectedPicVehicleType == user.id"
+															(click)="removeUser(user); checkValidGuest();" 
+															class="btn-icon btn-danger half style-input">
+																<span class="fa fa-times"></span> 
+														</button>
+													</div>
+													<div *ngIf="selectedstateOrder!=02">
+														<button 
+															*ngIf="!first" 
+															[disabled]="selectedPicVehicleType == user.id"
+															(click)="removeUser(user); checkValidGuest();" 
+															class="btn-icon btn-danger half style-input">
+																<span class="fa fa-times"></span>
+														</button>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div *ngIf="validPhoneNumber || validTextEmail" class="error-template">
+										<span *ngIf="validPhoneNumber"><strong>Error</strong> : Please check your phone number (Min 10 digits)<br /></span>
+										<span *ngIf="validTextEmail"><strong>Error</strong> : Please check your format email</span>
+									</div>
+									
+									<div class="margin-top30 alert alert-info">
+										<strong>Note</strong> : You are allowed to use car options if you add another passenger to this reservation that has a different car option from you.
+									</div>
+								</div>
+							</div>
+						</p-tabPanel>
+						<!-- End Tab Panel -->
+				
+						<!-- Start Tab Panel -->
+						<p-tabPanel header="City & Pickup Date/Time" [headerStyleClass]="arrTime.length != 0 && selectedCity != null ? 'done' : null" >
+							<form #formTravelInformation="ngForm">
+								<!-- Start City -->
+								<div class="ui-g">
+									<div class="ui-g-12 ui-md-6">
+										<label class="display-block margin-bottom5">City Name</label>
+										<div *ngIf="loadingCity" class="input-loading">
+											<div class="content">
+												<p-progressSpinner strokeWidth="5" [style]="{width: '20px', height: '20px'}"></p-progressSpinner>
+											</div>
+										</div>
+										<p-dropdown 
+											*ngIf="!loadingCity"
+											[options]="cities" 
+											styleClass="form-control" 
+											filter="true"
+											name="cityName"
+											placeholder="Select City"
+											[(ngModel)]="selectedCity"
+											#selectedPicRef="ngModel"
+											(onChange)="onSelectCity($event); formPlanInformation.reset();"
+											appendTo="body"
+											[required]="true">
+										</p-dropdown>
+									</div>
+									<div class="ui-g-12 ui-md-6 pl-0">
+										<div class="txt-city">* If the city you are looking for not listed</div>
+										<div class="sub-txt-city">please contact the call center</div>
+									</div>
+									<!-- <div class="ui-g-12 ui-md-6">
+										<p-autoComplete [(ngModel)]="cities" [suggestions]="filteredCity" (completeMethod)="filterCity($event)" styleClass="form-control"
+												[minLength]="1" placeholder="Countries" field="name">
+										</p-autoComplete> 
+									</div> -->
+								</div>
+								<!-- Traveling Options -->
+								<!-- <div class="ui-g">
+									<div class="ui-g-12" *ngIf="IsInternal && (RoleId=='RL-002' || RoleId=='RL-001')">
+										<label class="display-block margin-bottom5">Traveling Options </label>
+										<p *ngIf="loadingContract" class="margin-bottom0">Loading...</p>
+										<ul *ngIf="!loadingContract" class="clear-list inline"> -->
+											<!-- <li>
+												<p-checkbox 
+													name="groupname1" 
+													value="IsStay" 
+													label="Overnight Stay" 
+													(onChange)="changeAdditional()"
+													[(ngModel)]="arrAdditional">
+												</p-checkbox>
+											</li>
+											<li>
+												<p-checkbox 
+													name="groupname2" 
+													value="OutTown" 
+													label="Out Of Town" 
+													(onChange)="changeAdditional()"
+													[(ngModel)]="arrAdditional">
+												</p-checkbox>
+											</li> -->
+											<!-- <li *ngIf="IsInternal && (RoleId=='RL-002' || RoleId=='RL-001')">
+												<p-checkbox 
+													name="isWithDriver"
+													label="Self Drive" 
+													value="isWithDriver"
+													[disabled]="true"
+													(onChange)="changeSelfDrive($event)"
+													[(ngModel)]="withDriver">
+												</p-checkbox>
+											</li> -->
+											<!-- <li *ngIf="IsInternal && (RoleId=='RL-002' || RoleId=='RL-001')">
+												<p-checkbox 
+													name="isPriority"
+													label="Priority" 
+													value="isPriority"
+													[disabled]="false"
+													[(ngModel)]="priority">
+												</p-checkbox>
+											</li> -->
+										<!-- </ul>
+									</div>
+								</div> -->
+								<!-- End Traveling Option -->
+								<!-- End City -->
+								<!-- Start Select Date -->
+								<div class="ui-g">
+									<div class="ui-g-12">
+										<label>Select Pickup Date & Time</label>
+									</div>
+									<div class="ui-g-12 ui-md-6">
+										<p-calendar 
+											name="dateTime"
+											appendTo="body"
+											inputStyleClass="form-control"
+											readonlyInput="true"
+											dateFormat="d M yy"
+											placeholder="Date"
+											[disabled]="selectedPic == null"
+											readonlyInput="true"
+											[monthNavigator]="true" 
+											[yearNavigator]="true" 
+											yearRange="2000:2030"
+											[minDate]="now"
+											[inline]="true"
+											[(ngModel)]="dateTime">
+					
+											<p-footer>
+												<div class="wrap-btn-calendar">
+													<p-calendar 
+														name="timePicker" 
+														[(ngModel)]="timePicker" 
+														placeholder="E.g 10:00"
+														inputStyleClass="input-date" 
+														[timeOnly]="true">
+													</p-calendar>
+													<div class="margin-top10"></div>
+													<button 
+														[disabled]="selectedPic == null || timePicker == null || selectedCity == null || MaxOrderTime==null"
+														(click)="addTime($event)" 
+														class="btn btn-primary btn-sm">
+														<p-progressSpinner *ngIf="isLoadMaxOrderTime" strokeWidth="5" [style]="{width: '30px', height: '30px'}">Loading...</p-progressSpinner>
+														<span *ngIf="!isLoadMaxOrderTime">Add Pickup Date & Time</span>	 
+													</button>
+												</div>
+											</p-footer>
+										</p-calendar>
+									</div>
+									<div class="ui-g-12 ui-md-6">
+										<table class="table-form">
+											<thead>
+												<tr>
+													<th>Pickup Date</th>
+													<th colspan="2">Pickup Time</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr *ngFor="let time of arrTime; let i=index">
+													<td>{{time.valueDate}}</td>
+													<td>
+														{{time.valueTime}}
+													</td>
+													<td class="action">
+														<button 
+															(click)="removeDate(time)" 
+															class="btn-icon btn-danger half style-input">
+															<span class="fa fa-times"></span>
+														</button>
+													</td>
+												</tr>
+												<tr *ngIf="arrTime.length == 0">
+													<td colspan="3" class="empty">No time selected</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- End Select Date -->
+							</form>
+						</p-tabPanel>
+						<!-- End Tab Panel -->
+				
+						<!-- Start Tab Panel -->
+						<p-tabPanel [header]="selectedContrat !=null || !loadingCars ? 'Package & Pricing' : 'Loading...'" [headerStyleClass]="!loadingContract && packages.length > 0 && selectedContrat != null && !showAlertDuration && isSelectedCar ? 'done' : null">
+							<form #formPlanInformation="ngForm">
+								<div class="ui-g">
+									<div class="ui-g-12 ui-md-6">
+										<label class="display-block margin-bottom5">Type of Car</label>
+										<div *ngIf="loadingCars" class="input-loading">
+											<div class="content">
+												<p-progressSpinner strokeWidth="5" [style]="{width: '20px', height: '20px'}"></p-progressSpinner>
+											</div>
+										</div>
+										<p-dropdown 
+											*ngIf="!loadingCars"
+											[options]="cars" 
+											styleClass="form-control" 
+											name="carType"
+											placeholder="Select Type of Car"
+											[disabled]="disabledCar"
+											(onChange)="onSelectCarType($event)"
+											[(ngModel)]="selectedCar">
+											<ng-template let-car pTemplate="item">
+												<div [class]="car.styleClass">{{car.label}}</div>
+											</ng-template>
+										</p-dropdown>
+									</div>
+									<div class="ui-g-12 ui-md-6">
+										<label class="display-block margin-bottom5">Package Options</label>
+										<div *ngIf="loadingDuration" class="input-loading">
+											<div class="content">
+												<p-progressSpinner strokeWidth="5" [style]="{width: '20px', height: '20px'}"></p-progressSpinner>
+											</div>
+										</div>
+										<p-dropdown 
+											*ngIf="!loadingDuration"
+											[options]="durations" 
+											styleClass="form-control" 
+											name="duration"
+											placeholder="Duration"
+											(onChange)="onSelectDuration($event)"
+											[disabled]="disabledDuration"
+											[(ngModel)]="selectedDuration">
+										</p-dropdown>
+									</div>
+									<div *ngIf="!loadingContract">
+										<div class="ui-g-12 alert desclimer" *ngIf="outOfTown!=0 || olc!=0">
+											<strong>Note</strong> :
+											<br />
+											<span *ngIf="outOfTown!=0">Estimated Cost <strong>Out Of Town/Trip</strong> = Rp. {{outOfTown | number:'1.0-6'}}</span>
+											<br />
+											<span *ngIf="olc!=0">Estimated Cost <strong>Overnight</strong> = Rp. {{olc | number:'1.0-6'}}</span>
+										</div>
+									</div>
+									<div class="ui-g-12">
+										<div *ngIf="showAlertDuration" class="alert alert-warning">
+											Anda telah memilih multi tanggal untuk order ini, silakan pilih durasi diatas 16 jam
+										</div>
+									</div>
+								</div>
+								
+								<div *ngIf="!showAlertDuration" class="ui-g margin-top20 margin-bottom20">
+									<div class="ui-g-12">
+										<div *ngIf="packages.length" class="box-table">List Packages</div>
+										<table class="table-form peckage">
+											<thead>
+												<tr>
+													<th></th>
+													<th>Fuel</th>
+													<th>Toll & Parking Ticket</th>
+													<th>Driver</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr *ngFor="let peckage of packages; let first = first; let last = last; let index = index;">
+													<td class="checkbox">
+														<p-radioButton 
+															name="packagename" 
+															styleClass="checkbox"
+															[value]="peckage.value"
+															(onClick)="selectPackage(peckage.value)"
+															[(ngModel)]="selectedPackege">
+														</p-radioButton>
+													</td>
+													<td data-title="Fuel:">{{peckage.Fuel}}</td>
+													<td data-title="Toll & Parking Ticket:">{{peckage.TollandParking}}</td>
+													<td data-title="Driver:">{{peckage.DriverorRider}}</td>
+												</tr>
+											</tbody>
+										</table>
+										<div *ngIf="packages.length == 0 && !loadingPeckage" class="empty-peckage">
+											Package not found
+										</div>
+										<div *ngIf="loadingPeckage" class="wrap-loading-content inline">
+											<div class="content">
+												<p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+											</div>
+										</div>
+										<div *ngIf="loadingContract" class="wrap-loading-content">
+											<div class="content">
+												<p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div *ngIf="!showAlertDuration">
+									<div *ngIf="packages.length != 0 && arrContract.length == 0 && !loadingPeckage && !loadingContract" class="empty-contract">
+										<img src="./assets/images/icons/policy.png" alt="" class="img-empty-contract" />
+										<p class="text-center">Contract not found</p>
+									</div>
+									<div *ngIf="!loadingContract && arrContract.length != 0">
+										<div class="ui-g list-contract">
+											<div class="ui-g-12">
+												<div class="box-table">List Contract</div>
+												<table class="table-form peckage">
+													<thead>
+														<tr>
+															<th>Pickup Date</th>
+															<th>Package Price</th>												
+															<th>Total</th>
+														</tr>
+													</thead>
+													<tbody *ngIf="arrContract.length">
+														<tr *ngFor="let contract of arrContract">
+															<td data-title="Pickup Date:">{{contract.Dates}}</td>
+															<td data-title="Package Price:">{{contract.BasicPrice | number:'1.0-6'}}</td>
+															<td data-title="Total:" class="text-right">{{contract.totalPrice | number:'1.0-6'}}</td>
+														</tr>
+													</tbody>
+												</table>
+												<table class="table-form peckage">
+													<tbody>
+														<!-- <tr class="small-border">
+															<td class="text-right hide-sm">VAT</td>
+															<td class="text-left hide-sm">:</td> 
+															<td colspan="2" class="text-right" data-title="VAT:"><span>IDR {{totalPriceOrder * 0.10 | number:'1.0-6'}}</span></td>
+														</tr> -->
+														<tr>
+															<td class="text-right hide-sm">Total Price</td>
+															<td class="text-left hide-sm" style="width:10px">:</td>
+															<td colspan="2" class="text-right total" data-title="Total Price:"><strong>IDR {{totalPriceOrder | number:'1.0-6'}}</strong></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<div *ngIf="arrContract.length != 0" class="margin-top20 margin-bottom0 alert alert-info">
+										<strong>Note</strong> : The price above is already included 10% VAT
+									</div>
+								</div>
+							</form>
+						</p-tabPanel>
+						<!-- End Tab Panel -->
+				
+						<!-- Start Tab Panel --> 
+						<p-tabPanel header="Location" [headerStyleClass]="carsPickup.length != 0 && !invalidLocation ? 'done' : null">
+							<div *ngFor="let car of carsPickup; let first = first; let last = last; let index = index;">
+								<div class="margin-bottom15">
+									<label>Pickup Location</label>
+									<ng4geo-autocomplete 
+										name="pickup" 
+										[userSettings]="{
+											showCurrentLocation: false,
+											inputString: car.Alamat
+										}"
+										(componentCallback)="autoCompleteCallback($event,car)">
+									</ng4geo-autocomplete>
+								</div>
+								<div class="margin-bottom15">
+									<label>Pickup Notes</label>
+									<input 
+										type="text" 
+										name="note{{index}}" 
+										(keyup)="onChangeNote(car)"
+										[(ngModel)]="car.Notes" 
+										class="form-control" 
+										placeholder="Pickup Note" />
+								</div>
+								<div class="margin-bottom15">
+									<label>Itinerary Note</label>
+									<input 
+										type="text" 
+										name="destinationNote{{index}}" 
+										(keyup)="onChangeDestinationNote(car)"
+										[(ngModel)]="car.DestinationNotes" 
+										class="form-control" 
+										placeholder="Itinerary Note" />
+								</div>
+							</div>
+							<div *ngIf="carsPickup.length == 0" class="empty-cars">
+								No car selected
+							</div>
+						</p-tabPanel>
+						
+						<!-- End Tab Panel -->
+				
+					</p-tabView>
+					<!-- End Tab Order -->
+				</div>
+
+				<!-- Start Footer -->
+				<div class="footer-panel">
+					<div class="ui-g">
+						<div class="ui-g-4">
+							<button class="btn-circle btn-primary margin-bottom5" [disabled]="tabIndex == 0" (click)="prevForm()">
+								<i class="fa fa-chevron-left icon-left"></i>
+							</button>
+							<button
+								*ngIf="isUpdate"
+								[disabled]="tabIndex == 3"
+								class="btn-circle btn-primary"
+								(click)="tabIndex = tabIndex + 1"
+							>
+								<i class="fa fa-chevron-right icon-right"></i>
+							</button>
+						</div>
+						<div class="ui-g-8 text-right">
+							<button
+								*ngIf="tabIndex != 3 && !isUpdate"
+								class="btn-circle btn-primary"
+								(click)="tabIndex = tabIndex + 1"
+							>
+								<i class="fa fa-chevron-right icon-right"></i>
+							</button>
+							<button *ngIf="isUpdate" (click)="cancelUpdate()" class="btn btn-default margin-bottom5">
+								Cancel Update
+							</button>
+							<!-- disable formTravelInformation.reset() modify 02-10-19 -->
+							<button
+								*ngIf="tabIndex == 3 || isUpdate"
+								[disabled]="
+									formReservator.invalid ||
+									packages.length == 0 || 
+									selectedPicVehicleType == null ||
+									selectedContrat == null ||
+									arrContract.length == 0 ||
+									arrTime.length == 0 ||
+									invalidLocation ||
+									sumQtyCarsPickup == 0 ||
+									sumQtyCarsPickup == '' ||
+									!validGuest ||
+									loadingCars || 
+									!isSelectedCar || loadingContract
+								"
+								(click)="
+									createObjectPickup();
+									creatArrayTime();
+									createObjPessenger();
+									generateObjectScheme();
+									formPlanInformation.reset();
+									formPlanInformation.reset()
+								"
+								class="btn btn-primary"
+							>
+								<span *ngIf="!isUpdate"><i class="fa fa-shopping-cart icon-left"></i> Add to Cart</span>
+								<span *ngIf="isUpdate"><i class="fa fa-shopping-cart icon-left"></i> Update Order</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<!-- Start Footer -->
+			</div>
+			<!-- End Item Panel -->
+		</div>
+		<!--disini-->
+		<div class="ui-g-12 ui-lg-4 side-order">
+			<!-- Start Order Detail -->
+			<div class="item-panel">
+				<div class="head-panel">
+					<h5 class="title">Your Cart</h5>
+				</div>
+				<div class="body-panel">
+					<div *ngIf="obJschemeOrder.ReservationDetail.length != 0">
+						<table class="table-info-order">
+							<p class="margin-bottom10">
+								Requester : <strong>{{ PICName }}</strong>
+							</p>
+							<div class="form-group">
+								<div class="margin-bottom10 doc-order">
+									<label>Input Document Number (1)</label>
+									<input
+										type="text"
+										class="form-control input-sm border"
+										[(ngModel)]="PONumber"
+										placeholder="Input Document Number"
+									/>
+								</div>
+								<div class="margin-bottom10 doc-order">
+									<label>Input Document Number (2)</label>
+									<input
+										type="text"
+										class="form-control input-sm border"
+										[(ngModel)]="PONumber2"
+										placeholder="Input Document Number"
+									/>
+								</div>
+								<div *ngIf="PONumber != ''">
+									<p-calendar
+										dateFormat="d M yy"
+										[(ngModel)]="PODate"
+										appendTo="body"
+										styleClass="form-control input-sm uppercase"
+										placeholder="Selecet date"
+									>
+									</p-calendar>
+								</div>
+							</div>
+						</table>
+
+						<p-accordion [multiple]="false" styleClass="order">
+							<p-accordionTab
+								*ngFor="let order of obJschemeOrder.ReservationDetail; let index = index"
+								[selected]="false"
+							>
+								<p-header>
+									<div class="ui-g title-order">
+										<div class="ui-g-4">
+											<strong>Order #{{ index + 1 }}</strong>
+										</div>
+										<div class="ui-g-8 text-right">
+											<strong>IDR {{ order.PriceCalc | number: '1.0-6' }}</strong>
+											<p-progressSpinner
+												*ngIf="order.statusProcess == 'process'"
+												strokeWidth="5"
+												[style]="{ width: '14px', height: '14px', marginLeft: '6px', top: '2px' }"
+											></p-progressSpinner>
+											<span
+												*ngIf="order.statusProcess == 'error'"
+												class="fa fa-times danger"
+												style="width: 20px"
+											></span>
+											<span
+												*ngIf="order.statusProcess == 'expired'"
+												class="fa fa-times danger"
+												style="width: 20px"
+											></span>
+											<span
+												*ngIf="order.statusProcess == 'success'"
+												class="fa fa-check success"
+												style="width: 20px"
+											></span>
+											<span
+												*ngIf="order.statusProcess == 'wait'"
+												class="fa fa-hourglass-2 color-content"
+												style="width: 20px"
+											></span>
+										</div>
+									</div>
+									<div class="ui-g" *ngIf="order.StatusOrder == 'error'">
+										<div class="ui-g-12 text-danger">Start Date Is Not Valid</div>
+									</div>
+								</p-header>
+								<table cellpadding="0" cellspacing="0" class="list-cart-order">
+									<tr>
+										<td class="label"><strong>Type of Car</strong></td>
+										<td class="point">:</td>
+										<td>
+											<strong>{{ order.UnitTypeName }}</strong>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><strong>Date Time</strong></td>
+										<td class="point">:</td>
+										<td>
+											<ul class="clear-list">
+												<li *ngFor="let time of order.arrTime">{{ time.valueDate }} - {{ time.valueTime }}</li>
+											</ul>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><strong>Package Options</strong></td>
+										<td class="point">:</td>
+										<td>{{ order.DurationName }}</td>
+									</tr>
+									<tr>
+										<td class="label"><strong>Duration</strong></td>
+										<td class="point">:</td>
+										<td>{{ order.Duration }}</td>
+									</tr>
+									<!-- <tr>
+										<td class="label"><strong>Traveling Options</strong></td>
+										<td class="point">:</td>
+										<td>{{ order.reArrAdditional.length > 0 ? order.reArrAdditional : '-' }}</td>
+									</tr> -->
+									<tr>
+										<td class="label"><strong>Unit Quantity</strong></td>
+										<td class="point">:</td>
+										<td>{{ order.QtyUnit }}</td>
+									</tr>
+									<tr>
+										<td class="label"><strong>Passenger Quantity</strong></td>
+										<td class="point">:</td>
+										<td>{{ order.QtyPassenger }}</td>
+									</tr>
+									<tr>
+										<td class="label"><strong>Cost Center</strong></td>
+										<td class="point">:</td>
+										<td>{{ order.CostCenterName }}</td>
+									</tr>
+								</table>
+
+								<hr class="margin-top20 margin-bottom15" />
+
+								<div *ngIf="!submitOrder" class="text-right">
+									<button
+										*ngIf="order.statusProcess != 'expired'"
+										[disabled]="dataOrderTemporaryEdit == order"
+										(click)="editOrder(order)"
+										class="btn btn-default btn-sm"
+									>
+										<span class="fa fa-pencil icon-left"></span> Edit
+									</button>
+									<button
+										[disabled]="dataOrderTemporaryEdit == order"
+										(click)="deleteOrder(order)"
+										class="btn btn-danger btn-sm"
+									>
+										<span class="fa fa-trash icon-left"></span> Delete
+									</button>
+								</div>
+							</p-accordionTab>
+						</p-accordion>
+					</div>
+					<!-- Start Empty order -->
+					<div *ngIf="obJschemeOrder.ReservationDetail.length == 0" class="empty-cart">
+						<img src="./assets/images/icons/empty-cart.png" alt="" />
+						<h6 class="title">Your cart is empty, lets create a reservation</h6>
+					</div>
+					<!-- End Empty order -->
+				</div>
+				<div *ngIf="!isUpdate" class="footer-panel text-right">
+					<p-progressBar *ngIf="submitOrder" [value]="progressValue"></p-progressBar>
+					<button
+						*ngIf="!submitOrder"
+						(click)="checkBudget()"
+						[disabled]="
+							obJschemeOrder.ReservationDetail == 0 ||
+							submitOrder ||
+							(PODate == null && PONumber != '') ||
+							loadingBudget
+						"
+						class="btn btn-primary"
+					>
+						<span *ngIf="loadingBudget">Loading...</span>
+						<span *ngIf="!loadingBudget">Continue Order</span>
+					</button>
+				</div>
+			</div>
+			<!-- End Order Detail -->
+		</div>
+	</div>
+</div>
+<!-- End Wrap Panel -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

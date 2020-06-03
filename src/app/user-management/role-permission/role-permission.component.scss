@@ -1,0 +1,116 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+.ui-g.in{
+    margin: 0 -5px;
+}
+
+.input-role{
+    height: 45px;
+}
+
+/*
+Wrap Role
+=========================== */
+.wrap-role{
+    position: relative;
+    border-top: solid 1px #efefef;
+
+    .list{
+        border-right: solid 1px #efefef;
+        margin-right: -1px;
+        overflow-y: auto;
+
+        .addrole{
+            padding: 10px 15px;
+            margin: 0 0 6px 0;
+            text-align: center;
+            
+            a{
+                color: $color-content;
+                display: block;
+                text-decoration: none !important;
+                padding: 10px;
+                border: dotted 1px #dfdfdf;
+
+                &:hover{
+                    color: $color-primary;
+                }
+            
+                .fa{
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        ul{
+            padding: 0;
+            margin: 0 -7px;
+            list-style: none;
+            border-bottom: solid 1px #efefef;
+
+            &.on{
+                margin-top: -7px;
+            }
+
+            li{
+                display: block;
+
+                a{
+                    display: block;
+                    padding: 15px 30px;
+                    border-top: solid 1px #efefef;
+                    color: $color-content;
+                    text-decoration: none;
+                    font-weight: 500;
+                }
+
+                &:first-child{
+                    border-top: 0;
+                }
+
+                &:hover a{
+                    color: $color-primary;
+                }
+
+                &.active a{
+                    color: $color-primary;
+                }
+            }
+        }
+    }
+
+    .main{
+        padding: 0;
+        border-left: solid 1px #efefef;
+        .wrap-table{
+            margin: 0 -3px 0 -1px;
+
+            .ui-paginator-bottom{
+                border: solid 1px red !important; 
+            }
+        }
+    }
+}
+
+@media(max-width:767px){
+    .wrap-role{
+        position: relative;
+        
+        .list{
+            border-bottom: solid 50px $bg-base;
+
+            ul{
+                margin-bottom: -7px;
+                border-bottom: solid 1px #efefef;
+            }
+        }
+
+        .main{
+            border-top: solid 1px #efefef;
+        }
+    }
+}

@@ -1,0 +1,53 @@
+<p>Sign into your account</p>
+
+<!-- Start Form -->
+<form #formRef="ngForm" (ngSubmit)="onSubmit(formRef.value)">
+	<div class="form-group margin-bottom20">
+		<label>Email</label>
+		<input
+			type="text"
+			placeholder="Enter your email"
+			name="EmailCorp"
+			[(ngModel)]="email"
+			#emailRef="ngModel"
+			required
+			email
+		/>
+		<span class="error" *ngIf="userError">Username & password not found</span>
+		<span class="error" *ngIf="emailRef.errors?.required && emailRef.touched">This field is required</span>
+		<span class="error" *ngIf="emailRef.errors?.email && emailRef.touched">Email not valid</span>
+	</div>
+	<div class="form-group margin-bottom10">
+		<label>Password</label>
+		<span class="toggle-input fa" [class.open]="showPassword" (click)="showPassword = !showPassword"></span>
+		<input
+			class="input-password"
+			[type]="showPassword ? 'input' : 'password'"
+			placeholder="Enter your password"
+			name="Password"
+			minlength="5"
+			[(ngModel)]="password"
+			#passwordRef="ngModel"
+			required
+		/>
+		<span class="error" *ngIf="passwordRef.errors?.required && passwordRef.touched">This field is required</span>
+	</div>
+	<div class="ui-g margin-bottom20">
+		<div class="ui-g-6">
+			<p-checkbox [(ngModel)]="keepSigin" name="checklogin" binary="true" label="Keep me signed in"></p-checkbox>
+		</div>
+		<div class="ui-g-6 text-right">
+			<small><a href="#" class="single-link" routerLink="/user/forgot-pass">Forgot your password ?</a></small>
+		</div>
+	</div>
+
+	<button type="submit" [disabled]="formRef.invalid || submitButton" class="btn btn-primary">
+		<p-progressSpinner
+			*ngIf="submitButton"
+			strokeWidth="5"
+			[style]="{ width: '30px', height: '30px' }"
+		></p-progressSpinner>
+		<span *ngIf="!submitButton">Sign In</span>
+	</button>
+</form>
+<!-- End Form -->

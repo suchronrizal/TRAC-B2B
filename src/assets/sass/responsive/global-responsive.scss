@@ -1,0 +1,78 @@
+.table-form {
+	&.peckage {
+		tr td {
+			&.total {
+				//min
+				// all devices (landscape phones, 300px and up)
+				@media only screen and (min-width: 300px) and (max-width: 758px) {
+					width: 100% !important;
+					strong {
+						font-size: 14px !important;
+					}
+				}
+			}
+		}
+	}
+}
+
+@media only screen and (min-width: 300px) and (max-width: 350px) {
+	table.table-info-order {
+		.doc-order {
+			label {
+				font-size: 12px !important;
+			}
+		}
+	}
+	.title-order {
+		strong {
+			font-size: 12px !important;
+		}
+	}
+	.list-cart-order {
+		font-size: 10px !important;
+		tr td {
+			&.label {
+				width: 91px !important;
+			}
+		}
+	}
+	.alert {
+		margin-left: 8px !important;
+		width: 94% !important;
+		&.desclimer {
+			font-size: 10px !important;
+		}
+	}
+}
+@media only screen and (min-width: 351px) and (max-width: 394px) {
+	.list-cart-order {
+		font-size: 12px !important;
+		tr td {
+			&.label {
+				width: 106px !important;
+			}
+		}
+	}
+	.alert {
+		margin-left: 8px !important;
+		width: 95% !important;
+		&.desclimer {
+			font-size: 12px !important;
+		}
+	}
+}
+
+@media only screen and (min-width: 300px) and (max-width: 640px) {
+	.author {
+		span {
+			display: none !important;
+		}
+	}
+	.txt-city {
+		margin-top: -10px !important;
+		margin-left: 8px !important;
+	}
+	.sub-txt-city {
+		margin-left: 8px !important;
+	}
+}

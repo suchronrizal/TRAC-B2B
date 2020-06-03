@@ -1,0 +1,42 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+/*
+Wrapper
+=========================== */
+.wrap-step{
+    padding: 0 !important;
+    position: relative;
+}
+
+.head-panel.info{
+    padding: 25px 30px !important;
+}
+
+.table-info{
+    tr td{
+        padding: 5px 5px;
+        vertical-align: top;
+    }
+}
+
+.finish-config{
+    padding: 100px 0;
+    text-align: center;
+
+    .fa{
+        text-align: center;
+        display: block;
+        font-size: 42px;
+        margin-bottom: 30px;
+    }
+
+    .content{
+        width: 480px;
+        display: block;
+        margin: auto;
+    }
+}

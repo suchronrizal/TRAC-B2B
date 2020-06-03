@@ -1,0 +1,28 @@
+td.label{
+    width: 170px;
+}
+
+.wrap-loading-bar{
+    padding: 50px 0;
+
+    .content{
+        display: table;
+        margin: auto;
+    }
+}
+
+.input-so-number{
+    width: 360px;
+
+    .form-control{
+        display: inline-block;
+        width: 200px !important;
+        float: left;
+    }
+
+    .btn{
+        display: inline-block;
+        float: left;
+        margin: 0;
+    }
+}

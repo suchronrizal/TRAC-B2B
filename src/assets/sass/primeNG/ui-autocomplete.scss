@@ -1,0 +1,39 @@
+.ui-autocomplete{
+    display: block;
+    width: 100%;
+}
+
+.ui-multiselect{
+    padding: 0;
+}
+
+.ui-multiselect-label{
+    position: relative;
+    top: 5px !important;
+    left: 15px !important;
+}
+
+.ui-autocomplete-panel{
+    background: #fff;
+    border: solid 1px #efefef;
+    @extend .panel-shadow;
+
+    .ui-autocomplete-list{
+        padding: 0;
+    }
+
+    .ui-autocomplete-list-item{
+        border-bottom: solid 1px #efefef;
+        padding: 10px 20px;
+        margin: 0 !important;
+
+        &:hover{
+            background-color: $color-primary;
+            color: #fff;
+        }
+
+        &:last-child{
+            border: 0;
+        }
+    }
+}

@@ -1,0 +1,50 @@
+[
+    {
+        "id": "001",
+        "nomor_cmd": "1234123",
+        "nama_customer": "Wawan",
+        "periode_kontrak": "2017-01-09",
+        "status": "requested",
+        "isActive": true
+    },
+    {
+        "id": "002",
+        "nomor_cmd": "2342423",
+        "nama_customer": "Asep",
+        "periode_kontrak": "2018-20-19",
+        "status": "requested",
+        "isActive": true
+    },
+    {
+        "id": "003",
+        "nomor_cmd": "0878786",
+        "nama_customer": "Kongguan",
+        "periode_kontrak": "2017-09-09",
+        "status": "fulfilled",
+        "isActive": false
+    },
+    {
+        "id": "004",
+        "nomor_cmd": "121112",
+        "nama_customer": "Asep Marno",
+        "periode_kontrak": "2017-07-19",
+        "status": "updated",
+        "isActive": true
+    },
+    {
+        "id": "005",
+        "nomor_cmd": "988888",
+        "nama_customer": "Jordan",
+        "periode_kontrak": "2017-11-19",
+        "status": "requested",
+        "isActive": false
+    },
+    {
+        "id": "006",
+        "nomor_cmd": "876662",
+        "nama_customer": "Gagan",
+        "periode_kontrak": "2017-01-09",
+        "status": "requested",
+        "isActive": true
+    }
+]

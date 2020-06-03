@@ -1,0 +1,10 @@
+@import url("http://staging.doku.com/doku-js/assets/css/doku.css");
+
+.wrap-action{
+    text-align: center;
+    margin-top: 30px;
+
+    &.hide{
+        display: none;
+    }
+}

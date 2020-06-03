@@ -1,0 +1,20 @@
+.ui-spinner{
+    width: 100%;
+}
+
+.ui-spinner-input{
+    @extend .form-control;
+    
+    &.short{
+        
+    }
+}
+
+.ui-spinner-button{
+    height: 23px;
+    width: 23px;
+    border: solid 1px #dfdfdf;
+    background: #fff;
+    @include border-radius(0);
+    outline: 0;
+}

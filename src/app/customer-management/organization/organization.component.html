@@ -1,0 +1,211 @@
+<!-- Start Footer Tab -->
+<div class="title-tab">
+	<button (click)="next()" [disabled]="isNull" class="btn btn-primary">
+		Continue
+	</button>
+	<h5 class="title">Organization Structure</h5>
+</div>
+<!-- End Footer Tab -->
+<!-- Start Content Tab -->
+<p-tabView orientation="top" cache="false" styleClass="tab-price" (onChange)="handleChange($event)">
+	<!-- Start Tab -->
+	<p-tabPanel header="Structure Organization">
+		<div class="wrap-org">
+			<div class="ui-g">
+				<div class="ui-g-3 list">
+					<!-- Loading State -->
+					<div class="block" *ngIf="blockCostCenter">
+						<div class="content">
+							<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+						</div>
+					</div>
+
+					<!-- Input Cost Center -->
+					<div class="ui-inputgroup b2b-custom-margin margin-bottom20">
+						<input type="text" class="form-control" [(ngModel)]="inputCostCenter" placeholder="Add new cost center" />
+						<button
+							class="ui-inputgroup-addon btn-costcenter"
+							(click)="addNewCost()"
+							[disabled]="disabledBtnCost || inputCostCenter == ''"
+						>
+							<span class="fa fa-plus"></span>
+						</button>
+					</div>
+
+					<!-- List Cost Center -->
+					<ul>
+						<li *ngFor="let cost of msCostCenter">
+							<button class="btn-icon" (click)="removeCost(cost)">
+								<span class="fa fa-times"></span>
+							</button>
+							{{ cost.label }}
+						</li>
+					</ul>
+					<div *ngIf="msCostCenter.length == 0" class="text-center">
+						<small><em>Empty cost center</em></small>
+					</div>
+				</div>
+				<div class="ui-g-9 main">
+					<div class="wrap-organization" [class.full]="isZoom">
+						<!-- Loading State -->
+						<div class="block" *ngIf="loadingOrgTree">
+							<div class="content">
+								<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+							</div>
+						</div>
+
+						<a class="btn-zoom" (click)="isZoom = !isZoom">
+							<span *ngIf="!isZoom" class="fa fa-expand"></span>
+							<span *ngIf="isZoom" class="fa fa-compress"></span>
+						</a>
+
+						<p-organizationChart [value]="dataOrg" styleClass="company">
+							<!-- Start Master -->
+							<ng-template let-node pTemplate="master">
+								<div class="org-item">
+									<label *ngIf="node.data.orgName != ''">{{ node.data.orgName }}</label>
+									<p-dropdown
+										styleClass="form-control"
+										appendTo="body"
+										[(ngModel)]="node.label"
+										(onChange)="changeStructure($event, node)"
+										placeholder="Select Organization"
+										[options]="msOrganizationStructure"
+									>
+									</p-dropdown>
+
+									<div class="ui-inputgroup">
+										<input
+											type="text"
+											[(ngModel)]="node.data.orgName"
+											class="form-control input-sm"
+											placeholder="Enter organation name"
+										/>
+										<button *ngIf="!isNull" type="button" class="ui-button-secondary" (click)="saveOrgName(node)">
+											<span class="fa fa-save"></span>
+										</button>
+									</div>
+
+									<label class="label-option">Cost Center</label>
+									<p-dropdown
+										styleClass="form-control"
+										appendTo="body"
+										placeholder="Select Cost Center"
+										[(ngModel)]="node.data.costCenter"
+										(onChange)="changeCostOrgCenter($event, node)"
+										[disabled]="msCostCenter.length == 0"
+										[options]="msCostCenter"
+									>
+									</p-dropdown>
+									<div class="btn-action">
+										<button
+											*ngIf="isNull"
+											[disabled]="node.label == null"
+											class="btn btn-primary btn-sm"
+											(click)="createMaster(node)"
+										>
+											Create master
+										</button>
+										<button *ngIf="!isNull" (click)="addOrg(node)" class="btn btn-default btn-sm">
+											<span class="fa fa-plus"></span> Add
+										</button>
+										<!-- <button class="btn btn-danger btn-sm">Remove</button> -->
+									</div>
+								</div>
+							</ng-template>
+							<!-- End Master -->
+							<!-- Start Master -->
+							<ng-template let-node pTemplate="child">
+								<div class="org-item">
+									<label *ngIf="node.data.orgName != ''">{{ node.data.orgName }}</label>
+									<p-dropdown
+										styleClass="form-control"
+										appendTo="body"
+										[(ngModel)]="node.label"
+										(onChange)="changeStructure($event, node)"
+										placeholder="Select Organization"
+										[options]="msOrganizationStructure"
+									>
+									</p-dropdown>
+
+									<div class="ui-inputgroup">
+										<input
+											type="text"
+											[(ngModel)]="node.data.orgName"
+											class="form-control input-sm"
+											placeholder="Enter organation name"
+										/>
+										<button type="button" class="ui-button-secondary" (click)="saveOrgName(node)">
+											<span class="fa fa-save"></span>
+										</button>
+									</div>
+
+									<label class="label-option">Cost Center</label>
+									<p-dropdown
+										styleClass="form-control"
+										appendTo="body"
+										placeholder="Select Cost Center"
+										[(ngModel)]="node.data.costCenter"
+										(onChange)="changeCostOrgCenter($event, node)"
+										[disabled]="msCostCenter.length == 0"
+										[options]="msCostCenter"
+									>
+									</p-dropdown>
+									<div class="btn-action">
+										<button (click)="addOrg(node)" class="btn btn-default btn-sm">
+											<span class="fa fa-plus"></span> Add
+										</button>
+										<button (click)="removeOrg(node)" [disabled]="node.disabled" class="btn btn-danger btn-sm">
+											Remove
+										</button>
+									</div>
+								</div>
+							</ng-template>
+							<!-- End Master -->
+						</p-organizationChart>
+					</div>
+				</div>
+			</div>
+		</div>
+	</p-tabPanel>
+	<p-tabPanel header="Pool Organization">
+		<div class="content-tab padding-top10">
+			<form #FormPoolId="ngForm">
+				<table *ngIf="!loadingOrgTree" class="table-form middle margin-bottom10 margin-top10">
+					<thead>
+						<tr>
+							<th class="unit w-30 text-center">Organization</th>
+							<th class="unit w-50 text-center">PoolId</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let poolOrg of originOrg; let i = index">
+							<td>{{ poolOrg.OrgName }}</td>
+							<td>
+								<input type="text" class="form-control" name="PoolId{{ i }}" pInputText [(ngModel)]="poolOrg.PoolId" />
+							</td>
+							<td>
+								<button
+									class="btn btn-primary btn-sm"
+									[disabled]="poolOrg.statusUpdate || poolOrg.PoolId == null || poolOrg.PoolId == ''"
+									(click)="updatePoolId(poolOrg)"
+								>
+									<span *ngIf="poolOrg.statusUpdate">Loading...</span>
+									<span *ngIf="!poolOrg.statusUpdate">Update</span>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<div *ngIf="loadingOrgTree" class="wrap-loading-content">
+			<div class="content">
+				<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+			</div>
+		</div>
+	</p-tabPanel>
+</p-tabView>
+
+<!-- Messages -->
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

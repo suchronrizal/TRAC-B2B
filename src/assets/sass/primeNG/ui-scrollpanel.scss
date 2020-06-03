@@ -1,0 +1,13 @@
+.custom .ui-scrollpanel-wrapper {
+    overflow-x: hidden !important;
+}
+
+.custom .ui-scrollpanel-bar { 
+    transition: background-color .3s; 
+    background: $color-primary;
+    margin-left: 30px;
+}
+
+.custom .ui-scrollpanel-bar:hover {
+    background-color: #135ba1;
+}

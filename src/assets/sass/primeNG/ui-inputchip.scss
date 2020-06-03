@@ -1,0 +1,27 @@
+.ui-chips{
+    @extend .form-control;
+    padding: 5px 0;
+
+    > ul.ui-inputtext{
+        padding-top: 3px;
+        padding-left: 5px;
+    }
+
+    .ui-chips-input-token{
+        padding: 0 10px;
+
+        input{
+            height: 20px;
+            min-height: 20px;
+        }
+    }
+
+    .ui-chips-token{
+        background: $color-primary;
+        color: #fff;
+        padding: 0 5px;
+        border: solid 1px #fff;
+        @include border-radius(4px);
+        margin-bottom: 1px;
+    }
+}

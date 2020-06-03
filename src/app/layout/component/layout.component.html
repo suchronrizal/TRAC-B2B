@@ -1,0 +1,99 @@
+<!-- Start Wrap -->
+<div class="wrapper" [class.on]="onLayout" [class.togglemobile]="togglemobile" [class.standby]="toggle">
+	<!-- Loading -->
+	<div *ngIf="loadingPage" class="loading-page"><p-progressBar mode="indeterminate"></p-progressBar></div>
+
+	<!-- Start Sidebar -->
+	<div class="sidebar" (mouseenter)="onSidebar(true)" (mouseleave)="onSidebar(false)">
+		<button class="toggle" [class.active]="toggle" (click)="toggleOn()">
+			<span *ngIf="!loadingMenu" class="fa fa-sliders"></span>
+			<p-progressSpinner
+				*ngIf="loadingMenu"
+				strokeWidth="5"
+				[style]="{ width: '25px', height: '25px', left: '5px', position: 'relative' }"
+			></p-progressSpinner>
+		</button>
+		<app-sidebar (loadMenu)="onLoadMenu()"></app-sidebar>
+	</div>
+	<!-- End Sidebar -->
+
+	<!-- Start Main -->
+	<div class="main">
+		<app-header (toggleMobile)="toggleMobile($event)" [showBrand]="toggle"></app-header>
+		<!-- Start Inner Page -->
+		<div class="inner-page">
+			<!-- <h4 class="title">{{stateLayout}}</h4> -->
+			<!-- Start Breadcumb -->
+			<ul class="breadcumb">
+				<li *ngIf="stateLayout != 'dashboard'"><a routerLink="/p/dashboard">Dashboard</a></li>
+				<li *ngFor="let nav of arrNavigate; let last = last">
+					<a *ngIf="!last" [routerLink]="nav.routerLink">{{ nav.label }}</a>
+					<span *ngIf="last">{{ nav.label }}</span>
+				</li>
+			</ul>
+			<!-- End Breadcumb -->
+		</div>
+		<!-- End Inner Page -->
+
+		<div class="wrap-main-content">
+			<router-outlet></router-outlet>
+		</div>
+
+		<div class="footer">
+			copyright© 2018 PT. Serasi Autoraya All Rights reserved
+		</div>
+	</div>
+	<!-- End Main -->
+</div>
+<!-- End Wrap -->
+
+<div *ngIf="!isOnline" class="blockUI"></div>
+
+<p-growl [(value)]="msgs" life="5000000000000"></p-growl>
+
+<!-- 
+<div class="ui-g">
+    <div class="ui-g-12 ui-md-6 ui-lg-3">ui-g-12 ui-md-6 ui-lg-3</div>
+    <div class="ui-g-12 ui-md-6 ui-lg-3">ui-g-12 ui-md-6 ui-lg-3</div>
+    <div class="ui-g-12 ui-md-6 ui-lg-3">ui-g-12 ui-md-6 ui-lg-3</div>
+    <div class="ui-g-12 ui-md-6 ui-lg-3">ui-g-12 ui-md-6 ui-lg-3</div>
+</div> 
+-->
+
+<!-- Start Wrap Panel -->
+<!-- <div class="wrap-panel">
+    <div class="item-panel">
+        <div class="head-panel">asdas</div>
+        <div class="body-panel">asdas</div>
+    </div>
+</div> -->
+<!-- End Wrap Panel -->
+
+<!-- <p-fileUpload 
+    #fileInput
+    name="myfile[]" 
+    url="/" 
+    accept="image/*" 
+    [customUpload]="true"
+    [showUploadButton]="false"
+    [showCancelButton]="false"
+    chooseLabel="Browse Foto"
+    (onSelect)="onSelectUpload($event)"
+    (onRemove)="onRemoveUpload($event)"
+    (uploadHandler)="uploadHandler($event)"
+    maxFileSize="100000000">
+</p-fileUpload> -->
+
+<!-- <div class="wrap-loading-content">
+    <div class="content">
+        <p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+    </div>
+</div> -->
+
+<!-- <div class="input-loading">
+    <div class="content">
+        <p-progressSpinner strokeWidth="5" [style]="{width: '20px', height: '20px'}"></p-progressSpinner>
+    </div>
+</div> -->
+
+<!-- "../node_modules/jquery/dist/jquery.min.js", -->

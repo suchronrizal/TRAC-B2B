@@ -1,0 +1,58 @@
+.ui-shadow{
+    @include box-shadow(0, 1px, 15px, 1px, rgba(147, 147, 147, 0.10));
+}
+
+.ui-growl {
+    position: fixed !important;
+    z-index: 999999999999999999999999999 !important;
+ }
+
+.ui-growl-item{
+    border: solid 1px #efefef;
+    background: #fff;
+    padding: 15px 20px;
+    @include border-radius(4px);
+
+    .ui-growl-icon-close{
+        top: 15px;
+        right: 15px;
+        @include opacity(.5);
+    }
+
+    .ui-growl-image{
+        top: 20px;
+        left: 15px;
+        font-size: 18px;
+    }
+
+    .ui-growl-message{
+        margin-left: 25px;
+    }
+}
+
+.ui-growl-title{
+    padding-bottom: 0;
+}
+
+/* Growl */
+.ui-growl .ui-growl-message-success .ui-growl-item{
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.ui-growl .ui-growl-message-info .ui-growl-item{
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+.ui-growl .ui-growl-message-warn .ui-growl-item{
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+.ui-growl .ui-growl-message-error .ui-growl-item{
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+

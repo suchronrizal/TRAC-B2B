@@ -1,0 +1,40 @@
+<div *ngIf="!notsubmit" class="text-center padding-top70">
+	<img src="./assets/images/icons/success.png" width="70" alt="" />
+	<h5 class="margin-bottom10 margin-top20">Password reset sent!</h5>
+	<p class="margin-bottom40">We've just email you intructions on how to reset your password.</p>
+	<p>
+		Already have an account ? <a href="#" class="single-link primary" routerLink="/user/login">Login</a>
+	</p>
+</div>
+<div *ngIf="notsubmit">
+	<p>
+		We'll email you instructions on how to reset it.
+	</p>
+	<!-- Start Form -->
+	<!-- Start Form -->
+	<form #formRef="ngForm" (ngSubmit)="onSubmit(formRef.value)">
+		<div class="form-group margin-bottom20">
+			<label>Email</label>
+			<input 
+				type="text" 
+				placeholder="Enter your email" 
+				name="email"
+				[(ngModel)]="email"
+				#emailRef="ngModel"
+				required 
+				email/>
+			<span class="error" *ngIf="emailRef.errors?.required && emailRef.touched">This field is required</span>
+			<span class="error" *ngIf="emailRef.errors?.email && emailRef.touched">Email not valid</span>
+			<span class="error" *ngIf="emailNotFound">Email not found</span>
+		</div>
+		<button type="submit" [disabled]="formRef.invalid || submitButton" class="btn btn-primary margin-bottom20">
+			<p-progressSpinner *ngIf="submitButton" strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+			<span *ngIf="!submitButton">Reset password</span>
+		</button>
+	</form>
+	<!-- End Form -->
+
+	<p>
+		Already have an account ? <a href="#" class="single-link primary" routerLink="/user/login">Login</a>
+	</p>
+</div>

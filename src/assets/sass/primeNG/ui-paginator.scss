@@ -1,0 +1,71 @@
+.ui-paginator{
+    padding: 15px 20px !important;
+    background: #f9f9f9;
+    border: solid 1px $color-gray;
+    border-top: 0;
+
+    .ui-paginator-next,
+    .ui-paginator-last,
+    .ui-paginator-first,
+    .ui-paginator-prev,
+    .ui-paginator-page{
+        @extend .panel-shadow;
+        color: $color-content;
+        @include border-radius(2px);
+        border: solid 1px $color-gray;
+        padding: 2px 10px;
+        min-width: 30px;
+        background: #fff;
+
+        &:hover{
+            color: $color-primary;
+        }
+    }
+
+    .ui-paginator-prev .fa:before{
+        content: '\f104';
+    }
+
+    .ui-paginator-first .fa:before{
+        content: '\f100';
+    }
+
+    .ui-paginator-next .fa:before{
+        content: '\f105';
+    }
+
+    .ui-paginator-last .fa:before{
+        content: '\f101';
+    }
+
+    .ui-state-active{
+        background: $color-primary;
+        border-color: $color-primary;
+        color: #fff !important;
+    }
+
+    .ui-state-disabled{
+        @include opacity(0.5);
+        color: $color-content !important;
+    }
+
+    select{
+        background: #fff;
+        border: solid 1px $color-gray;
+        outline: 0;
+    }
+
+    .ui-dropdown{
+
+        .ui-dropdown-trigger{
+            top: 0;
+            padding-top: 0;
+        }
+    }
+
+    &.hide-dropdown{
+        .ui-dropdown{
+            display: none;
+        }
+    }
+}

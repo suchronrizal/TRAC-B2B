@@ -1,0 +1,79 @@
+<!-- Start title Tab -->
+<div class="title-tab">
+	<button (click)="save()" [disabled]="submitButton || validateBtn" class="btn btn-primary">
+		<p-progressSpinner *ngIf="submitButton" strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+		<span *ngIf="disableNext && !submitButton">Save and continue</span>
+		<span *ngIf="!disableNext && !submitButton">Update</span>
+	</button>
+	<h5 class="title">City Coverage</h5>
+</div>
+<!-- End Title Tab -->
+<!-- Start Body Tab -->
+<div class="wrap-list">
+	<div class="ui-g">
+		<div class="ui-g-12 ui-md-3">
+			<ul class="list-location">
+				<li [class.active]="selectedZone == null"><a (click)="allZone()">All Province</a></li>
+				<li *ngFor="let data of dataLocation" [class.active]="selectedZone === data">
+					<a (click)="selectZone(data)">{{data.zone}}</a>
+				</li>
+			</ul>
+		</div>
+		<div class="ui-g-12 ui-md-9">
+
+			<div class="ui-g margin-bottom20">
+				<div class="ui-g-12 ui-md-8">
+					<div *ngIf="selectedZone == null" class="ui-g-12">
+						<p-checkbox 
+							[(ngModel)]="checkedAll" 
+							binary="true" 
+							(onChange)="changeAll($event)"
+							label="All City">
+						</p-checkbox>
+					</div>
+					<div *ngIf="selectedZone != null" class="ui-g-12">
+						<p-checkbox 
+							[(ngModel)]="checkedAllCity" 
+							binary="true" 
+							(onChange)="changeAllCity($event,selectedZone.id)"
+							label="All City">
+						</p-checkbox>
+					</div>
+				</div>
+
+				<div class="ui-g-12 ui-md-4">
+					<!-- Search -->
+					<div class="ui-inputgroup">
+						<input type="text" [(ngModel)]="cityFilter" class="form-control input-sm" placeholder="Find City">   
+						<span class="ui-inputgroup-addon"><i class="fa fa-search"></i></span>      
+					</div>
+				</div>
+			</div>
+
+			<div *ngIf="loading" class="wrap-loading-content">
+				<div class="content">
+					<p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+				</div>
+			</div>
+
+			<div *ngIf="!loading" class="ui-g">
+				<div class="ui-g-4" *ngFor="let city of filterCities | filterBy: {name: cityFilter}">
+					<p-checkbox 
+						name="citygroup" 
+						[(ngModel)]="selectedCities"
+						(onChange)="changeOne($event,city.Id)"
+						[value]="city.Id" 
+						[label]="city.name">
+					</p-checkbox>
+				</div>
+				<div class="ui-g-12 text-center margin-top30" *ngIf="(filterCities | filterBy: {name: cityFilter}).length === 0">
+					<em>No matching city</em>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End Body Tab -->
+
+<!-- Messages -->
+<p-growl [(value)]="msgs"></p-growl>

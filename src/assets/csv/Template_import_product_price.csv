@@ -1,0 +1,2 @@
+CityId,CustomerId,Duration,VehicleType,ServiceTypeId,FuelId,TollAndParkingId,DriverOrRiderId,ChannelTypeId,CrewId,CoverageAreaId,Price,AdditionalPrice,BusinessUnitId
+KTID-36011,CID-005201,MID-02831,VTID-00241,STID-003,01,01,01,01,null,null,350000,175000,0104

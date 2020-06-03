@@ -1,0 +1,34 @@
+<!-- Start Wrap Login -->
+<div class="wrap-login">
+	<div class="ui-g">
+		<div class="ui-g-12 ui-md-6 ui-lg-8 bg">
+			<!-- Start Content -->
+			<!-- <div class="content">
+				<h3 class="title">Pages make it easy to enjoy what matters the most in the life</h3>
+				<p>images Displayed are solely for representation purposes only, All work copyright of respective owner, otherwise © 2013-2014 REVOX.</p>
+			</div> -->
+			<!-- End Content -->
+		</div>
+		<div class="ui-g-12 ui-md-6 ui-lg-4 side">
+			<!-- Loading -->
+			<div *ngIf="loadingPage" class="loading-page"><p-progressBar mode="indeterminate"></p-progressBar></div>
+
+			<!-- Start Content -->
+			<div class="content">
+				<div class="brand-header">
+					<a routerLink="/" class="logo"><img src="./assets/images/brand.png" alt=""/></a>
+				</div>
+				<router-outlet></router-outlet>
+			</div>
+			<!-- End Content -->
+			<!-- Start Content Bottom -->
+			<div class="content-bottom text-center">
+				<p class="margin-bottom0">
+					copyright© 2018 PT. Serasi Autoraya All Rights reserved
+				</p>
+			</div>
+			<!-- End Content Bottom -->
+		</div>
+	</div>
+</div>
+<!-- End Wrap Login -->

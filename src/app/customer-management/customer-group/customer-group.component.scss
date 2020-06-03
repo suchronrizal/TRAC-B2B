@@ -1,0 +1,7 @@
+.ui-g{
+    margin: 0 -15px;
+
+    > [class*='ui-g-']{
+        padding: 0 15px;
+    }
+}

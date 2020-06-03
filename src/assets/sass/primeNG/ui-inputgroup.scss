@@ -1,0 +1,55 @@
+.ui-inputgroup{
+    margin: 0 -7px;
+
+    .ui-inputgroup-addon{
+        border: solid 1px #efefef;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin: 0 -1px;
+        padding-top: 9px;
+        min-width: 45px;
+        background: #fff;
+    }   
+
+
+    button.ui-inputgroup-addon{
+        border: solid 1px #efefef;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        margin: 0 -1px;
+        padding-top: 7px;
+        font-size: 14px;
+        font-weight: 500 !important;
+        color: $color-content;
+        cursor: pointer;
+        outline: 0;
+        @include border-radius(0);
+
+        .fa{
+            position: relative;
+            top: -2px;
+        }
+
+        &:hover{
+            background-color: $color-primary;
+            color: #fff;
+            border: solid 1px $color-primary;
+        }
+
+        &:disabled{
+            @include opacity(.5);
+            background: #efefef !important;
+            border: solid 1px #dfdfdf !important;
+            cursor: default;
+            color: $color-content !important;
+        }
+    }
+
+    input{
+        color: $color-content;
+    }
+
+    .ui-autocomplete-input{
+        border-left: solid 1px #efefef;
+    }
+}

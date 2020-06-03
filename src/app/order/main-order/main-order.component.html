@@ -1,0 +1,44 @@
+<!-- Start Product -->
+<div class="wrap-product">
+	<div class="blockUI"></div>
+	<div *ngIf="loadingServiceType" class="wrap-loading-content">
+		<div class="content">
+			<p-progressSpinner
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+		</div>
+	</div>
+	<div *ngIf="!loadingServiceType" class="ui-g" [equalgrid]="'col'">
+		<!-- Start Item -->
+
+		<div
+			*ngFor="let product of products"
+			class="col ui-g-12 ui-md-4 ui-lg-2"
+			routerLinkActive="active"
+			[hidden]="product.disabled"
+		>
+			<div class="content">
+				<img [src]="product.imgPath" alt="" />
+				<h6 class="title">{{ product.productName }}</h6>
+			</div>
+			<span *ngIf="product.disabled" class="disabled"></span>
+			<a
+				*ngIf="!product.disabled"
+				[routerLink]="product.link"
+				[queryParams]="{ productName: product.productName }"
+			></a>
+		</div>
+		<!-- End Item -->
+	</div>
+</div>
+<!-- End Product -->
+
+<!-- Start Empty service type -->
+<div
+	*ngIf="!products.length && !loadingServiceType"
+	class="col empty-service-type ui-g-12"
+>
+	Service type not found
+</div>
+<!-- End Empty service type -->

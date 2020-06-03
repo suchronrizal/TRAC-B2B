@@ -1,0 +1,186 @@
+/*
+Grid
+=========================== */
+.ui-g {
+	// margin: 0 -5px;
+
+	// [class*='ui-g'],
+	// [class*='ui-md'],
+	// [class*='ui-lg']{
+	//     padding: 0 15px;
+	// }
+}
+
+/*
+Img Setting
+=========================== */
+.img-responsive {
+	max-width: 100%;
+}
+
+/*
+Loading Content
+=========================== */
+.wrap-loading-content {
+	padding: 100px;
+
+	.content {
+		display: table;
+		margin: 50px auto;
+	}
+}
+
+.input-loading {
+	width: 100%;
+	display: block;
+	@extend .form-control;
+	padding: 12px 0 0 0 !important;
+
+	.content {
+		display: table;
+		margin: 0 auto;
+	}
+}
+
+/*
+Table Info
+=========================== */
+.table-info {
+	margin-left: -5px;
+
+	tr td {
+		padding: 5px;
+
+		input {
+			padding-left: 20px !important;
+			padding-right: 20px !important;
+			max-height: 45px;
+		}
+
+		.ui-dropdown {
+			width: 100% !important;
+
+			.ui-dropdown-label {
+				position: relative;
+				top: 0;
+				left: 20px;
+			}
+
+			.ui-dropdown-trigger {
+				padding-left: 10px;
+				padding-right: 10px;
+
+				.ui-clickable {
+					top: 0;
+					left: -5px;
+				}
+			}
+		}
+	}
+
+	&.middle {
+		tr td {
+			vertical-align: middle;
+		}
+	}
+}
+
+/*
+Tabs
+=========================== */
+.title-tab {
+	padding: 25px 30px;
+	border-bottom: solid 1px #efefef;
+	@extend .panel-shadow;
+
+	.title {
+		font-weight: 300;
+		margin-bottom: 0;
+	}
+
+	.btn {
+		float: right;
+		position: relative;
+		top: -13px;
+	}
+}
+
+.content-tab {
+	padding: 25px 30px;
+
+	.table-form {
+		width: 700px;
+		text-align: left;
+
+		thead tr {
+			th {
+				border: 0;
+				background: #f0f0f0;
+				padding: 10px 15px;
+				color: $color-title;
+				text-align: center;
+
+				&.unit {
+					width: 100px;
+				}
+			}
+		}
+
+		td {
+			border: 0;
+			padding: 10px 15px;
+		}
+	}
+	.table-top {
+		width: 700px;
+		text-align: left;
+
+		thead tr {
+			th {
+				border: 0;
+				background: #f0f0f0;
+				padding: 10px 15px;
+				color: $color-title;
+				text-align: center;
+
+				&.unit {
+					width: 100px;
+				}
+			}
+		}
+
+		td {
+			border: 0;
+			padding: 10px 15px;
+		}
+	}
+}
+
+.footer-tab {
+	padding: 25px 30px;
+	border-top: solid 1px #efefef;
+}
+
+.ui-state-disabled {
+	filter: alpha(opacity=80) !important;
+	opacity: 0.8 !important;
+}
+
+/*
+Input Doku Payment
+=========================== */
+.styled-input {
+	input {
+		border: 0 !important;
+	}
+
+	label {
+		width: auto !important;
+		display: inline-block !important;
+	}
+}
+
+.left-col {
+	text-align: left !important;
+	display: block !important;
+}

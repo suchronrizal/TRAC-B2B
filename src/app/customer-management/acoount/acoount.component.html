@@ -1,0 +1,625 @@
+<!-- Start title Tab -->
+<div class="title-tab">
+	<button (click)="save()" [disabled]="data.length == 0" class="btn btn-primary">
+		<p-progressSpinner
+			*ngIf="submitButton2"
+			strokeWidth="5"
+			[style]="{ width: '30px', height: '30px' }"
+		></p-progressSpinner>
+		<span *ngIf="!submitButton2">Continue</span>
+	</button>
+	<h5 class="title">Account</h5>
+</div>
+<!-- End Title Tab -->
+<!-- Start Body Tab -->
+<div class="content-tab">
+	<button *ngIf="selectAll" (click)="removeAll()" class="btn btn-danger">
+		<span class="fa fa-trash icon-left"></span> Delete selected item
+	</button>
+	<button class="btn btn-default" (click)="formRef.reset(); showDialog()">
+		<span class="fa fa-plus icon-left"></span> Add User
+	</button>
+	<button class="btn btn-default" (click)="openUploadCsv()"><span class="fa fa-upload"></span> Import CSV</button>
+	<button class="btn btn-default" (click)="download.toggle($event)">
+		<span class="fa fa-download icon-left"></span> Download File
+	</button>
+	<button class="btn btn-default" (click)="op.toggle($event)">
+		<span class="fa fa-toggle-off icon-left"></span> Toggle Column
+	</button>
+</div>
+<div class="body-panel">
+	<div class="ui-g">
+		<div class="ui-g-12 ui-md-3">
+			<input
+				type="text"
+				class="form-control"
+				name="emailCorps"
+				[(ngModel)]="emailCorp"
+				data-ng-trim="false"
+				placeholder="Search Email"
+			/>
+		</div>
+		<div class="ui-g-12 ui-md-3">
+			<input
+				type="text"
+				class="form-control"
+				name="firstName"
+				[(ngModel)]="firstName"
+				data-ng-trim="false"
+				placeholder="Search First Name"
+			/>
+		</div>
+		<div class="ui-g-12 ui-md-2">
+			<input
+				type="text"
+				class="form-control"
+				name="organizationId"
+				[(ngModel)]="organizationId"
+				data-ng-trim="false"
+				placeholder="Search Organization Id"
+			/>
+		</div>
+		<div class="ui-g-12 col-sm-3 ui-md-3">
+			<button class="btn btn-primary" (click)="submitFilter($event)" style="min-width: 90px!important;">
+				<span class="fa fa-search"></span>
+			</button>
+
+			<button class="btn btn-default" (click)="resetFilter($event)" style="min-width: 90px!important;">
+				<span class="fa fa-refresh"></span>
+			</button>
+		</div>
+	</div>
+</div>
+
+<!-- End Body Tab -->
+<!-- Start Table -->
+<div class="wrap-table">
+	<!-- Start Table -->
+	<p-dataTable
+		[value]="data"
+		[loading]="loading"
+		[rows]="10"
+		[paginator]="false"
+		[pageLinks]="3"
+		[responsive]="true"
+		[rowsPerPageOptions]="[5, 10, 20]"
+		#dt
+	>
+		<!-- Start Checkbox Column -->
+		<p-column styleClass="td-checkbox" [style]="{ width: '80px' }">
+			<ng-template pTemplate="header">
+				<p-checkbox name="checkAll" value="all" (onChange)="checkAll($event)"></p-checkbox>
+			</ng-template>
+			<ng-template let-col="rowData" pTemplate="body">
+				<p-checkbox [value]="col.Id" [(ngModel)]="selectedData" (onChange)="checkOne($event, col.Id)"></p-checkbox>
+			</ng-template>
+		</p-column>
+		<!--End Start Checkbox Column -->
+
+		<p-column
+			*ngFor="let column of cols"
+			[hidden]="!column.checked"
+			[field]="column.field"
+			[header]="column.header"
+			[filter]="column.filter"
+			[filterMatchMode]="column.filterMatchMode"
+		>
+			<!-- Start Body -->
+			<ng-template let-col let-data="rowData" pTemplate="body">
+				<div *ngIf="column.field == 'IsActive'" class="text-center">
+					<p-inputSwitch
+						onLabel="Yes"
+						offLabel="No"
+						(onChange)="handleChange($event, data)"
+						[(ngModel)]="data[col.field]"
+					>
+					</p-inputSwitch>
+				</div>
+				<div *ngIf="column.field != 'IsActive'">{{ data[col.field] }}</div>
+			</ng-template>
+			<!-- End Body -->
+
+			<!-- Start Filter -->
+			<ng-template pTemplate="filter" let-col>
+				<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+			</ng-template>
+			<!-- End Filter -->
+		</p-column>
+		<!-- Start Price Column -->
+		<p-column header="Options" styleClass="text-center" [style]="{ width: '120px' }">
+			<ng-template let-col="rowData" pTemplate="body">
+				<button class="btn-icon" (click)="selectUpdate(col)" pTooltip="Update Account" tooltipPosition="left">
+					<span class="fa fa-gear"></span>
+				</button>
+				<button class="btn-icon" (click)="selectRemove(col)" pTooltip="Remove Account" tooltipPosition="left">
+					<span class="fa fa-trash"></span>
+				</button>
+			</ng-template>
+		</p-column>
+		<!-- End Year Column -->
+	</p-dataTable>
+	<!-- End Table -->
+	<div class="body-panel padding-clear">
+		<div *ngIf="loading" class="blockUI"></div>
+		<p-paginator
+			#p
+			pageLinkSize="3"
+			[rows]="pageRows"
+			styleClass="hide-dropdown"
+			dropdownAppendTo="body"
+			[totalRecords]="totalRecords"
+			(onPageChange)="paginate($event)"
+			[rowsPerPageOptions]="[20, 50, 100]"
+		>
+		</p-paginator>
+	</div>
+</div>
+<!-- End Table -->
+
+<!-- Start Filter Contains -->
+<!-- <ng-template #filterSearch let-field="field" let-filterMatchMode="filterMatchMode">
+	<input
+		type="text"
+		placeholder="Search"
+		ngModel
+		class="form-control margin-top10"
+		(ngModelChange)="dt.filter($event, field, filterMatchMode)"
+	/>
+</ng-template> -->
+<!-- End Filter Contains -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel" #op>
+	<ul class="clear-list">
+		<li *ngFor="let col of cols">
+			<p-checkbox
+				[disabled]="col.disableCol"
+				[value]="col.field"
+				[label]="col.header"
+				[(ngModel)]="selectedValues"
+				(onChange)="checkBox(col)"
+			>
+			</p-checkbox>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel padding-clear" #download>
+	<ul class="clear-list link">
+		<li><a (click)="downloadCSV()">Download CSV</a></li>
+		<li><a (click)="downloadXLS()">Download XLS</a></li>
+		<li>
+			<a href="{{ baseUrl }}/assets/csv/Template_import_user_account.csv" target="_self" download> Create template</a>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dialog Form -->
+<p-dialog [(visible)]="display" appendTo="body" [draggable]="false" [modal]="true" [width]="600">
+	<p-header>
+		<h5 class="title">Form user account</h5>
+	</p-header>
+
+	<!-- Start Form -->
+	<form #formRef="ngForm">
+		<div class="margin-bottom20">
+			<label>Organization</label>
+			<p-dropdown
+				styleClass="form-control"
+				name="OrganizationId"
+				appendTo="body"
+				[required]="true"
+				[options]="organizations"
+				#OrganizationIdRef="ngModel"
+				placeholder="Select Organization"
+				(onChange)="selectOrganization($event)"
+				[(ngModel)]="selectedOrganization"
+			>
+			</p-dropdown>
+			<span class="error" *ngIf="OrganizationIdRef.errors?.required && OrganizationIdRef.touched"
+				>This field is required</span
+			>
+		</div>
+		<div class="margin-bottom20">
+			<label>Organization Name</label>
+			<p-dropdown
+				styleClass="form-control"
+				name="OrganizationName"
+				appendTo="body"
+				[options]="organizationNames"
+				[(ngModel)]="selectedOrganizationName"
+				#OrganizationNameRef="ngModel"
+				placeholder="Select Organization Name"
+				[required]="true"
+			>
+			</p-dropdown>
+			<span class="error" *ngIf="OrganizationNameRef.errors?.required && OrganizationNameRef.touched"
+				>This field is required</span
+			>
+		</div>
+		<div class="margin-bottom20">
+			<label>Position or Grade</label>
+			<p-dropdown
+				styleClass="form-control"
+				name="Position"
+				appendTo="body"
+				[options]="arrPositionGrade"
+				#PositionRef="ngModel"
+				[(ngModel)]="selectedGrade"
+				placeholder="Select Postion Or Grade"
+				[required]="true"
+			>
+			</p-dropdown>
+			<span class="error" *ngIf="PositionRef.errors?.required && PositionRef.touched">This field is required</span>
+		</div>
+		<div class="margin-bottom20">
+			<label>Customer Group</label>
+			<p-dropdown
+				styleClass="form-control"
+				name="CustomerGroupId"
+				appendTo="body"
+				[options]="filtergroupconfigs"
+				#CustomerGroupIdRef="ngModel"
+				[(ngModel)]="CustomerGroupId"
+				placeholder="Select Customer Group"
+				[required]="true"
+			>
+			</p-dropdown>
+			<span class="error" *ngIf="CustomerGroupIdRef.errors?.required && CustomerGroupIdRef.touched"
+				>This field is required</span
+			>
+		</div>
+		<div class="margin-bottom20">
+			<label>Email Corporation</label>
+			<input
+				type="text"
+				class="form-control"
+				name="EmailCorp"
+				[(ngModel)]="EmailCorp"
+				#EmailRef="ngModel"
+				required
+				email
+				placeholder="Email"
+			/>
+			<span class="error" *ngIf="EmailRef.errors?.required && EmailRef.touched">This field is required</span>
+			<span class="error" *ngIf="EmailRef.errors?.email && EmailRef.touched">Email not valid</span>
+		</div>
+		<div class="margin-bottom20">
+			<label>Firstname</label>
+			<input
+				type="text"
+				class="form-control"
+				name="FirstName"
+				[(ngModel)]="FirstName"
+				#FirstNameRef="ngModel"
+				required
+				placeholder="Firstname"
+			/>
+			<span class="error" *ngIf="FirstNameRef.errors?.required && FirstNameRef.touched">This field is required</span>
+		</div>
+		<div class="margin-bottom20">
+			<label>Lastname</label>
+			<input
+				type="text"
+				class="form-control"
+				name="LastName"
+				[(ngModel)]="LastName"
+				#LastNameRef="ngModel"
+				required
+				placeholder="Lastname"
+			/>
+			<span class="error" *ngIf="LastNameRef.errors?.required && LastNameRef.touched">This field is required</span>
+		</div>
+		<div class="margin-bottom20">
+			<label>Handphone Number</label>
+			<input
+				type="text"
+				class="form-control"
+				name="NoHandphone"
+				[(ngModel)]="NoHandphone"
+				#NoHandphoneRef="ngModel"
+				required
+				number
+				minlength="10"
+				pInputText
+				pKeyFilter="num"
+				placeholder="Handphone Number"
+				pTooltip="Min 10 Digits"
+				tooltipPosition="top"
+			/>
+			<span class="error" *ngIf="NoHandphoneRef.errors?.required && NoHandphoneRef.touched"
+				>This field is required</span
+			>
+			<span class="error" *ngIf="NoHandphoneRef.errors?.number && NoHandphoneRef.touched">Phone number not valid</span>
+		</div>
+		<div class="margin-bottom20">
+			<label>Telephone Number</label>
+			<input
+				type="text"
+				class="form-control"
+				name="NoTelp"
+				[(ngModel)]="NoTelp"
+				#NoTelpRef="ngModel"
+				required
+				number
+				minlength="6"
+				placeholder="Telephone Number"
+				pTooltip="Min 6 Digits"
+				tooltipPosition="top"
+			/>
+			<span class="error" *ngIf="NoTelpRef.errors?.required && NoTelpRef.touched">This field is required</span>
+			<span class="error" *ngIf="NoTelpRef.errors?.number && NoTelpRef.touched">Telephone number not valid</span>
+		</div>
+		<div class="margin-bottom20">
+			<label>Gender</label>
+			<div class="modal-input">
+				<p-selectButton name="Gender" [options]="genders" [(ngModel)]="selectedGender" [required]="true">
+				</p-selectButton>
+			</div>
+		</div>
+		<div class="margin-bottom20">
+			<label>Address</label>
+			<input
+				type="text"
+				class="form-control"
+				name="Address"
+				[(ngModel)]="Address"
+				#AddressRef="ngModel"
+				required
+				placeholder="Address"
+			/>
+			<span class="error" *ngIf="AddressRef.errors?.required && AddressRef.touched">This field is required</span>
+		</div>
+		<div class="margin-bottom20">
+			<label>NRP External</label>
+			<input
+				type="text"
+				class="form-control"
+				name="NRPExternal"
+				[(ngModel)]="NRPExternal"
+				#NRPExternalRef="ngModel"
+				required
+				placeholder="NRP External"
+			/>
+			<span class="error" *ngIf="NRPExternalRef.errors?.required && NRPExternalRef.touched"
+				>This field is required</span
+			>
+		</div>
+		<div class="margin-bottom20">
+			<label>Role</label>
+			<p-dropdown
+				styleClass="form-control"
+				name="Role"
+				[filter]="true"
+				[options]="roles"
+				appendTo="body"
+				[(ngModel)]="selectedRole"
+			>
+			</p-dropdown>
+		</div>
+		<div class="margin-bottom20" *ngIf="selectedRole == 'RL-007' || selectedRole == 'RL-008'">
+			<p-checkbox
+				label="Mapping Organization"
+				[(ngModel)]="IsOrganizationMapping"
+				name="IsOrganizationMapping"
+				binary="true"
+				(onChange)="checkBox($event)"
+			>
+			</p-checkbox>
+		</div>
+		<span *ngIf="loadingOrgName && IsOrganizationMapping">Loading...</span>
+		<div class="margin-bottom20" *ngIf="IsOrganizationMapping && !loadingOrgName">
+			<label>Organization Name</label>
+			<p-multiSelect
+				[options]="mappingOrganizations"
+				name="UserOrganizationMapping"
+				[required]="true"
+				styleClass="form-control"
+				[panelStyle]="{ minWidth: '37em' }"
+				appendTo="body"
+				#mappingOrganization="ngModel"
+				[(ngModel)]="selectedMappingOrganization"
+			>
+			</p-multiSelect>
+			<span class="error" *ngIf="mappingOrganization.errors?.required && mappingOrganization.touched"
+				>This field is required</span
+			>
+		</div>
+		<div class="margin-bottom20">
+			<label>Sera Group Company</label>
+			<p-dropdown
+				[options]="seraGroups"
+				styleClass="form-control"
+				name="SeraGroupCompanyId"
+				placeholder="Select Sera Group Company"
+				(onChange)="selectSeraGroup($event)"
+				[required]="true"
+				appendTo="body"
+				#SeraGroupCompanyIdRef="ngModel"
+				[(ngModel)]="selectedSeraGroup"
+			>
+			</p-dropdown>
+			<span class="error" *ngIf="SeraGroupCompanyIdRef.errors?.required && SeraGroupCompanyIdRef.touched"
+				>This field is required</span
+			>
+		</div>
+		<div class="margin-bottom20">
+			<label>Business Unit</label>
+			<p-dropdown
+				[options]="businessUnits"
+				styleClass="form-control"
+				name="BusinessUnitId"
+				placeholder="Select Business Unit"
+				(onChange)="selectBusinessUnit($event)"
+				[required]="true"
+				#BusinessUnitRef="ngModel"
+				[(ngModel)]="selectedBusinessUnit"
+			>
+			</p-dropdown>
+			<span class="error" *ngIf="BusinessUnitRef.errors?.required && BusinessUnitRef.touched"
+				>This field is required</span
+			>
+		</div>
+
+		<div class="border-input margin-top20">
+			<div class="margin-bottom20">
+				<label>Credit Card Number</label>
+				<input
+					class="form-control"
+					name="cardnumber"
+					[(ngModel)]="CreditCard"
+					#CreditCardRef="ngModel"
+					creditCard
+					autocomplete="cc-number"
+					placeholder="Credit Card Number"
+				/>
+				<span class="error" *ngIf="CreditCardRef.errors?.creditCard && CreditCardRef.touched"
+					>Credit Card number not valid</span
+				>
+			</div>
+			<div class="margin-bottom20">
+				<label>Expired Date Credit Card</label>
+				<p-inputMask
+					name="CardExpired"
+					placeholder="MM / YY"
+					styleClass="form-control"
+					[(ngModel)]="CardExpired"
+					#CardExpiredRef="ngModel"
+					mask="99 / 99"
+				>
+				</p-inputMask>
+			</div>
+			<div class="margin-bottom20">
+				<label>Card Publisher</label>
+				<input
+					type="text"
+					class="form-control"
+					name="CardPublisher"
+					[(ngModel)]="CardPublisher"
+					#CardPublisherRef="ngModel"
+					placeholder="Card Publisher"
+				/>
+			</div>
+			<div>
+				<label>Card Type</label>
+				<input
+					type="text"
+					class="form-control"
+					name="CardType"
+					[(ngModel)]="CardType"
+					#CardTypeRef="ngModel"
+					placeholder="Card Type"
+				/>
+			</div>
+		</div>
+	</form>
+	<!-- End Form -->
+
+	<!-- Masseage Error -->
+	<p-growl [(value)]="msgsError"></p-growl>
+
+	<p-footer>
+		<button class="btn btn-default" [disabled]="submitButton" (click)="formRef.reset(); closeDialog()">Cancel</button>
+		<button class="btn btn-primary" (click)="onSubmit(formRef.value)" [disabled]="formRef.invalid || submitButton">
+			<p-progressSpinner
+				*ngIf="submitButton"
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+			<span *ngIf="!submitButton">Submit</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Form -->
+
+<!-- Start Dialog Remove -->
+<p-dialog [(visible)]="displayConfirm" appendTo="body" [draggable]="false" [modal]="true" [width]="400">
+	<p-header>
+		<h5 class="title">{{ titleRemove }}</h5>
+	</p-header>
+	Are you sure ?
+
+	<!-- Masseage Error -->
+	<p-growl [(value)]="msgsError"></p-growl>
+
+	<p-footer>
+		<button class="btn btn-default" [disabled]="submitButtonRemove" (click)="closeDialogConfirm()">Cancel</button>
+		<button class="btn btn-danger" [disabled]="submitButtonRemove" (click)="removeData()">
+			<p-progressSpinner
+				*ngIf="submitButtonRemove"
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+			<span *ngIf="!submitButtonRemove">Delete</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Remove -->
+
+<!-- Start Dialog Form -->
+<p-dialog [(visible)]="displayUploadCsv" appendTo="body" [draggable]="false" [modal]="true" [width]="500">
+	<p-header>
+		<h5 class="title">Upload CSV File</h5>
+	</p-header>
+
+	<!-- File Upload -->
+	<div *ngIf="loaded">
+		<p-fileUpload
+			#fileInput
+			name="myfile[]"
+			accept=".csv"
+			[customUpload]="true"
+			[showUploadButton]="false"
+			[showCancelButton]="false"
+			chooseLabel="Browse File"
+			styleClass="csv-input"
+			(onSelect)="onFileSelect($event.files[0])"
+			(onRemove)="onRemoveUploadCsv()"
+		>
+		</p-fileUpload>
+	</div>
+	<div class="wrap-table" *ngIf="showErrorImport">
+		<!-- Start Table -->
+		<div class="alert alert-danger" role="alert"><strong>Error</strong> Please correct your file attached below</div>
+		<p-dataTable
+			[value]="dataError"
+			[loading]="loading"
+			[rows]="10"
+			[paginator]="true"
+			[pageLinks]="3"
+			[responsive]="true"
+			[rowsPerPageOptions]="[5, 10, 20]"
+		>
+			<p-column field="ErrorLine" header="Error Line" [style]="{ width: '100px' }">
+				<ng-template let-col let-data="rowData" pTemplate="body">
+					<span>{{ data[col.field] }}</span>
+				</ng-template>
+			</p-column>
+			<p-column field="ErrorMessage" header="Error Messages">
+				<ng-template let-col let-data="rowData" pTemplate="body">
+					<div class="left-col">{{ data[col.field] }}</div>
+				</ng-template>
+			</p-column>
+		</p-dataTable>
+		<!-- End Table -->
+	</div>
+	<!-- End Table -->
+	<p-footer>
+		<button class="btn btn-default" [disabled]="submitButtonCsv" (click)="closeDialogCsv()">Cancel</button>
+		<button class="btn btn-primary" [disabled]="submitButtonCsv || arrObjCsv.length == 0" (click)="postCsv()">
+			<p-progressSpinner
+				*ngIf="submitButtonCsv"
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+			<span *ngIf="!submitButtonCsv">Upload</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Form -->
+
+<!-- Messages -->
+<p-growl [(value)]="msgs"></p-growl>

@@ -1,0 +1,88 @@
+.ui-widget-overlay.ui-dialog-mask{
+    background: #333;
+    background: rgba(0,0,0,0.5);
+}
+
+.ui-dialog{
+    background: #fff;
+    @extend .panel-shadow;
+    @include border-radius(2px);
+
+    .ui-dialog-titlebar{
+        padding: 25px 55px 25px 30px;
+        border-bottom: solid 1px $color-gray;
+        @extend .panel-shadow;
+        position: relative;
+
+        .title{
+            margin-bottom: 0;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 500;
+        }
+    }
+
+    .ui-dialog-titlebar-close{
+        color: rgba(0,0,0,0.5);
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        display: none;
+    }
+
+    .ui-dialog-content{
+        padding: 25px 30px;
+
+        p:last-child{
+            margin-bottom: 0;
+        }
+
+        mat-progress-bar{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        label{
+            display: block;
+            margin-bottom: 5px;
+        }
+    }
+
+    .ui-dialog-footer{
+        padding: 25px 30px;
+        border-top: solid 1px $color-gray;
+        @extend .panel-shadow;
+    }
+
+    &.dialog-order{
+        .ui-dialog-content{
+            padding: 0;
+
+            .order{
+                border: solid 1px #efefef;
+            }
+        }
+    }
+}
+
+.table-dialog{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-collapse: collapse;
+
+    tr th,
+    tr td{
+        text-align: center;
+        border: solid 1px #efefef;
+        padding: 10px 15px;
+    }
+}
+
+@media(max-width:767px){
+    .ui-dialog{
+        width: 100% !important;
+    }
+}

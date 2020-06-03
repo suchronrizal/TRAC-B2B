@@ -1,0 +1,253 @@
+<!-- Start Wrap Panel -->
+<div class="wrap-panel">
+  <div class="item-panel">
+    <!-- Start Head Panel -->
+    <div class="head-panel">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-md-9">
+          <h5 class="title has-input">Master City</h5>
+        </div>
+        <div class="ui-g-12 ui-md-3 text-right">
+          <div class="ui-inputgroup">
+            <input
+              type="text"
+              #gb
+              class="form-control input-sm"
+              placeholder="Global Search"
+            />
+            <button class="ui-inputgroup-addon">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Head Panel -->
+
+    <div class="body-panel">
+      <div class="ui-g custom">
+        <div class="ui-g-12 ui-md-8">
+          <!-- <button class="btn btn-default" (click)="download.toggle($event)"><span class="fa fa-download icon-left"></span> Download File</button> -->
+          <button class="btn btn-default" (click)="op.toggle($event)">
+            <span class="fa fa-toggle-off icon-left"></span> Toggle Column
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Start Table -->
+    <div class="body-panel table-panel">
+      <!-- Start Table -->
+      <p-dataTable
+        [value]="data"
+        [loading]="loading"
+        [globalFilter]="gb"
+        [rows]="10"
+        [paginator]="true"
+        [pageLinks]="3"
+        [responsive]="true"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        #dt
+      >
+        <p-column
+          *ngFor="let column of cols"
+          [hidden]="!column.checked"
+          [field]="column.field"
+          [header]="column.header"
+          [filter]="column.filter"
+          [filterMatchMode]="column.filterMatchMode"
+        >
+          <!-- Start Body -->
+          <ng-template let-col let-data="rowData" pTemplate="body">
+            <div *ngIf="column.field == 'IsActive'" class="text-center">
+              <p-inputSwitch
+                onLabel="Yes"
+                offLabel="No"
+                (onChange)="handleChange($event, data)"
+                [(ngModel)]="data[col.field]"
+              >
+              </p-inputSwitch>
+            </div>
+            <div *ngIf="column.field != 'IsActive'">{{ data[col.field] }}</div>
+          </ng-template>
+          <!-- End Body -->
+
+          <!-- Start Filter -->
+          <ng-template pTemplate="filter" let-col>
+            <ng-container
+              [ngTemplateOutlet]="column.ref"
+              [ngTemplateOutletContext]="col"
+            >
+            </ng-container>
+          </ng-template>
+          <!-- End Filter -->
+        </p-column>
+        <!-- Start Price Column -->
+        <p-column
+          header="Options"
+          styleClass="text-center"
+          [style]="{ width: '120px' }"
+        >
+          <ng-template let-col="rowData" pTemplate="body">
+            <button
+              class="btn-icon"
+              (click)="selectUpdate(col)"
+              pTooltip="Update Master City"
+              tooltipPosition="left"
+            >
+              <span class="fa fa-gear"></span>
+            </button>
+          </ng-template>
+        </p-column>
+        <!-- End Year Column -->
+      </p-dataTable>
+      <!-- End Table -->
+    </div>
+    <!-- End Table -->
+  </div>
+</div>
+<!-- End Wrap Panel -->
+
+<!-- Start Filter Contains -->
+<ng-template
+  #filterSearch
+  let-field="field"
+  let-filterMatchMode="filterMatchMode"
+>
+  <input
+    type="text"
+    placeholder="Search"
+    ngModel
+    class="form-control margin-top10"
+    (ngModelChange)="dt.filter($event, field, filterMatchMode)"
+  />
+</ng-template>
+<!-- End Filter Contains -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel" #op>
+  <ul class="clear-list">
+    <li *ngFor="let col of cols">
+      <p-checkbox
+        [disabled]="col.disableCol"
+        [value]="col.field"
+        [label]="col.header"
+        [(ngModel)]="selectedValues"
+        (onChange)="checkBox(col)"
+      >
+      </p-checkbox>
+    </li>
+  </ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel
+  appendTo="body"
+  styleClass="dropdown-panel padding-clear"
+  #download
+>
+  <ul class="clear-list link">
+    <li>
+      <a (click)="dt.exportCSV()"
+        ><span class="fa fa-download"></span> Export this table</a
+      >
+    </li>
+    <li>
+      <a (click)="downloadCSV()"
+        ><span class="fa fa-download"></span> Download CSV</a
+      >
+    </li>
+    <li>
+      <a (click)="downloadXLS()"
+        ><span class="fa fa-download"></span> Download XLS</a
+      >
+    </li>
+  </ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dialog Update City -->
+<p-dialog
+  [(visible)]="displayUpdateCity"
+  appendTo="body"
+  [draggable]="false"
+  [modal]="true"
+  [width]="500"
+>
+  <p-header>
+    <h5 class="title">Update Master City</h5>
+  </p-header>
+
+  <!-- Start Form -->
+  <form #formRef="ngForm">
+    <div class="margin-bottom20">
+      <label>City name</label>
+      <input
+        type="text"
+        class="form-control"
+        name="MsCityName"
+        [(ngModel)]="MsCityName"
+        #MsCityNameRef="ngModel"
+        required
+        placeholder="Email"
+      />
+      <span
+        class="error"
+        *ngIf="MsCityNameRef.errors?.required && MsCityNameRef.touched"
+        >This field is required</span
+      >
+    </div>
+    <div class="margin-bottom20">
+      <label>Province</label>
+      <p-dropdown
+        styleClass="form-control"
+        name="ProvinceId"
+        [options]="provinces"
+        [filter]="true"
+        appendTo="body"
+        [(ngModel)]="selectedProvinceId"
+      >
+      </p-dropdown>
+    </div>
+    <div class="margin-bottom20">
+      <label>Branch</label>
+      <p-dropdown
+        styleClass="form-control"
+        name="BranchId"
+        [options]="branchs"
+        [filter]="true"
+        appendTo="body"
+        [(ngModel)]="selectedBranch"
+      >
+      </p-dropdown>
+    </div>
+  </form>
+  <!-- End Form -->
+
+  <p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+  <p-footer>
+    <button
+      class="btn btn-default"
+      [disabled]="onSubmitBtn"
+      (click)="closeUpdateCity()"
+    >
+      Close
+    </button>
+    <button
+      class="btn btn-danger"
+      [disabled]="onSubmitBtn || formRef.invalid"
+      (click)="updateCity(formRef.value)"
+    >
+      <p-progressSpinner
+        *ngIf="onSubmitBtn"
+        strokeWidth="5"
+        [style]="{ width: '30px', height: '30px' }"
+      ></p-progressSpinner>
+      <span *ngIf="!onSubmitBtn">Update</span>
+    </button>
+  </p-footer>
+</p-dialog>
+<!-- End Dialog Update City -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

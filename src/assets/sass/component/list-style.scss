@@ -1,0 +1,53 @@
+.clear-list{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: block;
+
+    li{
+        display: block;
+        position: relative;
+    }
+
+    &.inline{
+        display: inline-block;
+        margin: 0 -10px;
+        
+        li{
+            float: left;
+            display: block;
+            padding: 0 10px;
+        }
+    }
+
+    &.link{
+        display: block;
+        
+        li{
+            display: block;
+
+            a{
+                display: block;
+                color: $color-content;
+                text-decoration: none !important;
+                padding: 15px 20px;
+                border-bottom: solid 1px #efefef;
+
+                .fa{
+                    color: #9f9f9f;
+                    margin-right: 5px;
+                }
+
+                &:hover{
+                    color: $color-primary;
+                }
+            }
+
+            &:last-child{
+                a{
+                    border-bottom: 0;
+                }
+            }
+        }
+    }
+}

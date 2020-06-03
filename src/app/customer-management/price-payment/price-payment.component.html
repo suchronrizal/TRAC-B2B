@@ -1,0 +1,1023 @@
+<!-- Start title Tab -->
+<div class="title-tab">
+	<button
+		*ngIf="!loading"
+		(click)="save(formRefPrice.value)"
+		[disabled]="
+			submitButton ||
+			formPayment.invalid ||
+			formRefPrice.invalid ||
+			invalidateProductPrice ||
+			formRefPriceCancelation.invalid ||
+			selectedProduct.length != arrFilterServiceType.length
+		"
+		class="btn btn-primary"
+	>
+		<p-progressSpinner
+			*ngIf="submitButton"
+			strokeWidth="5"
+			[style]="{ width: '30px', height: '30px' }"
+		></p-progressSpinner>
+		<span *ngIf="isNull && !submitButton">Save Continue</span>
+		<span *ngIf="!isNull && !submitButton">Update</span>
+	</button>
+	<h5 class="title">Price and Payment</h5>
+</div>
+<!-- End Title Tab -->
+
+<div *ngIf="loading" class="wrap-loading-content">
+	<div class="content">
+		<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+	</div>
+</div>
+
+<!-- Start Content Tab -->
+<p-tabView orientation="top" cache="false" styleClass="tab-price" (onChange)="handleChange($event)">
+	<!-- Start Tab -->
+	<p-tabPanel header="Price Adjusment">
+		<div class="content-tab padding-top10">
+			<form #formRefPrice="ngForm">
+				<table *ngIf="!loading" class="table-info middle margin-bottom10 margin-top10">
+					<tr>
+						<td><label>Value</label></td>
+						<td>:</td>
+						<td>
+							<p-selectButton
+								[options]="priceValue"
+								[(ngModel)]="AdjustmentType"
+								(onChange)="onChangeValue($event)"
+								name="AdjustmentType"
+								[required]="true"
+							></p-selectButton>
+						</td>
+					</tr>
+					<!-- <tr>
+						<td><label>Base Price</label></td>
+						<td>:</td>
+						<td>
+							<p-spinner 
+								[(ngModel)]="BasePriceValue" 
+								name="BasePriceValue"
+								[min]="0" 
+								[required]="true">
+							</p-spinner>
+						</td>
+					</tr> -->
+				</table>
+			</form>
+
+			<button class="btn btn-default" (click)="displayInputForAll = true">
+				<span class="fa fa-pencil icon-left"></span> Input for all Price Adjustment
+			</button>
+
+			<!-- Start Form Cancelation -->
+			<div class="form-price-cancelation">
+				<form #formRefPriceCancelation="ngForm">
+					<table *ngIf="!loading" class="table-form margin-top20">
+						<thead>
+							<tr>
+								<th class="unit text-center">City</th>
+								<th class="unit text-center">Auto Cancelation Time</th>
+								<th class="unit text-center">Minimum Cancelation Time</th>
+								<th class="unit text-center">Minimum Order Time</th>
+								<th class="unit text-center">
+									Price Cancelation
+									<span *ngIf="percentage">(%)</span>
+									<span *ngIf="!percentage">(Rp)</span>
+								</th>
+								<th class="unit text-center">
+									Out Of Town Value Week End (Rp)
+								</th>
+								<th class="unit text-center">
+									Out Of Town Over Night Week End (Rp)
+								</th>
+								<th class="unit text-center">
+									Out Of Town Week Day (Rp)
+								</th>
+								<th class="unit text-center">
+									Out Of Town Over Night Week Day (Rp)
+								</th>
+								<th class="unit text-center">
+									Action
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let city of cities; let i = index">
+								<td class="text-center name">
+									{{ city.cityName }}
+								</td>
+								<td>
+									<p-inputMask
+										styleClass="form-control"
+										placeholder="Hour:Minute"
+										name="AutoCancelationTime{{ i }}"
+										[(ngModel)]="city.AutoCancelationTime"
+										mask="99:99"
+										[required]="true"
+									>
+									</p-inputMask>
+								</td>
+								<td>
+									<p-inputMask
+										styleClass="form-control"
+										placeholder="Hour:Minute"
+										name="CancelationTime{{ i }}"
+										[(ngModel)]="city.CancelationTime"
+										mask="99:99"
+										[required]="true"
+									>
+									</p-inputMask>
+								</td>
+								<td>
+									<p-inputMask
+										styleClass="form-control"
+										placeholder="Hour:Minute"
+										name="MaxOrderTime{{ i }}"
+										[(ngModel)]="city.MaxOrderTime"
+										mask="99:99"
+										[required]="true"
+									>
+									</p-inputMask>
+								</td>
+								<td>
+									<p-spinner
+										[(ngModel)]="city.CancelValue"
+										name="f{{ i }}"
+										[min]="0"
+										[max]="percentage ? 100 : 100000000000000000000"
+										[required]="true"
+									>
+									</p-spinner>
+								</td>
+								<td>
+									<p-spinner
+										placeholder="Out Of Town Value"
+										[(ngModel)]="city.OutOfTownWeekEnd"
+										[min]="0"
+										name="OutOfTownValue{{ i }}"
+									>
+									</p-spinner>
+								</td>
+								<td>
+									<p-spinner
+										placeholder="Out Of Town Over Night"
+										[(ngModel)]="city.OutOfTownOverNightWeekEnd"
+										[min]="0"
+										name="OutOfTownOverNight{{ i }}"
+									>
+									</p-spinner>
+								</td>
+								<td>
+									<p-spinner placeholder="Week Day" [(ngModel)]="city.OutOfTownWeekDay" [min]="0" name="WeekDay{{ i }}">
+									</p-spinner>
+								</td>
+								<td>
+									<p-spinner
+										placeholder="Week End"
+										[(ngModel)]="city.OutOfTownOverNightWeekDay"
+										[min]="0"
+										name="WeekEnd{{ i }}"
+									>
+									</p-spinner>
+								</td>
+								<td class="text-center">
+									<button (click)="updateAdjustment(city, formRefPrice.value)" class="btn btn-primary btn-sm">
+										{{ city.ConfigPriceAdjustmentDetailId != undefined ? 'Edit' : 'Save' }}
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<!-- End Form Cancelation -->
+		</div>
+	</p-tabPanel>
+	<!-- End Tab -->
+	<!-- Start Tab -->
+	<p-tabPanel header="Payment">
+		<div class="content-tab padding-top10">
+			<form #formPayment="ngForm">
+				<table *ngIf="!loading" class="table-info middle">
+					<tr>
+						<td>
+							<label>Billing Per Order</label>
+						</td>
+						<td>:</td>
+						<td>
+							<p-checkbox name="SoScheduler" [(ngModel)]="SoScheduler" (onChange)="onChangeScheduler()" binary="true">
+							</p-checkbox>
+						</td>
+					</tr>
+					<tr *ngIf="!SoScheduler">
+						<td><label>Billing Type</label></td>
+						<td>:</td>
+						<td class="opition-td single">
+							<p-dropdown
+								[options]="arrBillingTypes"
+								styleClass="form-control"
+								name="BillingType"
+								placeholder="Select Billing Type"
+								[required]="true"
+								appendTo="body"
+								[(ngModel)]="BillingType"
+							>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="!SoScheduler">
+						<td></td>
+						<td></td>
+						<td *ngIf="onUpdateBillingDate">Loading...</td>
+						<td *ngIf="BillingType == 'BLT-0001' && !onUpdateBillingDate" class="opition-td single">
+							<p-multiSelect
+								[filter]="false"
+								[showToggleAll]="false"
+								[options]="days"
+								styleClass="form-control multiple-select-billing"
+								name="day"
+								placeholder="Select day"
+								[required]="true"
+								appendTo="body"
+								(onChange)="selectDay($event)"
+								[(ngModel)]="selectedDay"
+							>
+							</p-multiSelect>
+						</td>
+						<td *ngIf="BillingType == 'BLT-0002' && !onUpdateBillingDate">
+							<div *ngIf="isNullBillingDate">
+								<input
+									type="text"
+									class="form-control"
+									name="selectArrDate"
+									[(ngModel)]="selectArrDate"
+									(click)="opDate.toggle($event)"
+									readonly
+									placeholder="Select date"
+								/>
+								<p-overlayPanel #opDate appendTo="body" styleClass="input-billing">
+									<ul class="listDate">
+										<li *ngFor="let date of arrDates">
+											<a (click)="selectScheduleDate(date)" [class.active]="date.activate">{{ date.value }}</a>
+										</li>
+									</ul>
+									<div class="wrap-btn-calendar">
+										<button
+											[disabled]="!this.selectArrDate.length"
+											(click)="selectBillingDate($event)"
+											class="btn btn-primary btn-sm"
+										>
+											Create billing date
+										</button>
+									</div>
+								</p-overlayPanel>
+							</div>
+							<div *ngIf="!isNullBillingDate">
+								<p-calendar
+									inputStyleClass="form-control input-date-payment"
+									styleClass="input-billing-date"
+									selectionMode="multiple"
+									[monthNavigator]="true"
+									name="BillingDate"
+									dateFormat="d M yy"
+									[(ngModel)]="dateBilling"
+									[inline]="false"
+								>
+									<p-footer>
+										<div class="wrap-btn-calendar">
+											<button
+												[disabled]="!this.dateBilling.length"
+												(click)="selectBillingDate($event)"
+												class="btn btn-primary btn-sm"
+											>
+												Update billing date
+											</button>
+										</div>
+									</p-footer>
+								</p-calendar>
+							</div>
+						</td>
+					</tr>
+					<!-- <tr>
+					<td><label>Scheduler Billing</label></td>
+					<td>:</td>
+					<td>
+						<p-checkbox 
+							name="IsScheduler" 
+							[(ngModel)]="IsScheduler" 
+							binary="true">
+						</p-checkbox>
+					</td>
+				</tr> -->
+					<tr>
+						<td><label>Payment Type</label></td>
+						<td>:</td>
+						<td>
+							<p-selectButton
+								[options]="paymentType"
+								[(ngModel)]="selectedPaymentType"
+								(onChange)="onSelectPaymentType($event)"
+								name="selectedPaymentType"
+								[required]="true"
+							></p-selectButton>
+						</td>
+					</tr>
+					<tr>
+						<td><label>Payment Scheme</label></td>
+						<td>:</td>
+						<td>
+							<p-selectButton
+								[options]="filterSchemaPembayaran"
+								[(ngModel)]="selectedschemaPembayaran"
+								(onChange)="onSelectPaymentScheme($event)"
+								name="selectedschemaPembayaran"
+								[required]="true"
+							></p-selectButton>
+						</td>
+					</tr>
+					<tr *ngIf="selectedschemaPembayaran != 'PS0001'">
+						<td><label>ToP (days)</label></td>
+						<td>:</td>
+						<td>
+							<div class="topdays">
+								<p-spinner
+									[formatInput]="false"
+									placeholder="Total days"
+									[(ngModel)]="topDays"
+									[min]="0"
+									name="TopDays"
+									[required]="true"
+								>
+								</p-spinner>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><label>Credit Card Non CVV</label></td>
+						<td>:</td>
+						<td>
+							<p-checkbox name="IsCreditCard" [(ngModel)]="IsCreditCard" binary="true"> </p-checkbox>
+						</td>
+					</tr>
+					<tr>
+						<td><label>Non CVV</label></td>
+						<td>:</td>
+						<td>
+							<p-checkbox name="IsNonCVV" [(ngModel)]="IsNonCVV" binary="true"> </p-checkbox>
+						</td>
+					</tr>
+					<tr>
+						<td><label>Virtual Account BCA</label></td>
+						<td>:</td>
+						<td>
+							<p-checkbox name="IsVirtualAccountBCA" [(ngModel)]="IsVirtualAccountBCA" binary="true"> </p-checkbox>
+						</td>
+					</tr>
+					<!-- <tr *ngIf="selectedschemaPembayaran == 'PS0002' && selectedPaymentType != 'PT0002'">
+						<td><label>Periode</label></td>
+						<td>:</td>
+						<td>
+							<p-calendar
+								name="startData"
+								inputStyleClass="form-control"
+								dateFormat="d M yy"
+								[(ngModel)]="periodeDateValue"
+								selectionMode="range"
+								(onSelect)="selectPeriodeDateValue($event)"
+								(onClose)="readDatePeriode($event)"
+								[monthNavigator]="true"
+								[yearNavigator]="true"
+								yearRange="2000:2030"
+								placeholder="Start date periode"
+								appendTo="body"
+								[required]="true"
+							></p-calendar>
+						</td>
+					</tr> -->
+				</table>
+
+				<!-- Start Set Budget -->
+				<div
+					*ngIf="
+						(selectedschemaPembayaran == 'PS0002' || selectedschemaPembayaran == 'PS0003') &&
+						selectedPaymentType != 'PT0002'
+					"
+				>
+				<div class="form-budget-payment">
+					<table class="margin-top20" [ngClass]="{'table-form': selectedschemaPembayaran=='PS0002', 'table-top':selectedschemaPembayaran=='PS0003'}">
+						<thead>
+							<tr>
+								<th class="w-20 text-center">Cost Center</th>
+								<th class="unit text-center">PIC</th>
+								<th class="unit text-center" *ngIf="selectedschemaPembayaran != 'PS0003'">Initial Budget</th>
+								<th class="unit text-center" *ngIf="selectedschemaPembayaran != 'PS0003'">Current Budget</th>
+								<th colspan="2" class="unit text-center" *ngIf="selectedschemaPembayaran != 'PS0003'">
+									Budget Limit
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let cost of dataCostCenter; let i = index">
+								<td class="text-center">
+									<strong>{{ cost.CostCenterName }}</strong>
+								</td>
+								<td class="opition-td count-payment">
+									<p-dropdown
+										[options]="cost.arrPics"
+										styleClass="form-control"
+										filter="true"
+										[(ngModel)]="cost.PIC"
+										placeholder="Select PIC"
+										name="PIC{{ i }}"
+										[required]="true"
+									>
+									</p-dropdown>
+								</td>
+								<td class="count-payment" *ngIf="selectedschemaPembayaran != 'PS0003'">
+									<p-spinner
+										placeholder="Initial budget"
+										[(ngModel)]="cost.InitialBudget"
+										[min]="1"
+										name="InitialBudget{{ i }}"
+										[required]="true"
+									>
+									</p-spinner>
+								</td>
+								<td class="count-payment" *ngIf="selectedschemaPembayaran != 'PS0003'">
+									<input
+										class="form-control"
+										placeholder="Current Budget"
+										[(ngModel)]="cost.CurrentBudget"
+										disabled="true"
+										name="CurrentBudgetBudget{{ i }}"
+									/>
+								</td>
+								<td class="count-payment" *ngIf="selectedschemaPembayaran != 'PS0003'">
+									<p-spinner
+										placeholder="Budget Limit"
+										[(ngModel)]="cost.LimitBudget"
+										[min]="1"
+										name="LimitBudget{{ i }}"
+										[required]="true"
+									>
+									</p-spinner>
+								</td>
+								<td *ngIf="!detaislNull && selectedschemaPembayaran != 'PS0003'">
+									<button
+										[disabled]="cost.LimitBudget == null || cost.InitialBudget == null"
+										(click)="updateBudgetLimit(cost)"
+										class="btn btn-primary btn-sm w-80"
+									>
+										<span *ngIf="cost.statusUpdate">Loading...</span>
+										<span *ngIf="!cost.statusUpdate">Update</span>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				</div>
+				<!-- End Set Budget -->
+			</form>
+		</div>
+	</p-tabPanel>
+	<!-- End Tab -->
+
+	<!-- Start Tab -->
+	<p-tabPanel header="Product Price">
+		<div class="content-tab padding-top10">
+			
+			<div class="ui-g">
+				<div class="ui-g-6 ui-lg-4 ui-md-3">
+					<p-selectButton
+						[options]="arrFilterServiceType"
+						[(ngModel)]="selectedProduct"
+						[multiple]="true"
+						(onChange)="selectProduct($event)"
+					></p-selectButton>
+				</div>
+				
+				<div class="ui-g-3 ui-md-5 sm-lg-2 text-right">
+					<button class="btn btn-default" (click)="openUploadCsv()"><span class="fa fa-upload"></span> Import CSV</button>
+				
+				</div>
+				<div class="ui-g-3 ui-lg-3 ui-md-5 margin-top10">
+					<a href="/assets/csv/Template_import_product_price.csv" class="btn btn-default" target="_self" download>Create Template</a>
+			</div>
+			</div>
+			<!-- Start Product Price -->
+			<div class="wrap-product-price">
+				<div class="list">
+					<ul>
+						<li *ngFor="let city of originiCities" [class.active]="selectedOriginiCities == city">
+							<a (click)="selectProductCity(city)">{{ city.MsCityName }}</a>
+						</li>
+					</ul>
+				</div>
+				<div class="content">
+					<!-- Start Table -->
+					<table class="table-form">
+						<thead>
+							<tr>
+								<th *ngIf="selectedOriginiCities != null" colspan="6">
+									{{ selectedOriginiCities.MsCityName }}
+								</th>
+							</tr>
+							<tr>
+								<th class="info"></th>
+								<th class="unit text-center">Vehicle type</th>
+								<th class="unit text-center">Duration</th>
+								<th class="unit text-center">Price (Rp)</th>
+								<th class="unit text-center">Additional Price (Rp)</th>
+								<th class="unit text-center">Options</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let product of filterObjPriceProduct; let index = index" [class.line]="index % 2 === 0">
+								<td class="info">
+									<div
+										class="success"
+										*ngIf="
+											product.FuelId != null &&
+											product.TollAndParkingId != null &&
+											product.DriverOrRiderId != null &&
+											product.ChannelTypeId != null
+										"
+									>
+										<span class="fa fa-check"></span>
+									</div>
+									<div
+										class="danger"
+										*ngIf="
+											product.FuelId == null &&
+											product.TollAndParkingId == null &&
+											product.DriverOrRiderId == null &&
+											product.ChannelTypeId == null
+										"
+									>
+										<span class="fa fa-times"></span>
+									</div>
+								</td>
+								<td class="count-payment">
+									{{ product.VehicleTypeName }}
+								</td>
+								<td class="count-payment">
+									{{ product.DurationName }}
+								</td>
+								<td class="count-payment">
+									{{ product.Price | number: '1.0-6' }}
+								</td>
+								<td class="count-payment">
+									{{ product.AdditionalPrice | number: '1.0-6' }}
+								</td>
+								<td>
+									<button (click)="updateProductPrice(product)" class="btn btn-default btn-sm">Edit</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div *ngIf="loadingProductPrice" class="wrap-loading-content product-price">
+						<div class="content">
+							<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+						</div>
+					</div>
+					<!-- End Table -->
+					<div *ngIf="filterObjPriceProduct.length == 0" class="empty">
+						<p>
+							Product price is empty
+						</p>
+					</div>
+				</div>
+			</div>
+			<!-- End Product Price -->
+		</div>
+	</p-tabPanel>
+	<!-- End Tab -->
+
+	<!--Start hitory budget-->
+	<p-tabPanel header="History Budget" *ngIf="selectedschemaPembayaran == 'PS0002' && selectedPaymentType != 'PT0002'">
+		<ng-template pTemplate="content">
+			<div class="content-tab padding-top10">
+				<div class="wrap-table">
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-6 ui-lg-9">
+							<h5 class="title has-input">Table History Budget</h5>
+						</div>
+					</div>
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-2">
+							<input
+								type="text"
+								class="form-control"
+								name="searchCostCenter"
+								[(ngModel)]="searchCostCenter"
+								data-ng-trim="false"
+								placeholder="Search Cost Center"
+							/>
+						</div>
+						<div class="ui-g-12 ui-md-2">
+							<input
+								type="text"
+								class="form-control"
+								name="searchPic"
+								[(ngModel)]="searchPICName"
+								data-ng-trim="false"
+								placeholder="Search PIC"
+							/>
+						</div>
+						<div class="ui-g-12 ui-md-3">
+							<p-calendar
+								name="selectDate"
+								inputStyleClass="form-control"
+								dateFormat="d M yy"
+								selectionMode="range"
+								[(ngModel)]="selectedDate"
+								[monthNavigator]="true"
+								[yearNavigator]="true"
+								yearRange="2000:2030"
+								placeholder="Select date periode"
+								appendTo="body"
+								[readonlyInput]="true"
+							></p-calendar>
+							<span *ngIf="errorHandling.errStatus" class="error ng-star-inserted">{{ errorHandling.msg }}</span>
+						</div>
+						<div class="ui-g-12 ui-md-1">
+							<button class="btn btn-primary" (click)="submitFilter($event)" style="min-width: 70px!important;">
+								<span class="fa fa-search"></span>
+							</button>
+						</div>
+						<div class="ui-g-12 ui-md-1">
+							<button class="btn btn-default" (click)="resetFilter($event)" style="min-width: 70px!important;">
+								<span class="fa fa-refresh"></span>
+							</button>
+						</div>
+						<div class="ui-g-12 ui-md-3 text-right">
+							<button class="btn btn-default" (click)="download.toggle($event)">
+								<span class="fa fa-download icon-left"></span> Download File
+							</button>
+						</div>
+					</div>
+					<div class="body-panel table-panel padding-top10">
+						<!-- Start Table -->
+						<div class="form-budget-payment">
+						<p-dataTable
+							[value]="data"
+							[loading]="dataTableLoad"
+							[rows]="10"
+							[paginator]="false"
+							[pageLinks]="3"
+							[scrollable]="true"
+							[style]="{width:'100%'}"
+							[rowsPerPageOptions]="[5, 10, 20]"
+							#dt
+						>
+							<p-column
+								*ngFor="let column of cols"
+								[hidden]="!column.checked"
+								[field]="column.field"
+								[header]="column.header"
+								[filterMatchMode]="column.filterMatchMode"
+							>	
+							</p-column>
+						</p-dataTable>
+						</div>
+						<!-- End Table -->
+						<div class="body-panel padding-clear">
+							<div *ngIf="dataTableLoad" class="blockUI"></div>
+							<p-paginator
+								#p
+								pageLinkSize="3"
+								[rows]="pageRows"
+								styleClass="hide-dropdown"
+								dropdownAppendTo="body"
+								[totalRecords]="totalRecords"
+								(onPageChange)="paginate($event)"
+								[rowsPerPageOptions]="[20, 50, 100]"
+							>
+							</p-paginator>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ng-template>
+		<!-- Start Dropdown -->
+		<p-overlayPanel appendTo="body" styleClass="dropdown-panel padding-clear" #download>
+				<ul class="clear-list link">
+					<!-- <li>
+						<a (click)="dt.exportCSV()"><span class="fa fa-download"></span> Export this table</a>
+					</li> -->
+					<li>
+						<a (click)="downloadCSV()"><span class="fa fa-download"></span> Download CSV</a>
+					</li>
+					<li>
+						<a (click)="downloadXLS()"><span class="fa fa-download"></span> Download XLS</a>
+					</li>
+				</ul>
+			</p-overlayPanel>
+			<!-- End Dropdown -->
+	</p-tabPanel>
+</p-tabView>
+<!-- End Content Tab -->
+
+<!-- End Filter Contains -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+<!-- Dialog Product Price -->
+<p-dialog [(visible)]="displayProductPrice" appendTo="body" [draggable]="false" [modal]="true" [width]="500">
+	<p-header>
+		<h5 class="title">Update Product Price</h5>
+	</p-header>
+
+	<table class="table-info dialog" *ngIf="selectedProductPrice != null">
+		<tr>
+			<td class="label"><strong>City Name</strong></td>
+			<td class="point">:</td>
+			<td>{{ selectedProductPrice.CityName }}</td>
+		</tr>
+		<tr>
+			<td><strong>Vehicle Type</strong></td>
+			<td>:</td>
+			<td>{{ selectedProductPrice.VehicleTypeName }}</td>
+		</tr>
+		<tr>
+			<td><strong>Duration</strong></td>
+			<td>:</td>
+			<td>{{ selectedProductPrice.DurationName }}</td>
+		</tr>
+	</table>
+
+	<!-- Start Form -->
+	<form #formProductPrice="ngForm">
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Fuel</label>
+			<p-dropdown
+				[options]="fuels"
+				styleClass="form-control"
+				name="Fuel"
+				placeholder="Select Fuel"
+				[(ngModel)]="selectedFuel"
+				appendTo="body"
+				[required]="true"
+			>
+			</p-dropdown>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Toll & Parking</label>
+			<p-dropdown
+				[options]="tolls"
+				styleClass="form-control"
+				name="TollParking"
+				placeholder="Select Toll & Parking"
+				[(ngModel)]="selectedParking"
+				appendTo="body"
+				[required]="true"
+			>
+			</p-dropdown>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Driver or Rider</label>
+			<p-dropdown
+				[options]="drivers"
+				styleClass="form-control"
+				name="DriverRider"
+				placeholder="Select Driver or Rider"
+				[(ngModel)]="selectedDriver"
+				appendTo="body"
+				[required]="true"
+			>
+			</p-dropdown>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Channel Type</label>
+			<p-dropdown
+				[options]="channels"
+				styleClass="form-control"
+				name="Channel"
+				placeholder="Select Channel Type"
+				[(ngModel)]="selectedChannel"
+				appendTo="body"
+				[required]="true"
+			>
+			</p-dropdown>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Crew</label>
+			<p-dropdown
+				[options]="crews"
+				styleClass="form-control"
+				name="Crew"
+				placeholder="Select Crew"
+				[disabled]="true"
+				appendTo="body"
+				[(ngModel)]="selectedCrew"
+			>
+			</p-dropdown>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Coverage Area</label>
+			<p-dropdown
+				[options]="coverageAreas"
+				styleClass="form-control"
+				name="CoverageArea"
+				placeholder="Select Coverage Area"
+				[disabled]="true"
+				appendTo="body"
+				[(ngModel)]="selectedCoverageAreas"
+			>
+			</p-dropdown>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Price</label>
+			<p-spinner name="price" [(ngModel)]="priceProductValue" [required]="true" [min]="0"> </p-spinner>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Additional Hour Price</label>
+			<p-spinner
+				placeholder="Additional Hour Value"
+				[(ngModel)]="AdditionalPrice"
+				[min]="0"
+				name="AdditionalPrice"
+				[required]="true"
+			>
+			</p-spinner>
+		</div>
+	</form>
+	<!-- End Form -->
+
+	<p-footer>
+		<button class="btn btn-default" (click)="closeDialogProductPrice(); formProductPrice.reset()">Cancel</button>
+		<button
+			class="btn btn-primary"
+			[disabled]="formProductPrice.invalid"
+			(click)="saveProductPrice(formProductPrice.value); formProductPrice.reset()"
+		>
+			<span *ngIf="isUpdate">Update</span>
+			<span *ngIf="!isUpdate">Save</span>
+		</button>
+	</p-footer>
+</p-dialog>
+
+<!-- Dialog Product Price -->
+<p-dialog [(visible)]="displayInputForAll" appendTo="body" [draggable]="false" [modal]="true" [width]="500">
+	<p-header>
+		<h5 class="title">Input For All Adjustment</h5>
+	</p-header>
+
+	<!-- Start Form -->
+	<form #formInputAll="ngForm">
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Auto Cancelation Time</label>
+			<p-inputMask
+				styleClass="form-control"
+				placeholder="Hour:Minute"
+				name="InputAutoCancelationTime"
+				[(ngModel)]="InputAutoCancelationTime"
+				mask="99:99"
+				[required]="true"
+			>
+			</p-inputMask>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Minimum Cancelation Time</label>
+			<p-inputMask
+				styleClass="form-control"
+				placeholder="Hour:Minute"
+				name="InputCancelationTime"
+				[(ngModel)]="InputCancelationTime"
+				mask="99:99"
+				[required]="true"
+			>
+			</p-inputMask>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Minimum Order Time</label>
+			<p-inputMask
+				styleClass="form-control"
+				placeholder="Hour:Minute"
+				name="InputMaxOrderTime"
+				[(ngModel)]="InputMaxOrderTime"
+				mask="99:99"
+				[required]="true"
+			>
+			</p-inputMask>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">
+				Price Cancelation
+				<span *ngIf="percentage">(%)</span>
+				<span *ngIf="!percentage">(Rp)</span>
+			</label>
+			<p-spinner
+				[(ngModel)]="InputCancelValue"
+				name="InputCancelValue"
+				[min]="0"
+				[max]="percentage ? 100 : 100000000000000000000"
+				[required]="true"
+			>
+			</p-spinner>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Out Of Town Value Week End (Rp)</label>
+			<p-spinner [(ngModel)]="InputOutOfTownWeekEnd" name="InputOutOfTownWeekEnd" [min]="0" [required]="true">
+			</p-spinner>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Out Of Town Over Night Week End (Rp)</label>
+			<p-spinner
+				[(ngModel)]="InputOutOfTownOverNightWeekEnd"
+				name="InputOutOfTownOverNightWeekEnd"
+				[min]="0"
+				[required]="true"
+			>
+			</p-spinner>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Out Of Town Week Day (Rp)</label>
+			<p-spinner [(ngModel)]="InputOutOfTownWeekDay" name="InputOutOfTownWeekDay" [min]="0" [required]="true">
+			</p-spinner>
+		</div>
+		<div class="margin-bottom20">
+			<label class="display-block margin-bottom5">Out Of Town Over Night Week Day (Rp)</label>
+			<p-spinner
+				[(ngModel)]="InputOutOfTownOverNightWeekDay"
+				name="InputOutOfTownOverNightWeekDay"
+				[min]="0"
+				[required]="true"
+			>
+			</p-spinner>
+		</div>
+	</form>
+	<!-- End Form -->
+
+	<p-footer>
+		<button class="btn btn-default" (click)="displayInputForAll = false; formInputAll.reset()">Cancel</button>
+		<button class="btn btn-primary" (click)="submitInputForAll(formInputAll.value)">
+			Ok
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- Start Dialog Form -->
+<p-dialog [(visible)]="displayUploadCsv" appendTo="body" [draggable]="false" [modal]="true" [width]="500">
+		<p-header>
+			<h5 class="title">Upload CSV File</h5>
+		</p-header>
+	
+		<!-- File Upload -->
+		<div *ngIf="loaded">
+			<p-fileUpload
+				#fileInput
+				name="myfile[]"
+				accept=".csv"
+				[customUpload]="true"
+				[showUploadButton]="false"
+				[showCancelButton]="false"
+				chooseLabel="Browse File"
+				styleClass="csv-input"
+				(onSelect)="onFileSelect($event.files[0])"
+				(onRemove)="onRemoveUploadCsv()"
+			>
+			</p-fileUpload>
+		</div>
+		
+		<div class="wrap-table" *ngIf="showErrorImport">
+			<!-- Start Table -->
+			<div class="alert alert-danger" role="alert"><strong>Error</strong> Please correct your file attached below</div>
+			<p-dataTable
+				[value]="dataError"
+				[loading]="loading"
+				[rows]="10"
+				[paginator]="true"
+				[pageLinks]="3"
+				[responsive]="true"
+				[rowsPerPageOptions]="[5, 10, 20]"
+				#dt
+			>
+				<p-column field="ErrorLine" header="Error Line" [style]="{width: '100px'}">
+					<ng-template let-col let-data="rowData" pTemplate="body">
+							<span>{{data[col.field]}}</span>
+					</ng-template>
+				</p-column>
+				<p-column field="ErrorMessage" header="Error Messages">
+					<ng-template let-col let-data="rowData" pTemplate="body">
+							<div class="left-col">{{data[col.field]}}</div>
+					</ng-template>
+				</p-column>
+			</p-dataTable>
+			<!-- End Table -->
+		</div>
+		<!-- End Table -->
+		<p-footer>
+			<button class="btn btn-default" [disabled]="submitButtonCsv" (click)="closeDialogCsv()">Cancel</button>
+			<button class="btn btn-primary" [disabled]="submitButtonCsv || arrObjCsv.length == 0" (click)="postCsv()">
+				<p-progressSpinner
+					*ngIf="submitButtonCsv"
+					strokeWidth="5"
+					[style]="{ width: '30px', height: '30px' }"
+				></p-progressSpinner>
+				<span *ngIf="!submitButtonCsv">Upload</span>
+			</button>
+		</p-footer>
+	</p-dialog>
+	<!-- End Dialog Form -->

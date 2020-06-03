@@ -1,0 +1,237 @@
+
+.ui-tabview{
+    &.tabsidebar{
+        padding: 0;
+
+        .ui-tabview-nav{
+            padding: 0 15px;
+            border-bottom: solid 1px #efefef;
+            margin: auto;
+
+            li{
+                a{
+                    padding: 11px;
+                    color: #627182;
+                    text-transform: uppercase;
+                    @include opacity(.5);
+
+                    &:hover{
+                        @include opacity(1);
+                    }
+                }
+
+                &.ui-tabview-selected a{
+                    color: $color-primary;
+                    opacity: 1 !important;
+                }
+            } 
+        }
+
+        .ui-tabview-panels{
+
+            .ui-tabview-panel{
+                padding: 0;
+            }
+        }
+    }
+
+    &.tab-customer{
+        padding: 0; 
+        height: auto;
+        min-height: 0;
+        max-height: auto;
+
+        > .ui-tabview-nav{
+            width: 250px;
+            height: auto !important;
+            padding: 0 !important;
+
+            > li{
+                padding: 0;
+                width: 100%;
+
+                > a{
+                    display: block;
+                    width: 100%;
+                    padding: 20px 30px;
+                    color: $color-content;
+                    border: 0;
+                    border-bottom: solid 1px #efefef;
+                    font-weight: 500;
+                }
+
+                &.ui-tabview-selected a{
+                    color: $color-primary;
+                }
+
+                &.ui-state-disabled{
+                    @include opacity(.9);
+
+                    a{
+                        background: $bg-base;
+                        color: #aaa;
+                    }
+                } 
+
+                &.loading{
+                    @include opacity(.5);
+
+                    a:before{
+                        font-family: 'FontAwesome';
+                        content: "\f252";
+                        color: $color-title;
+                        margin-right: 5px;
+                        font-size: 12px;
+                    }
+                } 
+
+                &.done a:before{
+                    content: '\f058';
+                    font-family: 'FontAwesome';
+                    margin-right: 5px;
+                    color: #1abc9c;
+                }
+            }
+        }
+
+        > .ui-tabview-panels{
+            background: #fff;
+            width: calc(100% - 250px);
+            border-left: solid 1px #efefef;
+            margin-left: -1px;
+            min-height: 700px;
+            position: relative;
+        }
+
+        .ui-tabview-panel{
+            padding: 0;
+        }
+
+        &.order{
+            > .ui-tabview-nav{
+                width: 220px;
+
+                > li{
+                    > a{
+                        padding: 15px 20px;
+                    }
+
+                    &.ui-tabview-selected a{
+                        color: $color-content;
+                    }
+
+                    &.ui-state-active a{
+                        color: $color-primary;
+                    }
+                }
+            }
+
+            > .ui-tabview-panels{
+                width: calc(100% - 220px);
+                min-height: 500px;
+                padding: 25px 30px;
+            }
+        }
+    }
+
+    &.tab-price{
+        padding: 0;
+
+        > .ui-tabview-nav{
+            padding: 0 10px;
+            margin: 0;
+            border-bottom: solid 1px #efefef;
+
+            > li{
+                padding: 0;
+
+                > a{
+                    padding: 15px 20px;
+                    color: $color-title;
+                }
+
+                &.ui-tabview-selected a{
+                    color: $color-primary;
+                }
+            }
+        }
+    }
+}
+
+
+@media(max-width:920px){
+
+    .ui-tabview{
+        &.tab-customer{
+            padding: 0; 
+            height: auto;
+            min-height: 0;
+            max-height: auto;
+
+            &.order{
+                > .ui-tabview-nav{
+                    width: 100%;
+                    display: inline-block;
+                    border-bottom: solid 1px #dfdfdf;
+
+                    > li{
+                        width: auto;
+                        float: left;
+                        display: block;
+                    }
+                }
+
+                > .ui-tabview-panels{
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+}
+
+
+
+@media(max-width:920px){
+    .ui-tabview{
+        &.tab-customer{
+            padding: 0; 
+            height: auto;
+            min-height: 0;
+            max-height: auto;
+
+            &.order{
+                > .ui-tabview-nav{
+                    width: 100%;
+                    display: block;
+                    border-bottom: 0;
+
+                    > li{
+                        width: 100%;
+                        float: none;
+                        display: none;
+
+                        > a{
+                            padding: 15px 20px;
+                            border-bottom: solid 1px #efefef;
+                        }
+
+                        &.ui-tabview-selected{
+                            display: block;
+                            text-align: center;
+
+                            a{
+                                color: $color-title;
+                            }
+                        } 
+                    }
+                }
+
+                > .ui-tabview-panels{
+                    width: 100%;
+                    padding: 25px 15px;
+                }
+            }
+        }
+    }
+}

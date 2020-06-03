@@ -1,0 +1,134 @@
+<div class="wrap-panel">
+    <!-- Start Item Panel -->
+    <div class="item-panel">
+		<div class="head-panel">
+
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-8 ui-lg-9">
+					<h5 class="title has-input">Table Product</h5>
+				</div>
+				<div class="ui-g-12 ui-md-4 ui-lg-3 text-right">
+					<div class="ui-inputgroup">
+						<input type="text" #gb class="form-control input-sm" placeholder="Global Search">   
+						<span class="ui-inputgroup-addon"><i class="fa fa-search"></i></span>      
+					</div>
+				</div>
+			</div> 
+			
+		</div>
+		<div class="body-panel">
+			<div class="ui-g custom">
+				<div class="ui-g-12 ui-md-5">
+					<button class="btn btn-default" (click)="exportData()"><span class="fa fa-file-excel-o icon-left"></span> Export Excel</button>
+					<button class="btn btn-default" (click)="op.toggle($event)"><span class="fa fa-toggle-off icon-left"></span> Toggle Column</button>	
+				</div>
+			</div>
+			<div class="ui-g custom">
+				<div class="ui-g-12 ui-md-3">
+					<p-dropdown 
+						[options]="customers" 
+						styleClass="form-control" 
+						filter="true"
+						name="customer"
+						placeholder="Select Company"
+						[(ngModel)]="selectedCustomer">
+					</p-dropdown>
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p-calendar 
+						name="startData"
+						readonlyInput="true"
+						inputStyleClass="form-control"
+						dateFormat="d M yy"
+						[(ngModel)]="minDateValue"
+						(onSelect)="selectMinDate($event)"
+						[monthNavigator]="true" 
+						[yearNavigator]="true" 
+						yearRange="2000:2030"
+						placeholder="Start date periode"
+						appendTo="body"
+						[required]="true"
+					></p-calendar> 	
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<p-calendar 
+						name="endData"
+						readonlyInput="true"
+						inputStyleClass="form-control"
+						dateFormat="d M yy"
+						[disabled]="disableMaxDate"
+						[minDate]="minDateValue"
+						[(ngModel)]="maxDateValue"
+						[monthNavigator]="true" 
+						[yearNavigator]="true" 
+						yearRange="2000:2030"
+						placeholder="End date periode"
+						appendTo="body"
+						[required]="true"
+					></p-calendar> 
+				</div>
+				<div class="ui-g-12 ui-md-2">
+					<button (click)="filterProduct(selectedCustomer,minDateValue,maxDateValue)" class="btn btn-primary"><span class="fa fa-list-ul"></span></button>
+				</div>
+			</div>		
+		</div>
+        <div class="body-panel table-panel">
+			<!-- Start Table -->
+			<p-dataTable 
+				[value]="data" 
+				[loading]="loading"
+				[globalFilter]="gb"
+				[rows]="10" 
+				[paginator]="true" 
+				[pageLinks]="3" 
+				[responsive]="true"
+				[rowsPerPageOptions]="[5,10,20]"
+				#dt>
+				<p-column *ngFor="let column of cols" 
+					[hidden]="!column.checked"
+					[field]="column.field" 
+					[header]="column.header"
+					[filter]="column.filter" 
+					[filterMatchMode]="column.filterMatchMode">
+
+					<!-- Start Filter -->
+					<ng-template pTemplate="filter" let-col>
+						<ng-container 
+							[ngTemplateOutlet]="column.ref"
+							[ngTemplateOutletContext]="col">
+						</ng-container>
+					</ng-template>
+					<!-- End Filter -->
+				</p-column>
+			</p-dataTable>
+			<!-- End Table -->
+		</div>
+	</div>
+	<!-- End Item Panel -->
+</div>
+<!-- Start Filter Contains -->
+<ng-template #filterSearch let-field="field" let-filterMatchMode="filterMatchMode">
+	<input type="text" 
+		placeholder="Search"
+		ngModel 
+		class="form-control margin-top10"
+		(ngModelChange)="dt.filter($event,field,filterMatchMode)"/>
+</ng-template>
+<!-- End Filter Contains -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel" #op>
+	<ul class="clear-list">
+		<li *ngFor="let col of cols">
+			<p-checkbox
+				[disabled]="col.disableCol"
+				[value]="col.field" 
+				[label]="col.header" 
+				[(ngModel)]="selectedValues"
+				(onChange)="checkBox(col)">
+			</p-checkbox>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+

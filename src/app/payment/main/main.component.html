@@ -1,0 +1,152 @@
+<!-- Start Payment -->
+<div class="wrap-payment">
+	<div class="content">
+
+		<!-- Start Loading Content -->
+		<div *ngIf="loading" class="payment-loading">
+			<div class="content-payment">
+				<p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+				<p>Loading...</p>
+			</div>
+		</div>
+		<!-- End Loading Content -->
+
+		<!-- Start Payment Content -->
+		<div *ngIf="!loading" class="ui-g">
+
+			<!-- Start Error Content -->
+			<div *ngIf="isError" class="ui-g-12 text-center">
+				<div class="content-error">
+					<img src="./assets/images/icons/error.png" alt="" width="70" class="img"/>
+					<h5 class="title">Error Load Payment</h5>
+					<p>Payment Failed!</p>
+					<p>We are very sorry, your payment couldn't be completed. Please try again.</p>
+					<button (click)="fetchPaymentType()" class="btn btn-primary">Try again</button>
+				</div>
+			</div>
+			<!-- Start Error Content -->
+
+			<div *ngIf="!isError" class="ui-g-12 ui-md-6 ui-lg-7 side">
+				<!-- Start Unpaid -->
+				<div *ngIf="!paid">
+					<h5>Select Payment Method</h5>
+					<p-accordion *ngIf="dataPayment != null" styleClass="payment" (onOpen)="onOpen($event)" [activeIndex]="index">
+						<p-accordionTab *ngIf="dataPayment.IsVirtualAccountBCA">
+							<p-header>
+								Pay with Virtual Account <img src="./assets/images/ic-bca.png" class="img-bca" />
+							</p-header>
+							<ol class="list-desc">
+								<li>The Virtual Account payment code is a combination of 5 unique numbers and mobile phone numbers registered in the account.</li>
+								<li>One BCA Virtual Account number is valid for one account only.</li>
+								<li>Payment applies only to one recent transaction. If you still have unpaid transaction, the previous transaction is automatically canceled.</li>
+								<li>The Payment deadline is 2 days.</li>
+								<li>Payment of Virtual Account BCA can be done through ATM, m-BCA, KlikBCA Individual, or directly through teller.</li>
+								<li>One BCA Virtual Account number is valid for one account only.</li>
+								<li>Your payment verification will be done automatically.</li>
+							</ol>
+						</p-accordionTab>
+						<p-accordionTab *ngIf="dataPayment.IsCreditCard">
+							<p-header>
+								Pay with Visa or Master Card <img src="./assets/images/ic-master-card.png" class="img-mastercard" />
+							</p-header>
+							<ol class="list-desc">
+								<li>Name on Card</li>
+								<li>Card Number</li>
+								<li>Valid Until</li>
+								<li>CVV</li>
+							</ol>  
+						</p-accordionTab>
+					</p-accordion>
+				</div>
+				<!-- End Unpaid -->
+				<!-- Start Paid -->
+				<div *ngIf="paid">
+					
+					<div class="alert alert-success alert-payment">
+						<img src="./assets/images/icons/success.png" alt="" class="img"/>
+						<h5 class="title">Payment Success!</h5>
+						<p class="margin-bottom0">Thank you very much for your payment, please check your email for the invoice.</p>
+					</div>
+
+					<h5>Petunjuk Pembayaran</h5>
+					<p-accordion [activeIndex]="0">
+						<p-accordionTab>
+							<p-header>
+								Transfer Virtual Account
+							</p-header>
+							<ol class="list-desc">
+								<li>The Virtual Account payment code is a combination of 5 unique numbers and mobile phone numbers registered in the account.</li>
+								<li>One BCA Virtual Account number is valid for one account only.</li>
+								<li>Payment applies only to one recent transaction. If you still have unpaid transaction, the previous transaction is automatically canceled.</li>
+								<li>The Payment deadline is 2 days.</li>
+								<li>Payment of Virtual Account BCA can be done through ATM, m-BCA, KlikBCA Individual, or directly through teller.</li>
+								<li>One BCA Virtual Account number is valid for one account only.</li>
+								<li>Your payment verification will be done automatically.</li>
+							</ol>
+						</p-accordionTab>
+					</p-accordion>
+
+					<div class="margin-top30">
+						<a class="btn btn-default" routerLink="/p">Back to home</a>
+					</div>
+				</div>
+				<!-- End Paid -->
+			</div>
+			<div *ngIf="!isError" class="ui-g-12 ui-md-6 ui-lg-5 main">
+				<!-- Start Unpaid -->
+				<div *ngIf="!paid">
+					<h5 class="color-white">Payment Info</h5>
+					<table class="table-info" cellpadding="0" cellspacing="0">
+						<tr>
+							<td>Total Price</td>
+							<td class="text-right">Rp. {{amount | number:'1.0-6'}}</td>
+						</tr>
+						<tr class="bottom">
+							<td><strong class="color-white">Total Reservation Price</strong></td>
+							<td class="text-right"><h5 class="color-white">Rp. {{amount | number:'1.0-6'}}</h5></td>
+						</tr>
+					</table>
+					
+					<div *ngIf="errPayment" class="alert alert-danger">
+						<strong>Ooops</strong> something went wrong, please try again
+					</div>
+
+					<button 
+						[disabled]="index == null || submitPayment" 
+						(click)="onPaid()" 
+						class="btn btn-primary btn-block">
+						<p-progressSpinner *ngIf="submitPayment" strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+						<span *ngIf="!submitPayment">Pay</span>
+					</button>
+				</div>
+				<!-- Start Unpaid -->
+				<!-- Start Paid -->
+				<div *ngIf="paid">
+					<h5>Pembayaran Via Transfer Virtual Account</h5>
+					<table class="table-info" cellpadding="0" cellspacing="0">
+						<tr>
+							<td>Nomor Tagihan</td>
+							<td class="text-right"><strong>{{invoiceId}}</strong></td>
+						</tr>
+						<tr>
+							<td>Jumlah Tagihan</td>
+							<td class="text-right"><strong>Rp. {{amount | number:'1.0-6'}}</strong></td>
+						</tr>
+						<tr>
+							<td>Virtual Account BCA</td>
+							<td class="text-right"><strong>{{vaBCA}}</strong></td>
+						</tr>
+					</table>
+				</div>
+				<!-- End Paid -->
+
+				<div class="footer">
+					Copyright © 2018 TRAC. All rights reserved<br/>
+					Build by CIST SERA
+				</div>
+			</div>
+		</div>
+		<!-- End Payment Content -->
+	</div>
+</div>
+<!-- End Payment -->

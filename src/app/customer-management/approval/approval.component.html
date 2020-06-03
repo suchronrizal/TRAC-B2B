@@ -1,0 +1,230 @@
+<!-- Start title Tab -->
+<div class="title-tab">
+	<button
+		(click)="save()"
+		[disabled]="submitButton || formRef.invalid || selectedNotif.length == 0"
+		class="btn btn-primary"
+	>
+		<p-progressSpinner
+			*ngIf="submitButton"
+			strokeWidth="5"
+			[style]="{ width: '30px', height: '30px' }"
+		></p-progressSpinner>
+		<span *ngIf="isNull && !submitButton">Save and continue</span>
+		<span *ngIf="!isNull && !submitButton">Update</span>
+	</button>
+	<h5 class="title">Approval</h5>
+</div>
+<!-- End Title Tab -->
+<!-- Start Body Tab -->
+<div class="content-tab">
+	<div *ngIf="loading" class="wrap-loading-content">
+		<div class="content">
+			<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+		</div>
+	</div>
+
+	<form #formRef="ngForm">
+		<table *ngIf="!loading" class="table-info">
+			<tr>
+				<td><label>Approval Schema</label></td>
+				<td>:</td>
+				<td>
+					<p-selectButton
+						[options]="approvalSchema"
+						[(ngModel)]="selectedApprovalSchema"
+						name="approvalSchema"
+						(onChange)="onChangeSchema($event)"
+						[required]="true"
+					></p-selectButton>
+				</td>
+			</tr>
+			<tr *ngIf="selectedApprovalSchema == 'MAS0002'">
+				<td><label>Direct Approval Type</label></td>
+				<td>:</td>
+				<td>
+					<p-selectButton
+						[options]="directApprovalType"
+						[(ngModel)]="selectDirectApprovalType"
+						(onChange)="onChangeAppovalType($event)"
+						name="selectDirectApprovalType"
+						[required]="true"
+					></p-selectButton>
+				</td>
+			</tr>
+			<tr *ngIf="selectedApprovalSchema != 'MAS0003'">
+				<td><label>Approval Level</label></td>
+				<td>:</td>
+				<td>
+					<p-selectButton
+						[disabled]="selectedApprovalSchema == 'MAS0003'"
+						[options]="approvalLevelFilter"
+						[(ngModel)]="selectedApprovalLevel"
+						(onChange)="onChangeAppovalLevel($event)"
+						name="selectedApprovalLevel"
+						[required]="true"
+					></p-selectButton>
+				</td>
+			</tr>
+			<tr *ngIf="selectedApprovalSchema == 'MAS0002' || selectedApprovalSchema == 'MAS0001'">
+				<td><label>Approval Execution</label></td>
+				<td>:</td>
+				<td>
+					<p-selectButton
+						[options]="directApprovalExecution"
+						[(ngModel)]="selectDirectApprovalExecution"
+						(onChange)="onChangeAppovalExecution($event)"
+						name="selectDirectApprovalExecution"
+						[required]="true"
+					></p-selectButton>
+				</td>
+			</tr>
+			<tr *ngIf="selectedApprovalSchema == 'MAS0002' || selectedApprovalSchema == 'MAS0001'">
+				<td class="label"><label>Approval Limit (HH:MM)</label></td>
+				<td>:</td>
+				<td>
+					<div class="ui-inputgroup margin-left0">
+						<p-calendar
+							[(ngModel)]="time"
+							appendTo="body"
+							inputStyleClass="form-control"
+							placeholder="Hour time"
+							required="true"
+							[timeOnly]="true"
+							placeholder="Hour:Minute"
+							(onSelect)="selectedTime($event)"
+							name="time"
+							[required]="true"
+						>
+						</p-calendar>
+					</div>
+				</td>
+			</tr>
+			<!-- <tr *ngIf="selectedApprovalSchema == 'MAS0002'">
+				<td><label>Select Employer</label></td>
+				<td>:</td>
+				<td>
+					<div
+						*ngFor="
+							let employe of emplyersLevel;
+							let index = index;
+							let last = last
+						"
+						[class.margin-bottom10]="!last"
+					>
+						<div class="ui-inputgroup level">
+							<span
+								*ngIf="selectDirectApprovalType == 'MADT0002'"
+								class="ui-inputgroup-addon"
+								>Level {{ index + 1 }}</span
+							>
+							<p-dropdown
+								[options]="employers"
+								[(ngModel)]="employe.value"
+								[filter]="true"
+								appendTo="body"
+								name="f{{ index }}"
+							></p-dropdown>
+						</div>
+					</div>
+				</td>
+			</tr> -->
+			<tr>
+				<td><label>Notification</label></td>
+				<td>:</td>
+				<td>
+					<span *ngIf="!arrNotification.length">Loading...</span>
+					<span *ngFor="let notif of arrNotification" class="margin-right10 checkbox-notif">
+						<p-checkbox name="notif" [(ngModel)]="selectedNotif" [value]="notif.value" [label]="notif.label">
+						</p-checkbox>
+						<span *ngIf="notif.disabled" class="blockUI" pTooltip="Disabled feature" tooltipPosition="top"></span>
+					</span>
+				</td>
+			</tr>
+			<tr *ngIf="selectedApprovalSchema == 'MAS0001'">
+				<td>
+					<label>Pic Of Organization</label>
+				</td>
+				<td>:</td>
+				<td>
+					<span *ngIf="!originOrg.length">Loading...</span>
+					<span *ngIf="originOrg.length">
+						<table class="table-form margin-top10">
+							<thead>
+								<tr>
+									<th class="unit-type">Organization</th>
+									<th>Pic</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr *ngFor="let org of originOrg; let i = index">
+									<td>{{ org.OrgName }}</td>
+									<td>
+										<p-autoComplete
+											styleClass="wid100"
+											inputStyleClass="form-control"
+											appendTo="body"
+											[(ngModel)]="org.orgPic.Email"
+											name="PIC{{ i }}"
+											minLength="3"
+											placeholder="Enter Pic..."
+											(completeMethod)="searchPics($event)"
+											[suggestions]="filterpicsOrg"
+											[required]="true"
+										></p-autoComplete>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</span>
+				</td>
+			</tr>
+			<tr *ngIf="selectedApprovalSchema == 'MAS0002'">
+				<td><label for="costCenterPic">PIC Of Cost Center</label></td>
+				<td>:</td>
+				<td>
+					<div class="ui-g-12 ui-md-4 ui-md-offset-9 small-text">
+						*Limit PIC Based On Level Is {{ selectedApprovalLevel }}
+					</div>
+					<table class="table-form margin-top10">
+						<thead>
+							<tr>
+								<th class="cost-name">Cost Center</th>
+								<th class="pic">PIC</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let cost of originCostCenter; let i = index">
+								<td>{{ cost.CostCenterName }}</td>
+								<td>
+									<span *ngIf="cost.loading">Loading...</span>
+									<span *ngIf="!cost.loading" class="ui-fluid">
+										<p-autoComplete
+											styleClass="wid100"
+											class="form-control-pic"
+											appendTo="body"
+											[(ngModel)]="cost.costPic"
+											name="costPIC{{ i }}"
+											[multiple]="true"
+											minLength="3"
+											field="Email"
+											placeholder="Select Pic..."
+											(onSelect)="validationLimit(cost.CostCenterId)"
+											(completeMethod)="searchPics($event)"
+											[suggestions]="filterpicsDirect"
+											[required]="true"
+										></p-autoComplete>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<!-- End Body Tab -->
+
+<!-- Messages -->
+<p-growl [(value)]="msgs"></p-growl>

@@ -1,0 +1,76 @@
+.ui-button.ui-fileupload-choose{    
+    padding: 10px 15px;
+    min-width: 0px;
+    background: #fff;
+    border: solid 1px #efefef;
+    font-size: 14px;
+    cursor: pointer;
+    @include transition("all 0.3s ease-in-out");
+    @include border-radius(4px);
+    @extend .panel-shadow;
+    outline: 0;
+
+    .ui-button-text{
+    }
+
+    .ui-button-icon-left{
+        left: 20px;
+    }
+}
+
+.ui-fileupload{
+    border: solid 1px #efefef;
+    @include border-radius(4px);
+}
+
+.ui-fileupload-content{
+    padding: 0 !important;
+
+    .ui-messages-icon{
+        display: none;
+    }
+    
+    .ui-fileupload-files{
+        width: 100% !important;
+        display: block;
+    }
+
+    .ui-fileupload-files .ui-fileupload-row{
+        padding: 10px 20px;
+        display: block;
+        width: 100%;
+        border-bottom: solid 1px #efefef;
+    }
+}
+
+.ui-fileupload-buttonbar{
+    border-bottom: solid 1px #efefef;
+    padding: 15px 20px;
+}
+
+.wrap-input-upload{
+    position: relative;
+
+    .btn{
+        min-width: 0;
+        padding-top: 15px;
+        padding-bottom: 14px;
+        position: absolute;
+        margin-left: -5px;
+        background: #fafafa;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        text-decoration: none !important;
+    }
+}
+
+.csv-input{
+
+    .ui-fileupload-row{
+        padding: 10px 5px !important;
+
+        > div:first-child{
+            display: none;
+        }
+    } 
+}

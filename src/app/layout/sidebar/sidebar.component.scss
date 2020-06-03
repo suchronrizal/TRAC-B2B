@@ -1,0 +1,30 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+/*
+Header
+=========================== */
+.brand-header{
+    padding: 0 28px;
+    margin: 17px 0 16px;
+
+    a{
+        display: block;
+
+        img{
+            max-width: 80px;
+        }
+    }
+}
+
+/*
+Responsive
+=========================== */
+@media(max-width:1024px){
+    .brand-header{
+        display: none;
+    }
+}

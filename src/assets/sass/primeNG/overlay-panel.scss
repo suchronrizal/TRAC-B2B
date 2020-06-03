@@ -1,0 +1,120 @@
+.ui-overlaypanel{
+    background: #fff;
+    border: solid 1px #efefef;
+    @extend .panel-shadow;
+
+    &.notif{
+        margin: 15px 0 0 -20px;
+        width: 398px;
+
+        .ui-overlaypanel-content{
+            padding: 0;
+        }
+    }
+
+    &.users{
+        width: 140px;
+        margin: 15px 0 0 10px;
+
+        &:after{
+            content: "";
+            display: table;
+            border-bottom: solid 8px #fff;
+            border-left: solid 7px transparent;
+            border-right: solid 7px transparent;
+            position: absolute;
+            right: 17px;
+            top: -7px;
+        }
+
+        &:before{
+            content: "";
+            display: table;
+            border-bottom: solid 9px #efefef;
+            border-left: solid 8px transparent;
+            border-right: solid 8px transparent;
+            position: absolute;
+            right: 16px;
+            top: -8px;
+        }
+        
+        .ui-overlaypanel-content{
+            padding: 0;
+        }
+    }
+
+    &.dropdown-panel{
+        width: 200px;
+        margin-top: 10px;
+        @include border-radius(4px);
+
+        &:after{
+            content: "";
+            display: table;
+            border-bottom: solid 8px #fff;
+            border-left: solid 7px transparent;
+            border-right: solid 7px transparent;
+            position: absolute;
+            left: 17px;
+            top: -7px;
+        }
+
+        &:before{
+            content: "";
+            display: table;
+            border-bottom: solid 9px #efefef;
+            border-left: solid 8px transparent;
+            border-right: solid 8px transparent;
+            position: absolute;
+            left: 16px;
+            top: -8px;
+        }
+
+        &.padding-clear .ui-overlaypanel-content{
+            padding: 0;
+        }
+    }
+
+    &.input-billing{
+        width: 238px;
+        @extend .dropdown-panel;
+
+        ul{
+            padding: 0;
+            margin: 0 0 -7px 0;
+            display: inline-block;
+            list-style: none;
+            width: 100%;
+
+            li{
+                float: left;
+                width: 14%;
+                display: block;
+                border: solid 2px #fff;
+
+                a{
+                    display: block;
+                    border: solid 1px #efefef;
+                    color: #666;
+                    text-align: center;
+                    text-decoration: none;
+
+                    &.active,{
+                        background: $color-primary;
+                        color: #fff;
+                        border: solid 1px $color-primary;
+                    }
+                    
+                }
+            }
+        }
+    }
+}
+
+@media(max-width:400px){
+    .ui-overlaypanel{
+        &.users{
+            margin-top: 25px;
+        }
+    }   
+}

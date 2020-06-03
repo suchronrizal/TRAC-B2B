@@ -1,0 +1,125 @@
+<!-- Start Footer Tab -->
+<div class="title-tab">
+	<button (click)="save(eligibityForm.value)" [disabled]="submitButton || eligibityForm.invalid" class="btn btn-primary">
+		<p-progressSpinner *ngIf="submitButton" strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+		<span *ngIf="!submitButton && !updated">Save and continue</span>
+		<span *ngIf="updated && !submitButton">Update</span>
+	</button>
+	<h5 class="title">Eligibility and Passenger Limit</h5>
+</div>
+<!-- End Footer Tab -->
+<!-- Start Content Tab -->
+<div class="content-tab">
+	<!-- <table class="table-info">
+		<tr>
+			<td><label>Eligibility type</label></td>
+			<td>:</td>
+			<td>
+				<p-selectButton 
+					[options]="eligibities" 
+					(onChange)="onSelectType($event)"
+					[(ngModel)]="selectedEligibility"
+				></p-selectButton>
+			</td>
+		</tr>
+	</table> -->
+	<form #eligibityForm="ngForm">
+		<table class="table-form margin-top20">
+			<thead>
+				<tr>
+					<th rowspan="2" class="unit-type">Unit Type</th>
+					<th rowspan="2" class="all">All</th>
+					<th rowspan="2" *ngIf="selectedEligibility == 'MEC0001'" colspan="2">Range</th>
+					<th rowspan="2" *ngIf="selectedEligibility == 'MEC0002'" colspan="2">Position</th>
+					<th colspan="2">Passenger Limit</th>
+				</tr>
+				<tr>
+					<th>Trac Standard</th>
+					<th>Customer</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let item of data; let i = index">
+					<td>
+						<label>{{item.unitType}}</label>
+					</td>
+					<td>
+						<p-checkbox 
+							(onChange)="selectItem($event,item)" 
+							binary="true" 
+							name="selectAll{{i}}"
+							[(ngModel)]="item.selectAll">
+						</p-checkbox>
+					</td>
+					<td colspan="2" *ngIf="selectedEligibility == 'MEC0002'">
+						<p-chips 
+							name="gradeRole{{i}}"
+							[disabled]="item.selectAll" 
+							inputStyleClass="form-control"
+							[required]="true"
+							placeholder="Type and enter..."
+							[(ngModel)]="item.gradeRole"> 
+						</p-chips>
+					</td>
+					<td *ngIf="selectedEligibility == 'MEC0001'">
+						<input 
+							type="text" 
+							class="form-control" 
+							name="range1{{i}}"
+							[disabled]="item.selectAll" 
+							[value]="item.range1" 
+							[(ngModel)]="item.range1" 
+							placeholder="Min range"
+							required/>
+					</td>
+					<td *ngIf="selectedEligibility == 'MEC0001'">
+						<input 
+							type="text" 
+							class="form-control" 
+							name="range2{{i}}"
+							[disabled]="item.selectAll" 
+							[value]="item.range2" 
+							[(ngModel)]="item.range2" 
+							placeholder="Max range"
+							required/>
+					</td>
+					<td class="counter">
+						<p-spinner 
+							placeholder="Total" 
+							name="total{{i}}"
+							[(ngModel)]="item.total" 
+							[min]="1"
+							[required]="true">
+						</p-spinner>
+					</td>
+					<td class="counter">
+						<p-spinner 
+							placeholder="Limit" 
+							name="limit{{i}}"
+							[(ngModel)]="item.limit" 
+							[min]="1"
+							[required]="true">
+						</p-spinner>
+					</td>
+				</tr>
+
+				<tr *ngIf="loading">
+					<td colspan="6" class="text-center padding-top50 padding-bottom50">
+						<div class="content">
+							<p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+						</div>
+					</td>
+				</tr>
+				<tr *ngIf="data.length == 0 && !loading">
+					<td colspan="6" class="text-center padding-top50 padding-bottom50">
+						<em>Vehicle not found</em>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+<!-- End Content Tab -->
+
+<!-- Messages -->
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

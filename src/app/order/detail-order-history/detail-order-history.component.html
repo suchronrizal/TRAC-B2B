@@ -1,0 +1,573 @@
+<!-- Start Wrap Panel -->
+<div class="wrap-panel">
+	<div *ngIf="dataOrderHistory == null" class="wrap-loading-content">
+		<div class="content">
+			<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+		</div>
+	</div>
+
+	<div *ngIf="dataOrderHistory != null" class="item-panel">
+		<!-- Start Head Panel -->
+		<div class="head-panel">
+			<h5 class="title">Booking Informations</h5>
+		</div>
+		<!-- End Head Panel -->
+
+		<!-- Start Order Detail -->
+		<div class="row-order">
+			<div class="ui-g margin-top10 margin-bottom10">
+				<div class="ui-g-12 ui-md-8 ui-lg-6">
+					<h6>Reservation</h6>
+					<table class="table-order" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="title">Customer Name</td>
+							<td class="point">:</td>
+							<td>{{ dataOrderHistory.CustomerName }}</td>
+						</tr>
+						<tr>
+							<td class="title">Created By</td>
+							<td class="point">:</td>
+							<td>{{ dataOrderHistory.CreatedName }}</td>
+						</tr>
+						<tr>
+							<td class="title">Service Type</td>
+							<td class="point">:</td>
+							<td>{{ dataOrderHistory.ServiceTypeName }}</td>
+						</tr>
+						<tr>
+							<td class="title">Total Price</td>
+							<td class="point">:</td>
+							<td>Rp {{ dataOrderHistory.TotalPrice | number: '1.0-6' }}</td>
+						</tr>
+						<tr>
+							<td class="title">Created At</td>
+							<td class="point">:</td>
+							<td>{{ dataOrderHistory.created_at }}</td>
+						</tr>
+						<tr>
+							<td class="title">Reservation</td>
+							<td class="point">:</td>
+							<td>{{ dataOrderHistory.ReservationId }}</td>
+						</tr>
+						<tr>
+							<td class="title">Status Reservation</td>
+							<td class="point">:</td>
+							<td>{{ dataOrderHistory.SatatusName }}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- End Order Detail -->
+		<!-- <div class="body-panel">
+			<button class="btn btn-default" (click)="op.toggle($event)"><span class="fa fa-toggle-off icon-left"></span> Toggle Column</button>	
+		</div> -->
+		<div class="body-panel table-panel">
+			<!-- Start Table -->
+			<p-dataTable
+				[rowStyleClass]="isRowSelected"
+				[value]="data"
+				[loading]="loading"
+				[globalFilter]="gb"
+				[rows]="100"
+				[paginator]="false"
+				[pageLinks]="3"
+				[responsive]="true"
+				[rowsPerPageOptions]="[5, 10, 20]"
+				#dt
+			>
+				<p-column
+					*ngFor="let column of cols"
+					[hidden]="!column.checked"
+					[field]="column.field"
+					[header]="column.header"
+					[filter]="column.filter"
+					[styleClass]="column.styleClass"
+					[filterMatchMode]="column.filterMatchMode"
+				>
+					<!-- Start Body -->
+					<ng-template let-col let-data="rowData" pTemplate="body">
+						<div *ngIf="column.field == 'DriverName'" class="text-center">
+							<ul class="list-driver">
+								<li *ngFor="let driver of data[col.field]">{{ driver.name }} - {{ driver.phone }}</li>
+							</ul>
+						</div>
+						<div *ngIf="column.field != 'DriverName'">{{ data[col.field] }}</div>
+					</ng-template>
+					<!-- End Body -->
+
+					<!-- Start Filter -->
+					<ng-template pTemplate="filter" let-col>
+						<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+					</ng-template>
+					<!-- End Filter -->
+				</p-column>
+				<!-- Start Price Column -->
+				<p-column header="Options" styleClass="text-center" [style]="{ width: '120px' }">
+					<ng-template let-col="rowData" pTemplate="body">
+						<button class="btn-icon" (click)="viewOrder(col)" pTooltip="View Order" tooltipPosition="left">
+							<span class="fa fa-list-ul"></span>
+						</button>
+						<button
+							*ngIf="col.StatusId == 'BOSID-006' && !isInternal"
+							class="btn-icon btn-danger"
+							pTooltip="Cancel Order"
+							tooltipPosition="left"
+							(click)="selectCancelOrder(col)"
+						>
+							<span class="fa fa-times"></span>
+						</button>
+					</ng-template>
+				</p-column>
+				<!-- End Year Column -->
+			</p-dataTable>
+			<!-- End Table -->
+		</div>
+		<div *ngIf="dataOrderHistory.Status == 'BOSID-006' && !disableCancelReservation" class="body-panel text-right">
+			<button (click)="openCancelReservation()" class="btn btn-danger">
+				<i class="fa fa-times-circle icon-left"></i> Cancel Reservation
+			</button>
+		</div>
+	</div>
+</div>
+<!-- End Wrap Panel -->
+
+<!-- Start Filter Contains -->
+<ng-template #filterSearch let-field="field" let-filterMatchMode="filterMatchMode">
+	<input
+		type="text"
+		placeholder="Search"
+		ngModel
+		class="form-control margin-top10"
+		(ngModelChange)="dt.filter($event, field, filterMatchMode)"
+	/>
+</ng-template>
+<!-- End Filter Contains -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel" #op>
+	<ul class="clear-list">
+		<li *ngFor="let col of cols">
+			<p-checkbox
+				[disabled]="col.disableCol"
+				[value]="col.field"
+				[label]="col.header"
+				[(ngModel)]="selectedValues"
+				(onChange)="checkBox(col)"
+			>
+			</p-checkbox>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+<!-- Start Dialog Form -->
+<p-dialog
+	[closeOnEscape]="false"
+	[(visible)]="displayOrderDetail"
+	appendTo="body"
+	[draggable]="false"
+	[modal]="true"
+	[responsive]="true"
+	[width]="1000"
+>
+	<p-header>
+		<h5 class="title">Order Detail</h5>
+	</p-header>
+
+	<div *ngIf="detailOrder != null" class="ui-g margin-bottom30 detail-order">
+		<div class="ui-g-12 ui-md-6">
+			<h6>Order Informations</h6>
+			<table class="table-order" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">City</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.CityName }}</td>
+				</tr>
+				<tr>
+					<td class="title">Duration</td>
+					<td class="point">:</td>
+					<td>
+						{{ detailOrder.Duration }}
+						<span *ngIf="dataOrderHistory.ServiceTypeId == 'STID-003'">Hours</span>
+						<span *ngIf="dataOrderHistory.ServiceTypeId == 'STID-007'">Hours</span>
+						<span *ngIf="dataOrderHistory.ServiceTypeId == 'STID-004'">KM</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">Document Date/Time</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.DocumentDate }}</td>
+				</tr>
+				<tr>
+					<td class="title">Start Date/Time</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.CustomStartDate }}</td>
+				</tr>
+				<tr>
+					<td class="title">End Date/Time</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.EndDate }}</td>
+				</tr>
+				<tr>
+					<td class="title">Pickup Note</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.pickup_locations[0].Notes }}</td>
+				</tr>
+				<tr>
+					<td class="title">Drop Note</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.drop_locations[0].Notes }}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="ui-g-12 ui-md-6">
+			<h6>Order Packages</h6>
+			<table class="table-order" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="title">Fuel</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.FuelName }}</td>
+				</tr>
+				<tr>
+					<td class="title">Driver</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.DriverOrRiderName }}</td>
+				</tr>
+				<tr>
+					<td class="title">Toll & Parking Tickets</td>
+					<td class="point">:</td>
+					<td>{{ detailOrder.TollAndParkingName }}</td>
+				</tr>
+				<tr *ngIf="detailOrder.StatusId == 'BOSID-005'" class="input">
+					<td class="title">Add Additional Hour</td>
+					<td class="point">:</td>
+					<td>
+						<div *ngIf="loadPrice">Loading price...</div>
+						<div *ngIf="!loadPrice">
+							<div class="margin-bottom20">
+								<p-spinner
+									[formatInput]="false"
+									placeholder="Add Duration"
+									[(ngModel)]="addDuration"
+									[min]="0"
+									[disabled]="btnDuration"
+								>
+								</p-spinner>
+							</div>
+							<div class="margin-bottom10">
+								Rp <strong class="price-duration">{{ priceExtend * addDuration | number: '1.0-6' }}</strong>
+							</div>
+							<div class="margin-bottom5">
+								<button
+									[disabled]="addDuration == 0 || btnDuration"
+									(click)="addExtendDuration()"
+									class="btn btn-default margin-top10"
+								>
+									<p-progressSpinner
+										*ngIf="btnDuration"
+										strokeWidth="5"
+										[style]="{ width: '30px', height: '30px' }"
+									></p-progressSpinner>
+									<span *ngIf="!btnDuration"><i class="fa fa-clock-o"></i> Add Duration</span>
+								</button>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<!-- Start Table Pickup -->
+	<div *ngIf="detailOrder != null" class="detail-order">
+		<div *ngIf="detailOrder.extend_durations.length" class="margin-bottom30">
+			<div class="box-title">Add Duration</div>
+			<p-dataTable
+				[value]="detailOrder.extend_durations"
+				[loading]="loading"
+				[globalFilter]="gb"
+				[rows]="100"
+				[paginator]="false"
+				[pageLinks]="3"
+				[responsive]="true"
+				[rowsPerPageOptions]="[5, 10, 20]"
+				#dt
+			>
+				<p-column
+					*ngFor="let column of extendDurations"
+					[hidden]="!column.checked"
+					[field]="column.field"
+					[header]="column.header"
+					[filter]="column.filter"
+					[styleClass]="column.styleClass"
+					[filterMatchMode]="column.filterMatchMode"
+				>
+					<!-- Start Filter -->
+					<ng-template pTemplate="filter" let-col>
+						<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+					</ng-template>
+					<!-- End Filter -->
+
+					<!-- Start Body -->
+					<ng-template let-col let-data="rowData" pTemplate="body">
+						<div *ngIf="column.field == 'IsPIC'" class="text-center">
+							<div class="success" *ngIf="data[col.field] == '1'">
+								<span class="fa fa-check"></span>
+							</div>
+							<div class="danger" *ngIf="data[col.field] == '0'">
+								<span class="fa fa-times"></span>
+							</div>
+						</div>
+						<div *ngIf="column.field != 'IsPIC'">{{ data[col.field] }}</div>
+					</ng-template>
+					<!-- End Body -->
+				</p-column>
+			</p-dataTable>
+		</div>
+
+		<div class="box-title">Additional</div>
+		<p-dataTable
+			[value]="detailOrder.additional"
+			[loading]="loading"
+			[globalFilter]="gb"
+			[rows]="100"
+			[paginator]="false"
+			[pageLinks]="3"
+			[responsive]="true"
+			[rowsPerPageOptions]="[5, 10, 20]"
+			#dt
+		>
+			<p-column
+				*ngFor="let column of additionals"
+				[hidden]="!column.checked"
+				[field]="column.field"
+				[header]="column.header"
+				[filter]="column.filter"
+				[styleClass]="column.styleClass"
+				[filterMatchMode]="column.filterMatchMode"
+			>
+				<!-- Start Filter -->
+				<ng-template pTemplate="filter" let-col>
+					<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+				</ng-template>
+				<!-- End Filter -->
+			</p-column>
+		</p-dataTable>
+
+		<div class="box-title margin-top30">Passenger</div>
+		<p-dataTable
+			[value]="detailOrder.passengers"
+			[loading]="loading"
+			[globalFilter]="gb"
+			[rows]="100"
+			[paginator]="false"
+			[pageLinks]="3"
+			[responsive]="true"
+			[rowsPerPageOptions]="[5, 10, 20]"
+			#dt
+		>
+			<p-column
+				*ngFor="let column of colPassenger"
+				[hidden]="!column.checked"
+				[field]="column.field"
+				[header]="column.header"
+				[filter]="column.filter"
+				[styleClass]="column.styleClass"
+				[filterMatchMode]="column.filterMatchMode"
+			>
+				<!-- Start Filter -->
+				<ng-template pTemplate="filter" let-col>
+					<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+				</ng-template>
+				<!-- End Filter -->
+			</p-column>
+		</p-dataTable>
+
+		<div class="box-title margin-top30">Pickup Informations</div>
+		<p-dataTable
+			[value]="detailOrder.pickup_locations"
+			[loading]="loading"
+			[globalFilter]="gb"
+			[rows]="100"
+			[paginator]="false"
+			[pageLinks]="3"
+			[responsive]="true"
+			[rowsPerPageOptions]="[5, 10, 20]"
+			#dt
+		>
+			<p-column
+				*ngFor="let column of colPickup"
+				[hidden]="!column.checked"
+				[field]="column.field"
+				[header]="column.header"
+				[filter]="column.filter"
+				[styleClass]="column.styleClass"
+				[filterMatchMode]="column.filterMatchMode"
+			>
+				<!-- Start Filter -->
+				<ng-template pTemplate="filter" let-col>
+					<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+				</ng-template>
+				<!-- End Filter -->
+			</p-column>
+		</p-dataTable>
+
+		<div class="box-title margin-top30">Drivers</div>
+		<p-dataTable
+			[value]="detailOrder.drivers"
+			[loading]="loading"
+			[globalFilter]="gb"
+			[rows]="100"
+			[paginator]="false"
+			[pageLinks]="3"
+			[responsive]="true"
+			[rowsPerPageOptions]="[5, 10, 20]"
+			#dt
+		>
+			<p-column
+				*ngFor="let column of colDrivers"
+				[hidden]="!column.checked"
+				[field]="column.field"
+				[header]="column.header"
+				[filter]="column.filter"
+				[styleClass]="column.styleClass"
+				[filterMatchMode]="column.filterMatchMode"
+			>
+				<!-- Start Filter -->
+				<ng-template pTemplate="filter" let-col>
+					<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+				</ng-template>
+				<!-- End Filter -->
+			</p-column>
+		</p-dataTable>
+	</div>
+	<!-- End Table Pickup -->
+
+	<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+	<p-footer>
+		<button class="btn btn-default" (click)="closeOrderDetail()">Close</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Form -->
+
+<!-- Start Dialog Cancel Order -->
+<p-dialog [(visible)]="displayCancelOrder" appendTo="body" [draggable]="false" [modal]="true" [width]="500">
+	<p-header>
+		<h5 class="title">Cancel Order</h5>
+	</p-header>
+
+	<div *ngIf="loadingMaxOrderTime" class="loading-select-dialog">
+		<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+	</div>
+
+	<div *ngIf="!loadingMaxOrderTime">
+		<label>Select Cancel Reason</label>
+		<p-dropdown
+			[options]="reasons"
+			appendTo="body"
+			styleClass="form-control"
+			filter="true"
+			name="reason"
+			placeholder="Select Cancelation Reason"
+			[(ngModel)]="selectedReasonOrder"
+		>
+		</p-dropdown>
+	</div>
+
+	<ng-container *ngIf="objCancelOrder != null">
+		<div
+			*ngIf="objCancelOrder.CancellationFee != 0"
+			class="alert alert-warning"
+			style="margin-top:15px;margin-bottom:0"
+		>
+			You will get charge Rp {{ objCancelOrder.CancellationFee }} for cancel order
+		</div>
+	</ng-container>
+
+	<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+	<p-footer>
+		<button class="btn btn-default" [disabled]="cancelOrderBtn" (click)="closeCancelOrder()">Close</button>
+		<button
+			class="btn btn-danger"
+			[disabled]="cancelOrderBtn || selectedReasonOrder == null || loadingMaxOrderTime"
+			(click)="cancelOrder()"
+		>
+			<p-progressSpinner
+				*ngIf="cancelOrderBtn"
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+			<span *ngIf="!cancelOrderBtn">Confirm Cancel Order</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Cancel Order -->
+
+<!-- Start Dialog Cancel Reservation -->
+<p-dialog
+	[(visible)]="displayCancelReservation"
+	appendTo="body"
+	[draggable]="false"
+	[modal]="true"
+	[responsive]="true"
+	[width]="500"
+>
+	<p-header>
+		<h5 class="title">Cancel Reservation</h5>
+	</p-header>
+
+	<div *ngIf="loadingMaxOrderTime" class="loading-select-dialog">
+		<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+	</div>
+
+	<div *ngIf="!loadingMaxOrderTime">
+		<label>Select Cancel Reason</label>
+		<p-dropdown
+			[options]="reasons"
+			appendTo="body"
+			styleClass="form-control"
+			filter="true"
+			name="reason"
+			placeholder="Select Cancelation Reason"
+			(onChange)="selectCancelReservation(data[0])"
+			[(ngModel)]="selectedReasonReservation"
+		>
+		</p-dropdown>
+	</div>
+
+	<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+	<ng-container *ngIf="objCancelOrder != null">
+		<div *ngIf="roleId != 'RL-001' && roleId != 'RL-002'">
+			<div
+				*ngIf="objCancelOrder.CancellationFee != 0"
+				class="alert alert-warning"
+				style="margin-top:15px;margin-bottom:0"
+			>
+				You will get charge {{ notifFee }} for cancel reservation
+			</div>
+		</div>
+	</ng-container>
+
+	<p-footer>
+		<button class="btn btn-default" [disabled]="cancelOrderBtn" (click)="closeCancelReservation()">Close</button>
+		<button
+			class="btn btn-danger"
+			[disabled]="cancelReservationBtn || selectedReasonReservation == null || loadingMaxOrderTime"
+			(click)="cancelReservation()"
+		>
+			<p-progressSpinner
+				*ngIf="cancelReservationBtn"
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+			<span *ngIf="!cancelReservationBtn">Confirm Cancel Reservation</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Cancel Reservation -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

@@ -1,0 +1,125 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+.table-order{
+    width: 100%;
+    border: 0;
+    border: 0;
+
+    td{
+        border-bottom: dotted 1px #dfdfdf;
+        padding: 10px 5px;
+        vertical-align: top;
+
+        &.title{
+            width: 160px;
+            font-weight: 700;
+            color: $color-title;
+        }
+
+        &.point{
+            text-align: center;
+            padding-left: 0;
+            padding-right: 0;
+            width: 20px;
+        }
+    }
+
+    tr.input{
+        border: solid 1px #dfdfdf;
+        background: #fff;
+        @extend .panel-shadow;
+
+        td{
+            border: 0;
+            padding: 10px 15px;
+        }
+    }
+
+    tr:first-child{
+        td{
+            border-top: dotted 1px #dfdfdf;
+        }
+    }
+}
+
+.row-order{
+    border-top: solid 1px #efefef;
+    padding: 15px 20px;
+
+    .ui-g{
+        padding: 0;
+    }
+
+    .ui-g-12{
+        padding: 0 15px;
+    }
+}
+
+ul.list-driver{
+    padding: 0 ;
+    margin: 0;
+    list-style: none;
+    display: block !important;
+    width: 100% !important;
+
+    li{
+        text-align: left;
+        margin-bottom: 5px;
+        border: solid 1px #efefef;
+        padding: 5px 10px;
+        @extend .panel-shadow;
+        background: #fff;
+
+        &:last-child{
+            margin-bottom: 0;
+        }
+    }
+}
+
+.box-title{
+    display: block;
+    border: solid 1px #efefef;
+    margin-bottom: -1px;
+    text-align: center;
+    background: #fafafa;
+    font-weight: 500;
+    padding: 15px 15px;
+    color: $color-title;
+}
+
+.box-input{
+    margin-top: 20px;
+    border: solid 1px #efefef;
+    padding: 15px 20px;
+    @include border-radius(4px);
+    background: #fff;
+    @extend .panel-shadow;
+}
+
+.alert.price{
+    padding: 25px 30px;
+}
+
+.price-duration{
+    font-size: 18px;
+}
+
+.loading-select-dialog{
+    padding: 30px 0;
+    text-align: center;
+}
+
+@media(max-width:767px){
+    .row-order{
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .detail-order{
+        margin: 0 -15px;
+    }
+}

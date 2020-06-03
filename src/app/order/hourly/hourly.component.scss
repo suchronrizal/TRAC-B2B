@@ -1,0 +1,505 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+.empty-cart {
+	display: block;
+	padding: 50px 0;
+	text-align: center;
+
+	img {
+		width: 70px;
+		display: block;
+		margin: auto;
+		@include opacity(0.1);
+	}
+
+	.title {
+		display: block;
+		margin: 20px 0 0 0;
+	}
+}
+
+// .item-panel{
+//     width: 650px;
+//     margin-left: auto;
+//     margin-right: auto;
+// }
+
+.btn-option {
+	min-width: 50px;
+	max-width: 70px;
+	text-align: center;
+	padding: 13px 15px;
+}
+
+.table-info {
+	width: 100%;
+	border: dashed 1px #dfdfdf;
+	padding: 15px;
+	border-radius: 4px;
+	@extend .panel-shadow;
+
+	td {
+		padding: 0 5px !important;
+	}
+}
+
+.list-datetime {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+
+	li {
+		display: block;
+		width: 100%;
+		border: solid 1px #efefef;
+		margin-bottom: -1px;
+		@extend .panel-shadow;
+		padding: 10px 15px;
+	}
+}
+
+table {
+	padding: 0;
+	margin: 0;
+
+	tr {
+		td {
+			vertical-align: top;
+			padding: 5px 0;
+
+			&.label {
+				width: 125px;
+				color: $color-title;
+			}
+
+			&.point {
+				width: 20px;
+				text-align: center;
+			}
+
+			strong {
+				color: $color-content;
+			}
+		}
+
+		&:first-child {
+			td {
+				padding-top: 0;
+			}
+		}
+
+		&:last-child {
+			td {
+				padding-bottom: 0;
+				border-bottom: 0;
+			}
+		}
+	}
+}
+
+.table-form {
+	width: 100%;
+	text-align: left;
+	border: solid 1px #efefef;
+
+	thead tr {
+		margin-bottom: 15px;
+
+		th {
+			border: 0;
+			background: #f0f0f0;
+			padding: 10px 15px;
+			color: $color-title;
+			text-align: center;
+
+			&.unit {
+				width: 100px;
+			}
+
+			&.pic {
+				width: 70px;
+			}
+
+			&.eligibility {
+				width: 110px;
+			}
+		}
+	}
+
+	td {
+		border: 0;
+		padding: 2px !important;
+		vertical-align: middle !important;
+
+		&.action {
+			width: 50px;
+			text-align: center;
+		}
+
+		&.checkbox {
+			text-align: center;
+			vertical-align: middle;
+		}
+
+		&.input-time {
+			width: 110px;
+		}
+
+		&.car-type {
+			width: 200px;
+			text-align: center;
+		}
+
+		&.qty {
+			width: 120px;
+		}
+
+		&.empty {
+			text-align: center;
+			padding: 30px !important;
+		}
+	}
+
+	&.table-time {
+		width: 400px;
+	}
+
+	&.peckage {
+		tr td {
+			vertical-align: top !important;
+			border-bottom: solid 1px #efefef;
+
+			&.quantity {
+				text-align: center;
+			}
+
+			&.total {
+				strong {
+					font-size: 18px;
+					color: $color-title;
+				}
+			}
+		}
+	}
+
+	&.car-selection {
+		th {
+			text-align: center;
+		}
+
+		tr td {
+			padding: 10px 5px !important;
+			border-bottom: solid 1px #efefef;
+			vertical-align: top !important;
+		}
+
+		tr:last-child td {
+			border-bottom: 0;
+		}
+	}
+}
+
+.table-info-order {
+	width: 100%;
+	margin-bottom: 20px;
+
+	tr td {
+		padding: 2px 5px;
+
+		&.point {
+			width: 10px;
+			text-align: center;
+		}
+	}
+}
+
+.wrap-btn-calendar {
+	padding: 10px 0;
+	text-align: center;
+}
+
+.table-pickup {
+	border: solid 1px #dfdfdf;
+	width: 100%;
+
+	tr th {
+		background: #fafafa;
+		padding: 10px !important;
+		border-bottom: solid 1px #dfdfdf;
+		min-width: 100px;
+	}
+
+	tr td {
+		padding: 10px !important;
+		vertical-align: top !important;
+		border-right: solid 1px #dfdfdf;
+		min-width: 100px;
+
+		&.number {
+			width: 50px;
+		}
+	}
+}
+
+.empty-cars,
+.empty-peckage {
+	padding: 15px;
+	text-align: center;
+	font-style: italic;
+}
+
+.wrap-loading-content.inline {
+	padding: 0 !important;
+	min-height: 0;
+}
+
+.list-contract {
+	margin-bottom: -1px;
+	padding: 0 !important;
+
+	.table-form {
+		margin-bottom: 0;
+	}
+}
+
+.empty-contract {
+	display: block;
+	text-align: center;
+	border: solid 1px #efefef;
+	padding: 25px 30px;
+	@include border-radius(4px);
+
+	img {
+		width: 70px;
+		display: block;
+		margin: 0 auto 10px;
+		@include opacity(0.5);
+	}
+
+	p {
+		margin-bottom: 0;
+	}
+}
+
+.box-table {
+	border: solid 1px #efefef;
+	border-bottom: 0;
+	padding: 15px;
+	text-align: center;
+	font-weight: bold;
+	color: $color-title;
+	display: none;
+	@include border-radius(4px 4px 0 0);
+}
+
+@media (max-width: 760px) {
+	.box-table {
+		display: block;
+	}
+
+	.table-form.passengger {
+		display: block;
+		padding: 0;
+		border: 0;
+
+		th {
+			display: none;
+		}
+
+		thead {
+			display: none;
+		}
+
+		tbody,
+		tr,
+		td {
+			display: block;
+			width: 100%;
+		}
+
+		tr {
+			padding: 5px;
+			border: solid 1px #efefef;
+			margin-bottom: 10px;
+			background: #fff;
+			@include border-radius(0 0 4px 4px);
+
+			td {
+				&.checkbox {
+					padding: 5px !important;
+					text-align: left;
+
+					&:after {
+						content: 'Car Options';
+						font-weight: 700;
+						color: $color-title;
+						padding-left: 5px;
+					}
+				}
+
+				&.action {
+					width: 100%;
+					padding: 10px 0;
+					text-align: center;
+
+					button {
+						margin: auto;
+						display: block;
+					}
+				}
+			}
+		}
+	}
+
+	.table-form.peckage {
+		display: block;
+		padding: 0;
+		border: 0;
+		@include border-radius(4px);
+		overflow: hidden;
+
+		th {
+			display: none;
+		}
+
+		thead {
+			display: none;
+		}
+
+		tbody,
+		tr,
+		td {
+			display: block;
+			width: 100%;
+
+			&.hide-sm {
+				display: none;
+			}
+		}
+
+		tr {
+			padding: 0;
+			border: solid 1px #efefef;
+			border-bottom: solid 10px #efefef;
+			background: #fff;
+
+			&:last-child {
+				border-bottom: solid 1px #efefef;
+			}
+
+			&.small-border {
+				border-width: 1px;
+			}
+
+			td {
+				padding: 10px 15px !important;
+				border-bottom: dotted 1px #efefef;
+
+				&:before {
+					content: attr(data-title);
+					font-weight: 700;
+					color: $color-title;
+					margin-right: 10px;
+				}
+
+				&.checkbox {
+					text-align: left;
+
+					&:before {
+						display: none;
+					}
+
+					&:after {
+						content: 'Select packages';
+						font-weight: 700;
+						color: $color-title;
+						padding-left: 5px;
+					}
+				}
+
+				&.quantity {
+					text-align: left;
+				}
+
+				&:last-child {
+					border: 0;
+				}
+			}
+		}
+	}
+
+	.table-form.car-selection {
+		display: block;
+		padding: 0;
+		border: 0;
+
+		th {
+			display: none;
+		}
+
+		thead {
+			display: none;
+		}
+
+		tbody,
+		tr,
+		td {
+			display: block;
+			width: 100%;
+		}
+
+		tr {
+			padding: 5px;
+			border: solid 1px #efefef;
+			margin-bottom: 10px;
+			background: #fff;
+			@include border-radius(0 0 4px 4px);
+
+			td {
+				border: 0;
+
+				&.car-type {
+					padding: 0;
+					background: #f0f0f0;
+					color: $color-title;
+				}
+
+				&.action {
+					padding: 0;
+					margin-top: -20px;
+					border: 0;
+
+					strong {
+						color: $color-title;
+					}
+				}
+			}
+		}
+	}
+}
+.txt-city {
+	margin-top: 32px;
+	color: #999999;
+	font-size: 12px;
+}
+.sub-txt-city {
+	margin-top: -9px;
+	color: #999999;
+	font-size: 12px;
+}
+.text-danger {
+	font-size: 10px;
+	color: #dd1044;
+	font-style: italic;
+	margin-top: -5px;
+	padding: 0px 0px 0px 7px;
+}
+
+input.invalidPhone {
+	color: red !important;
+	border: 1px solid red !important;
+}

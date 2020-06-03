@@ -1,0 +1,174 @@
+.btn{
+    padding: 14px 20px;
+    min-width: 120px;
+    border: solid 1px #efefef;
+    font-size: 14px;
+    font-family: $font-family;
+    cursor: pointer;
+    @include transition("all 0.3s ease-in-out");
+    @include border-radius(4px);
+    @extend .panel-shadow;
+    outline: 0;
+    text-decoration: none !important;
+
+    .icon-left{
+        margin-right: 5px;
+    }
+
+    .icon-right{
+        margin-left: 5px;
+    }
+
+    &.btn-default{
+        background: #fff;
+        color: $color-content;
+
+        &:hover{
+            background-color: #f5f5f5;
+        }
+    }
+
+    &.btn-primary{
+        background: $color-primary;
+        color: #fff;
+        border: solid 1px $color-primary;
+        @extend .panel-shadow;
+
+        &:hover{
+            background-color: $color-primary2;
+        }
+    }
+
+    &:disabled{
+        background: #efefef !important;
+        color: $color-content !important;
+        border: solid 1px #dfdfdf !important;
+        @include opacity(.8);
+        cursor: default !important;
+    }
+
+    &.btn-danger{
+        background: #e74c3c;
+        border: solid 1px #e74c3c;
+        color: #fff;
+
+        &:hover{
+            background-color: #c0392b;
+            border: solid 1px #c0392b;
+        }
+    }
+
+    &.btn-sm{
+        padding: 10px 15px;
+        min-width: 50px;
+    }
+
+    .ui-progress-spinner{
+        margin-top: -10px;
+        margin-bottom: -10px;
+    }
+
+    &.btn-block{
+        display: block;
+        width: 100%;
+    }
+
+}
+
+.btn-icon{
+    border: solid 1px #efefef;
+    display: table-cell;
+    width: 35px;
+    height: 35px;
+    padding: 0 0 2px 0;
+    background: #fff;
+    margin: 0;
+    outline: 0;
+    vertical-align: middle;
+    cursor: pointer;
+    color: $color-content;
+    @include border-radius(50%);
+
+    &:hover{
+        background-color: $color-primary;
+        color: #fff;
+        border: solid 1px $color-primary2;
+    }
+
+    &.btn-danger{
+        background: #e74c3c !important;
+        border: solid 1px #e74c3c !important;
+        color: #fff !important;
+
+        &:hover{
+            background-color: #c0392b !important;
+            border: solid 1px #c0392b !important;
+        }
+
+        &:disabled:hover{
+            background: #efefef !important;
+            border: solid 1px #dfdfdf !important;
+        }
+    }
+
+    &.style-input{
+        height: 49px;
+        width: 49px;
+        min-width: 49px;
+
+        &.half{
+            height: 35px;
+            width: 35px;
+            min-width: 35px;
+        }
+    }
+
+    &:disabled{
+        background: #efefef !important;
+        color: $color-content !important;
+        border: solid 1px #dfdfdf !important;
+        @include opacity(.8);
+        cursor: default;
+    }
+
+    .fa-list-ul{
+        font-size: 14px;
+    }
+}
+
+.btn-circle{
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border: solid 1px #efefef;
+    margin: 0;
+    outline: 0;
+    cursor: pointer;
+    color: $color-content;
+    @include border-radius(50%);
+
+    &:hover{
+        background-color: $color-primary;
+        color: #fff;
+        border: solid 1px $color-primary2;
+    }
+
+    &.btn-primary{
+        background: $color-primary;
+        color: #fff;
+        border: solid 1px $color-primary;
+        @extend .panel-shadow;
+
+        &:hover{
+            background-color: $color-primary2;
+        }
+    }
+
+    &:disabled{
+        background: #efefef !important;
+        color: $color-content !important;
+        border: solid 1px #dfdfdf !important;
+        @include opacity(.8);
+        cursor: default;
+    }
+}

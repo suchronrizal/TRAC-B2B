@@ -1,0 +1,135 @@
+.ui-panelmenu{
+
+    .ui-panelmenu-panel{
+        position: relative;
+        border-top: solid 1px #f0f0f0;
+        border-bottom: solid 1px #f0f0f0;
+        margin-bottom: -1px;
+    }
+
+    .ui-menuitem-text{
+        padding-left: 20px;
+        padding-right: 50px;
+        display: block;
+        letter-spacing: .3px;
+        color: #fff;
+    }
+
+    .ui-panelmenu-header{
+        min-height: 30px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+
+        &.ui-state-active,
+        &:hover{
+            .ui-menuitem-icon,
+            .ui-panelmenu-icon,
+            .ui-menuitem-text{
+                color: $color-title;
+            }
+        }
+    }
+
+    .ui-menuitem-icon{
+        color: #627182;
+        position: absolute;
+        right: 24px;
+        top: 30px;
+        font-size: 16px;
+        margin-top: -8px;
+        @include opacity(.7);
+    }
+
+    // .ui-menuitem-icon{
+    //     color: #627182;
+    //     position: absolute;
+    //     right: 30px;
+    //     top: 50%;
+    //     font-size: 14px;
+    //     margin-top: -7px;
+    // }
+
+    .ui-panelmenu-icon{
+        position: absolute;
+        font-size: 18px;
+        right: 20px;
+        top: 22px;
+        color: #627182;
+        display: none;
+
+        &.fa-caret-right:before{
+            content: "\f104";
+        }
+
+        &.fa-caret-down:before{
+            content: "\f107";
+        }
+    }
+
+    
+    a.ui-state-active .ui-menuitem-text{
+        color: $color-primary !important;
+    }
+}
+
+.ui-panelmenu-content{
+    background: $bg-base;
+    font-size: 13px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    .ui-menuitem{
+
+        .ui-menuitem-link{
+            text-indent: 0;
+            padding: 10px 7px;
+
+            .ui-menuitem-text:hover{
+                color: $color-title;
+            }
+        }
+    }
+
+    .fa{
+        font-size: 8px;
+        top: 7px;
+        left: 23px;
+        color: #cfcfcf;
+    }
+}
+
+.wrapper.on{
+    .ui-panelmenu{
+        .ui-menuitem-text{
+            padding-left: 50px;
+            color: #627182;
+        }
+
+        .ui-menuitem-icon{
+            left: 24px;
+        }
+
+        .ui-panelmenu-icon{
+            display: block;
+        }
+    }
+}
+
+@media(max-width:1024px){
+    .wrapper{
+        .ui-panelmenu{
+            .ui-menuitem-text{
+                padding-left: 50px;
+                color: #627182 !important;
+            }
+    
+            .ui-menuitem-icon{
+                left: 24px;
+            }
+    
+            .ui-panelmenu-icon{
+                display: block;
+            }
+        }
+    }
+}

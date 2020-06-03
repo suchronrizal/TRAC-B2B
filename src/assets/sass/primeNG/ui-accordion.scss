@@ -1,0 +1,101 @@
+.ui-accordion{
+    border: solid 1px #efefef;
+    border-bottom: 0;
+
+    .ui-accordion-header{
+        border-bottom: solid 1px #efefef;
+        padding: 0;
+
+        a{
+            position: relative;
+            color: $color-title;
+            text-decoration: none !important;
+            padding: 15px 25px 15px 30px;
+            overflow: hidden;
+
+            .ui-accordion-toggle-icon{
+                background: #efefef;
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 53px;
+                width: 30px;
+                text-align: center;
+                padding-top: 20px;
+            }
+        }
+    }
+    
+    .ui-accordion-content{
+        border-bottom: solid 1px #efefef;
+        padding: 20px 25px;
+    }
+
+    &.order{
+        background: #fff;
+        overflow: hidden;
+        @extend .panel-shadow;
+        @include border-radius(5px);
+
+        .ui-accordion-header{
+            a{
+                padding: 15px 25px 15px 30px;
+            }
+        }
+
+        // border-left: 0;
+        // border-right: 0;
+
+        // > [class*='ng-tns-']{
+        //     display: block;
+        //     @extend .panel-shadow;
+
+        //     .ui-accordion-header{
+
+        //         a{
+        //             padding: 15px 25px 15px 40px;
+        //         }
+
+        //         .fa:before{
+        //             font-size: 18px;
+        //             content: "\f096";
+        //             color: $color-primary;
+        //         }
+    
+        //         &.ui-state-active {
+        //             .fa:before{
+        //                 content: "\f046";
+        //             }
+        //         }
+        //     }
+
+        //     .ui-accordion-content{
+        //         border: solid 1px #efefef;
+        //         border-top: 0;
+        //     }
+        // }
+    }
+
+    &.payment{
+        border-left: 0;
+        border-right: 0;
+
+        .ui-accordion-header{
+            a{
+                padding: 15px 25px 15px 40px;
+            }
+
+            .fa:before{
+                font-size: 18px;
+                content: "\f096";
+                color: $color-primary;
+            }
+
+            &.ui-state-active {
+                .fa:before{
+                    content: "\f046";
+                }
+            }
+        }
+    }
+}

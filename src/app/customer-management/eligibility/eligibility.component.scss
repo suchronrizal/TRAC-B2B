@@ -1,0 +1,16 @@
+.table-form{
+    width: 90%;
+
+    tr th,
+    tr td{
+        &.unit-type{
+            width: 150px;
+        }
+        &.all{
+            width: 70px;
+        }
+        &.counter{
+            width: 120px;
+        }
+    }
+}

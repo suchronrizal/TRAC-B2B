@@ -1,0 +1,482 @@
+<div class="wrap-panel">
+	<!-- Start Item Panel -->
+	<div class="item-panel">
+		<div class="head-panel">
+			<div class="ui-g">
+				<div class="ui-g-12 ui-md-6">
+					<h5 class="title has-input">Report Billing Table</h5>
+				</div>
+				<div class="ui-g-12 ui-md-6 text-right">
+					<button class="btn btn-default" (click)="download.toggle($event)">
+						<span class="fa fa-download icon-left"></span> Download File
+					</button>
+					<button class="btn btn-default" (click)="op.toggle($event)">
+						<span class="fa fa-toggle-off icon-left"></span> Toggle Column
+					</button>
+					<!-- <div class="ui-inputgroup">
+						<input type="text" #gb class="form-control input-sm" placeholder="Global Search">   
+						<span class="ui-inputgroup-addon"><i class="fa fa-search"></i></span>      
+					</div> -->
+				</div>
+			</div>
+		</div>
+		<div class="body-panel">
+			<div class="ui-g custom">
+				<div class="ui-g-12 ui-md-6">
+					<div class="ui-g-12 ui-md-4">
+						<p-dropdown
+							*ngIf="dataUser.RoleId == 'RL-001' || dataUser.RoleId == 'RL-002' || dataUser.RoleId == 'RL-006'"
+							[filter]="true"
+							[options]="customers"
+							styleClass="form-control"
+							placeholder="Select Customer"
+							[(ngModel)]="selectedCustomer"
+							appendTo="body"
+						>
+						</p-dropdown>
+					</div>
+					<div class="ui-g-12 ui-md-4">
+						<p-dropdown
+							[options]="invoiceStateList"
+							styleClass="form-control"
+							placeholder="Select Invoice State"
+							[(ngModel)]="selectedInvoiceState"
+						>
+						</p-dropdown>
+					</div>
+					<div class="ui-g-12 ui-md-4">
+						<p-calendar
+							name="selectDate"
+							readonlyInput="true"
+							inputStyleClass="form-control"
+							dateFormat="d M yy"
+							selectionMode="range"
+							[(ngModel)]="selectedDate"
+							[monthNavigator]="true"
+							[yearNavigator]="true"
+							yearRange="2000:2030"
+							placeholder="Select range date"
+							[maxDate]="maxDateValue"
+							appendTo="body"
+						></p-calendar>
+						<span *ngIf="errorHandling.errStatus" class="error ng-star-inserted">{{ errorHandling.msg }}</span>
+					</div>
+					<!-- <button class="btn btn-default" (click)="resetFilter()"><span class="fa fa-refresh icon-left"></span> Reset Filter</button>	 -->
+				</div>
+				<div class="ui-g-12 ui-md-6">
+					<div class="ui-g-12 ui-md-6">
+						<p-dropdown
+							[options]="categoryFilter"
+							styleClass="form-control"
+							placeholder="Category Filter"
+							[(ngModel)]="selectedCateogryFilter"
+						>
+						</p-dropdown>
+					</div>
+					<div class="ui-g-12 ui-md-6">
+						<input
+							type="text"
+							class="form-control"
+							name="globalSearchValue"
+							placeholder="Search value"
+							[(ngModel)]="searchValue"
+							[disabled]="selectedCateogryFilter == null || selectedCateogryFilter.length == 0"
+						/>
+					</div>
+				</div>
+				<div class="ui-g-12 ui-md-4" style="margin-left: 10px">
+					<button class="btn btn-primary" (click)="searchAll($event)" style="min-width: 70px!important;">
+						<span class="fa fa-search"></span>
+					</button>
+					<button class="btn btn-default" (click)="resetFilter($event)" style="min-width: 70px!important;">
+						<span class="fa fa-refresh"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="body-panel table-panel">
+			<!-- Start Table -->
+			<p-dataTable
+				[value]="data"
+				[loading]="loading"
+				[rows]="20"
+				[paginator]="false"
+				[pageLinks]="3"
+				[responsive]="true"
+				[rowStyleClass]="lookupRowStyleClass"
+				#dt
+			>
+				<p-column
+					*ngFor="let column of cols"
+					[hidden]="!column.checked"
+					[field]="column.field"
+					[header]="column.header"
+					[sortable]="column.sortable"
+					[filterMatchMode]="column.filterMatchMode"
+				>
+					<!-- Start Filter -->
+					<ng-template pTemplate="filter" let-col>
+						<ng-container [ngTemplateOutlet]="column.ref" [ngTemplateOutletContext]="col"> </ng-container>
+					</ng-template>
+					<!-- End Filter -->
+				</p-column>
+
+				<!-- Start Price Column -->
+				<p-column header="Options" styleClass="text-center" [style]="{ width: '160px' }">
+					<ng-template let-col="rowData" pTemplate="body">
+						<button class="btn-icon" (click)="viewItem(col)" pTooltip="View Billing" tooltipPosition="left">
+							<span class="fa fa-search"></span>
+						</button>
+						<button class="btn-icon" (click)="selectUpdate(col)" pTooltip="Update Billing" tooltipPosition="left">
+							<span class="fa fa-gear"></span>
+						</button>
+						<button
+							*ngIf="col.StatusInvoice != 'INV-003'"
+							class="btn-icon"
+							(click)="confirmDisplay(col)"
+							pTooltip="Confirm Payment"
+							tooltipPosition="left"
+						>
+							<span class="fa fa-check-square-o"></span>
+						</button>
+					</ng-template>
+				</p-column>
+				<!-- End Year Column -->
+			</p-dataTable>
+			<!-- End Table -->
+			<div class="body-panel padding-clear">
+				<div *ngIf="loading" class="blockUI"></div>
+				<p-paginator
+					#p
+					pageLinkSize="3"
+					[rows]="pageRows"
+					styleClass="hide-dropdown"
+					dropdownAppendTo="body"
+					[totalRecords]="totalRecords"
+					(onPageChange)="paginate($event)"
+					[rowsPerPageOptions]="[10, 20, 30]"
+				>
+				</p-paginator>
+			</div>
+		</div>
+	</div>
+	<!-- End Item Panel -->
+</div>
+<!-- Start Filter Contains -->
+<!-- <ng-template #filterSearch let-field="field" let-filterMatchMode="filterMatchMode">
+	<input type="text" 
+		placeholder="Search"
+		ngModel 
+		class="form-control margin-top10"
+		(ngModelChange)="dt.filter($event,field,filterMatchMode)"/>
+</ng-template> -->
+<!-- End Filter Contains -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel" #op>
+	<ul class="clear-list">
+		<li *ngFor="let col of cols">
+			<p-checkbox
+				[disabled]="col.disableCol"
+				[value]="col.field"
+				[label]="col.header"
+				[(ngModel)]="selectedValues"
+				(onChange)="checkBox(col)"
+			>
+			</p-checkbox>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dropdown -->
+<p-overlayPanel appendTo="body" styleClass="dropdown-panel padding-clear" #download>
+	<ul class="clear-list link">
+		<li>
+			<a (click)="downloadCSV()"><span class="fa fa-download"></span> Download CSV</a>
+		</li>
+		<li>
+			<a (click)="downloadXLS()"><span class="fa fa-download"></span> Download XLS</a>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown -->
+
+<!-- Start Dialog Remove -->
+<p-dialog [(visible)]="displayConfirm" appendTo="body" [draggable]="false" [modal]="true" [width]="400">
+	<p-header>
+		<h5 class="title">{{ invoiceCode }}</h5>
+	</p-header>
+	Are you sure ?
+
+	<!-- Masseage Error -->
+	<p-growl [(value)]="msgs"></p-growl>
+
+	<p-footer>
+		<button class="btn btn-default" (click)="closeDialogConfirm()">Cancel</button>
+		<button class="btn btn-danger" (click)="confirmPayment()">
+			<p-progressSpinner
+				*ngIf="loading"
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+			<span *ngIf="!loading">Paid</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Remove -->
+
+<!-- Start Dialog Detail Invoice -->
+<p-dialog [(visible)]="displayDetailInvoice" appendTo="body" [draggable]="false" [modal]="true" [width]="widthDetail">
+	<p-header>
+		<h5 class="title">Detail Invoice {{ detailInvoice }}</h5>
+	</p-header>
+
+	<table *ngIf="isViewDetail" width="100%">
+		<tr>
+			<td>Invoice Number</td>
+			<td>:</td>
+			<td>{{ selectedDetail.InvoiceCode }}</td>
+		</tr>
+		<tr>
+			<td>Reservation Code</td>
+			<td>:</td>
+			<td>{{ selectedDetail.ReservationCode }}</td>
+		</tr>
+		<tr>
+			<td>Reservation Date</td>
+			<td>:</td>
+			<td>{{ selectedDetail.ReservationDate }}</td>
+		</tr>
+		<tr>
+			<td class="label">SAP Contract</td>
+			<td>:</td>
+			<td>{{ selectedDetail.ContractSAPCode }}</td>
+		</tr>
+		<tr>
+			<td>Document Number</td>
+			<td>:</td>
+			<td>{{ selectedDetail.PONumber }}</td>
+		</tr>
+		<tr>
+			<td>PO Date</td>
+			<td>:</td>
+			<td>{{ selectedDetail.PODate }}</td>
+		</tr>
+		<tr>
+			<td>SAP Code Material</td>
+			<td>:</td>
+			<td>{{ selectedDetail.MaterialSAPCode }}</td>
+		</tr>
+		<tr>
+			<td>Description</td>
+			<td>:</td>
+			<td>{{ selectedDetail.Description }}</td>
+		</tr>
+		<tr>
+			<td>Price</td>
+			<td>:</td>
+			<td>{{ selectedDetail.Price }}</td>
+		</tr>
+		<tr>
+			<td>Extend Price</td>
+			<td>:</td>
+			<td>{{ selectedDetail.PriceExtend }}</td>
+		</tr>
+		<tr>
+			<td>OLC Rate</td>
+			<td>:</td>
+			<td>{{ selectedDetail.PriceOLC }}</td>
+		</tr>
+		<tr>
+			<td>Trip Rate</td>
+			<td>:</td>
+			<td>{{ selectedDetail.PriceTrip }}</td>
+		</tr>
+		<tr>
+			<td>Quantity OLC</td>
+			<td>:</td>
+			<td>{{ selectedDetail.QuantityOLC }}</td>
+		</tr>
+		<tr>
+			<td>Quantity Trip</td>
+			<td>:</td>
+			<td>{{ selectedDetail.QuantityTrip }}</td>
+		</tr>
+		<tr>
+			<td>Total Day</td>
+			<td>:</td>
+			<td>{{ selectedDetail.TotalDay }}</td>
+		</tr>
+		<tr>
+			<td>Total Extend</td>
+			<td>:</td>
+			<td>{{ selectedDetail.TotalExtend }}</td>
+		</tr>
+	</table>
+
+	<table *ngIf="selectedInvoice != null && !isViewDetail" class="table-dialog">
+		<thead>
+			<tr>
+				<th>Invoice Code</th>
+				<th>Reservation Code</th>
+				<th>Options</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let invoice of selectedInvoice.invoice_detail">
+				<td>{{ invoice.InvoiceCode }}</td>
+				<td>{{ invoice.ReservationCode }}</td>
+				<td>
+					<button (click)="selectDetail(invoice)" class="btn-icon"><span class="fa fa-list-ul"></span></button>
+					<button (click)="viewOrderInvoice(invoice)" class="btn-icon"><span class="fa fa-gear"></span></button>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4" *ngIf="selectedInvoice.invoice_detail.length == 0" class="padding-top30 padding-bottom30">
+					<small>Empty invoice detail</small>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p-footer>
+		<div class="ui-g">
+			<div class="ui-g-6 text-left">
+				<button class="btn btn-default" *ngIf="isViewDetail" (click)="backToListDetail()">
+					Back
+				</button>
+			</div>
+			<div class="ui-g-6">
+				<button class="btn btn-default" *ngIf="!isViewDetail" (click)="displayDetailInvoice = false">Close</button>
+			</div>
+		</div>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Detail Invoice -->
+
+<!-- Start Dialog Continue Payment -->
+<p-dialog [(visible)]="displayupdateBilling" appendTo="body" [draggable]="false" [modal]="true" [width]="600">
+	<p-header>
+		<h5 class="title">Update Billing</h5>
+	</p-header>
+	<!-- Start Form -->
+	<form #formRef="ngForm">
+		<div class="margin-bottom20">
+			<label>Billing SAP Code</label>
+			<input
+				type="text"
+				class="form-control"
+				name="BillingSAPCode"
+				[(ngModel)]="BillingSAPCode"
+				#BillingSAPCodeRef="ngModel"
+				required
+				placeholder="Billing SAP Code"
+			/>
+			<span class="error" *ngIf="BillingSAPCodeRef.errors?.required && BillingSAPCodeRef.touched"
+				>This field is required</span
+			>
+		</div>
+		<div class="margin-bottom10">
+			<label>Tax Invoice Number</label>
+			<input
+				type="text"
+				class="form-control"
+				name="FakturPajak"
+				[(ngModel)]="FakturPajak"
+				#FakturPajakRef="ngModel"
+				required
+				placeholder="Tax Invoice Number"
+			/>
+			<span class="error" *ngIf="FakturPajakRef.errors?.required && FakturPajakRef.touched"
+				>This field is required</span
+			>
+		</div>
+	</form>
+	<!-- End Form -->
+
+	<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+	<p-footer>
+		<button class="btn btn-default" [disabled]="updateBillingBtn" (click)="closeupdateBilling()">Close</button>
+		<button
+			class="btn btn-primary"
+			[disabled]="updateBillingBtn || formRef.invalid"
+			(click)="submitupdateBilling(formRef.value)"
+		>
+			<p-progressSpinner
+				*ngIf="updateBillingBtn"
+				strokeWidth="5"
+				[style]="{ width: '30px', height: '30px' }"
+			></p-progressSpinner>
+			<span *ngIf="!updateBillingBtn">Submit</span>
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Continue Payment -->
+
+<!-- Start Dialog Show List Order -->
+<p-dialog [(visible)]="displayListOrder" appendTo="body" [draggable]="false" [modal]="true" [width]="800">
+	<p-header>
+		<h5 class="title">
+			Update Reservation <span *ngIf="selectedReservation != null">{{ selectedReservation.ReservationCode }}</span>
+		</h5>
+	</p-header>
+
+	<!-- Start Progressbar -->
+	<div *ngIf="loadingListORder" class="wrap-loading-bar">
+		<div class="content">
+			<p-progressSpinner strokeWidth="5" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+		</div>
+	</div>
+	<!-- Start Progressbar -->
+
+	<!-- Start Table -->
+	<table *ngIf="!loadingListORder" class="table-dialog">
+		<thead>
+			<tr>
+				<th>No</th>
+				<th>Booking Order Id</th>
+				<th>Update SO Number</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let itemOrder of listOrder; let i = index">
+				<td>{{ i + 1 }}</td>
+				<td>{{ itemOrder.BookingOrderId }}</td>
+				<td class="input-so-number">
+					<input class="form-control" [(ngModel)]="itemOrder.NumberSO" placeholder="Enter SO Number" />
+					<button
+						class="btn btn-default"
+						[disabled]="itemOrder.NumberSO == null || itemOrder.NumberSO == '' || itemOrder.submitButton"
+						(click)="updateSONumber(itemOrder)"
+					>
+						<p-progressSpinner
+							*ngIf="itemOrder.submitButton"
+							strokeWidth="5"
+							[style]="{ width: '30px', height: '30px' }"
+						></p-progressSpinner>
+						<span *ngIf="!itemOrder.submitButton">Update</span>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" *ngIf="listOrder.length == 0" class="padding-top30 padding-bottom30">
+					<small>Empty order</small>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- End Table -->
+
+	<p-growl [(value)]="msgs" [life]="3000"></p-growl>
+
+	<p-footer>
+		<div class="text-left">
+			<button class="btn btn-default" [disabled]="onUpdateSONumber" (click)="closeListOrder()">Back</button>
+		</div>
+	</p-footer>
+</p-dialog>
+<!-- End Dialog Show List Order -->
+
+<p-growl [(value)]="msgs" [life]="3000"></p-growl>

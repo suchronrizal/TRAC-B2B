@@ -1,0 +1,30 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+.toggle-input{
+    position: absolute;
+    right: 15px;
+    top: 35px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #ccc;
+
+    &:before{
+        content: "\f070";
+    }
+
+    &.open:before{
+        content: "\f06e";
+    }
+
+    &:hover{
+        color: $color-primary;
+    }
+}
+
+.input-password{
+    padding-right: 25px;
+}

@@ -1,0 +1,336 @@
+<div class="wrap-header" [class.onshowbrand]="!showBrand">
+	<!-- Menu Bar -->
+	<a class="menubar" (click)="toggleMenu()"><span class="fa fa-bars"></span></a>
+
+	<div class="pull-right" [class.onshowbrand]="!showBrand">
+		<!-- Start Author -->
+		<div class="author">
+			<a (click)="user.toggle($event)">
+				<span>{{ fullName }}</span>
+				<img src="./assets/images/user.png" alt="" />
+			</a>
+		</div>
+		<!-- End Author -->
+		<!-- <a class="sliders" (click)="display = !display"><span class="fa fa-sliders"></span></a> -->
+	</div>
+
+	<!-- Start Header -->
+	<div class="header" *ngIf="showBrand">
+		<a routerLink="/"><img src="./assets/images/brand.png" alt=""/></a>
+	</div>
+	<!-- End Header -->
+
+	<!-- Start Tools -->
+	<!-- <ul class="tools">
+        <li>
+            <a (click)="notif.toggle($event)">
+                <span class="badge">1</span>
+                <span class="fa fa-globe"></span>
+            </a>
+        </li>
+        <li>
+            <a (click)="order.toggle($event)">
+                <span *ngIf="totalOrder != 0" class="badge">{{totalOrder}}</span>
+                <span class="fa fa-shopping-cart"></span>
+            </a>
+        </li>
+    </ul> -->
+	<!-- End Tools -->
+
+	<!-- Start Search -->
+	<!-- <a class="search" (click)="displayFullscreen = true">
+        <span class="fa fa-search"></span> Type anywhere to <strong>Search</strong>
+    </a> -->
+	<!-- End Search -->
+</div>
+
+<!-- Start Dropdown User -->
+<p-overlayPanel #user appendTo="body" styleClass="users">
+	<ul class="list-user">
+		<li>
+			<a (click)="displayProfile = true"><span class="fa fa-gear"></span>Profile</a>
+		</li>
+		<li *ngIf="(RoleId == 'RL-007' || RoleId == 'RL-008') && isBudget == 'PS0002'">
+			<a (click)="openSaldo()"><span class="fa fa-money"></span>Saldo</a>
+		</li>
+		<li class="logout" [class.center]="onLogout">
+			<p-progressSpinner
+				*ngIf="onLogout"
+				strokeWidth="5"
+				[style]="{ width: '20px', height: '20px' }"
+			></p-progressSpinner>
+
+			<a *ngIf="!onLogout" (click)="logout()"> <span class="fa fa-power-off"></span>Logout </a>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Dropdown User -->
+
+<!-- Start Overlay Order -->
+<p-overlayPanel #order appendTo="body" styleClass="notif">
+	<ul class="notifications">
+		<li class="unread">
+			<a href="#">
+				<img src="./assets/images/icons/STID-003.png" alt="" width="15" />
+				Danger Notification
+				<span class="time">2 x</span>
+			</a>
+		</li>
+		<li class="unread">
+			<a href="#">
+				<img src="./assets/images/icons/STID-003.png" alt="" width="15" />
+				Danger Notification
+				<span class="time">2 x</span>
+			</a>
+		</li>
+		<li class="unread">
+			<a href="#">
+				<img src="./assets/images/icons/STID-003.png" alt="" width="15" />
+				Danger Notification
+				<span class="time">2 x</span>
+			</a>
+		</li>
+	</ul>
+</p-overlayPanel>
+<!-- End Overlay Order -->
+
+<!-- Start Overlay Notification -->
+<p-overlayPanel #notif appendTo="body" styleClass="notif">
+	<ul class="notifications">
+		<li class="unread">
+			<a href="#">
+				<span class="fa fa-warning"></span>
+				Danger Notification
+				<small class="time">2 mins ago</small>
+			</a>
+		</li>
+		<li class="danger">
+			<a href="#">
+				<span class="fa fa-warning"></span>
+				Danger Notification
+				<small class="time">2 mins ago</small>
+			</a>
+		</li>
+		<li class="warning">
+			<a href="#">
+				<span class="fa fa-warning"></span>
+				Warning Notification
+				<small class="time">Yesterday</small>
+			</a>
+		</li>
+		<li class="info unread">
+			<a href="#">
+				<img src="./assets/images/avatar.jpg" alt="" />
+				Info Notification
+				<small class="time">Yesterday</small>
+			</a>
+		</li>
+	</ul>
+	<a href="#" class="more-notif">Read all notifications</a>
+</p-overlayPanel>
+<!-- End Overlay Notification -->
+
+<!-- Start Sidebar -->
+<p-sidebar [(visible)]="display" styleClass="sideheader" position="right" appendTo="body">
+	<p-tabView styleClass="tabsidebar">
+		<p-tabPanel header="Notes">
+			Content 1
+		</p-tabPanel>
+		<p-tabPanel header="Alert">
+			Content 2
+		</p-tabPanel>
+		<p-tabPanel header="Chat">
+			Content 3
+		</p-tabPanel>
+	</p-tabView>
+</p-sidebar>
+<!-- End Sidebar -->
+
+<!-- Start Fullscreen -->
+<p-sidebar [(visible)]="displayFullscreen" [fullScreen]="true" appendTo="body">
+	asdasd
+</p-sidebar>
+<!-- End Fullscreen -->
+
+<!-- Start Profile -->
+<p-dialog
+	[(visible)]="displayProfile"
+	appendTo="body"
+	[draggable]="false"
+	[modal]="true"
+	width="500"
+	[responsive]="true"
+>
+	<p-header>
+		<h5 class="title">Profile Setting</h5>
+	</p-header>
+
+	<table *ngIf="dataUser != undefined" class="table-user" cellpadding="0" cellspacing="0">
+		<tr>
+			<td class="name">Fullname</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.FirstName }} {{ dataUser.LastName }}</td>
+		</tr>
+		<tr>
+			<td class="name">Username</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.Username }}</td>
+		</tr>
+		<tr>
+			<td class="name">Email Corp</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.EmailCorp }}</td>
+		</tr>
+		<tr>
+			<td class="name">Email Personal</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.EmailPersonal }}</td>
+		</tr>
+		<tr>
+			<td class="name">No Handphone</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.NoHandphone }}</td>
+		</tr>
+		<tr>
+			<td class="name">No Telp</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.NoTelp }}</td>
+		</tr>
+		<tr>
+			<td class="name">Address</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.Address }}</td>
+		</tr>
+		<tr>
+			<td class="name">Gender</td>
+			<td class="point">:</td>
+			<td>{{ dataUser.Gender == '1' ? 'Male' : 'Female' }}</td>
+		</tr>
+		<tr>
+			<td class="name">Status</td>
+			<td class="point">:</td>
+			<td>
+				<span *ngIf="dataUser.Status == '1'" class="fa fa-check success"></span>
+				<span *ngIf="dataUser.Status != '1'" class="fa fa-times danger"></span>
+			</td>
+		</tr>
+		<tr>
+			<td class="name">Company Name</td>
+			<td class="point">:</td>
+			<td>
+				{{ (dataUser.UserCompanyMapping[0] && dataUser.UserCompanyMapping[0].CompanyName) || '-' }}
+			</td>
+		</tr>
+	</table>
+
+	<p-footer>
+		<button class="btn btn-default" (click)="displayProfile = false">
+			Close
+		</button>
+	</p-footer>
+</p-dialog>
+<!-- End Top Up saldo -->
+
+<p-dialog [(visible)]="displaySaldo" appendTo="body" [draggable]="false" [modal]="true" [responsive]="true">
+	<p-header>
+		<h5 class="title">Info Saldo</h5>
+	</p-header>
+
+	<!-- Start Form -->
+	<form #formRefSaldo="ngForm">
+		<!-- <div class="margin-bottom20">
+      <label>Periode</label>
+      <div class="ui-g">
+        <div class="ui-g-6">
+          <p-calendar
+            name="startDate"
+            inputStyleClass="form-control"
+            dateFormat="d M yy"
+            [minDate]="minMinDate"
+            [(ngModel)]="minDateValue"
+            (onSelect)="selectMinDate($event)"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            yearRange="2000:2030"
+            placeholder="Start date periode"
+            appendTo="body"
+            [required]="true"
+          ></p-calendar>
+        </div>
+        <div class="ui-g-6">
+          <p-calendar
+            name="endDate"
+            inputStyleClass="form-control"
+            dateFormat="d M yy"
+            [minDate]="minDateValue"
+            [(ngModel)]="maxDateValue"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            yearRange="2000:2030"
+            placeholder="End date periode"
+            appendTo="body"
+            [required]="true"
+          ></p-calendar>
+        </div>
+      </div>
+    </div> -->
+		<div class="margin-bottom20">
+			<label>Budget Terakhir</label>
+			<p-spinner
+				name="lastBudget"
+				placeholder="Budget baru"
+				[disabled]="true"
+				[(ngModel)]="lastBudget"
+				[min]="1"
+				[required]="true"
+			>
+			</p-spinner>
+		</div>
+		<!-- <div class="margin-bottom20">
+      <label>Budget Baru</label>
+      <p-spinner
+        name="newBudget"
+        placeholder="Budget baru"
+        [(ngModel)]="newBudget"
+        [min]="1"
+        [required]="true"
+      >
+      </p-spinner>
+    </div>
+    <div>
+      <label>Kalkulasi Budget</label>
+      <p-spinner
+        name="calcBudget"
+        placeholder="Budget baru"
+        [disabled]="true"
+        [(ngModel)]="newBudget + lastBudget"
+        [min]="1"
+        [required]="true"
+      >
+      </p-spinner>
+    </div> -->
+	</form>
+	<!-- End Form -->
+
+	<p-growl [(value)]="msgsError"></p-growl>
+
+	<p-footer>
+		<button class="btn btn-defaul" [disabled]="submitButton" (click)="newBudget = 0; displaySaldo = false">
+			Close
+		</button>
+		<!-- <button
+      [disabled]="formRefSaldo.invalid || submitButton"
+      class="btn btn-primary"
+      (click)="postBudget(formRefSaldo.value)"
+    >
+      <p-progressSpinner
+        *ngIf="submitButton"
+        strokeWidth="5"
+        [style]="{ width: '30px', height: '30px' }"
+      ></p-progressSpinner>
+      <span *ngIf="!submitButton">Submit</span>
+    </button> -->
+	</p-footer>
+</p-dialog>
+<!-- Messages -->
+<p-growl [(value)]="msgs"></p-growl>

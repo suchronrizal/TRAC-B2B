@@ -1,0 +1,135 @@
+.ui-dropdown{
+    padding: 0;
+    background: #fff;
+    border: solid 1px #efefef;
+
+    .ui-dropdown-label{
+        -webkit-box-shadow: none;
+        box-shadow: none;
+
+        &.ui-placeholder{
+            color: #9f9f9f !important;
+        }
+    }
+
+    .ui-dropdown-trigger{
+        padding-top: 10px;
+        background: #fafafa;
+    
+        .ui-clickable{
+            position: relative;
+            top: 3px;
+        }
+    }
+
+    &.form-control{
+        .ui-dropdown-label{
+            position: relative;
+            top: 0;
+            left: 0;
+            padding: 11px 20px 0;
+        }
+
+        .ui-dropdown-trigger{
+            padding-left: 10px;
+            padding-right: 10px;
+
+            .ui-clickable{
+                top: 0;
+                left: -5px;
+            }
+        }
+    }
+}
+
+.opition-td{
+    .ui-dropdown.form-control{
+        .ui-dropdown-label{
+            top: 0;
+            left: 0px;
+        }
+    }
+
+    &.single{
+        .ui-dropdown.form-control{
+            width: 200px !important;
+
+            .ui-dropdown-label{
+                top: -5px;
+            }
+        }
+    }
+}
+
+.ui-inputgroup{
+
+    .ui-dropdown{
+        min-width: 200px;
+        background: #fff !important;
+    }
+
+    &.level{
+        .ui-dropdown-label{
+            top: 0;
+            left: 10px !important;
+        }
+    }
+}
+
+.ui-dropdown-panel{
+    @extend .panel-shadow;
+    border: solid 1px #efefef;
+}
+
+.ui-dropdown-items-wrapper{
+    background: #fff;
+
+    .ui-state-highlight{
+        background: #f5f5f5;
+        color: $color-title;
+    }
+
+    .ui-dropdown-items{
+        padding: 0;
+
+        li.ui-dropdown-item{
+            padding: 10px 20px;
+
+            .selected:before{
+                content: "[used]";
+                font-weight: 500;
+                margin-left: 5px;
+                color: #333;
+                float: right;
+                font-size: 10px;
+            }
+        }
+    }
+}
+
+
+.ui-dropdown-filter-container{
+    background: #fff;
+    padding: 10px 20px;
+
+    input{
+        padding: 10px 20px;
+        border: solid 1px #efefef;
+        @extend .panel-shadow;
+    }
+
+    .fa{
+        position: relative;
+        margin-top: 3px;
+        margin-right: 5px;
+    }
+}
+
+
+.table-form{
+    tr td{
+        .ui-dropdown-label{
+            padding-top: 5px !important;
+        }
+    }
+}

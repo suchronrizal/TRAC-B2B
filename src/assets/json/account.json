@@ -1,0 +1,44 @@
+[
+    {
+        "id": 2001,
+        "nrp": 234234234,
+        "employee_name": "Asep Sunandar",
+        "cost_center_id": "CC-0001",
+        "position_id": "123",
+        "address": "Jl.Marganda",
+        "phone_number": "+0898789878987",
+        "email": "asep@sunandar.com",
+        "created_date": "12 Dec 2017",
+        "foto": "-",
+        "role": "admin",
+        "is_active": true
+    },
+    {
+        "id": 2002,
+        "nrp": 1111222312,
+        "employee_name": "Dogla Jhon",
+        "cost_center_id": "CC-0002",
+        "position_id": "124",
+        "address": "Jl.Majalaya",
+        "phone_number": "+0898789878987",
+        "email": "dogle@jhon.com",
+        "created_date": "13 Dec 2017",
+        "foto": "-",
+        "role": "user",
+        "is_active": true
+    },
+    {
+        "id": 2003,
+        "nrp": 4412312311,
+        "employee_name": "Jhon Doe",
+        "cost_center_id": "CC-0003",
+        "position_id": "124",
+        "address": "Jl.Setia Budi",
+        "phone_number": "+09089732423",
+        "email": "jhon@doe.com",
+        "created_date": "13 Dec 2017",
+        "foto": "-",
+        "role": "user",
+        "is_active": true
+    }
+]

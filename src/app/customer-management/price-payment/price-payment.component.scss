@@ -1,0 +1,235 @@
+/*
+Import
+=========================== */
+@import '../../../assets/sass/css3-mixins';
+@import '../../../assets/sass/variable';
+
+.ui-g {
+	margin: 0 -5px;
+}
+
+.price-city {
+	width: 450px;
+
+	td {
+		&.name {
+			width: 130px;
+		}
+	}
+}
+
+.table-form {
+	width: 100%;
+	tr th,
+	tr td {
+		&.w-20 {
+			width: 20%;
+		}
+		&.w-30 {
+			width: 30%;
+		}
+	}
+	td.count-payment {
+		width: 200px;
+	}
+}
+.table-top {
+	width: 100%;
+	tr th,
+	tr td {
+		&.w-20 {
+			width: 20%;
+		}
+		&.w-30 {
+			width: 30%;
+		}
+	}
+}
+
+// Product Price
+.wrap-product-price {
+	display: block;
+	width: 100%;
+	border: solid 1px #dfdfdf;
+	@include border-radius(4px);
+	position: relative;
+	padding-left: 200px;
+	min-height: 300px;
+	margin-top: 5px;
+
+	.list {
+		width: 200px;
+		height: 100%;
+		overflow-y: auto;
+		border-right: solid 1px #dfdfdf;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: #fafafa;
+
+		ul {
+			padding: 0;
+			margin: 0;
+			list-style: none;
+			display: block;
+
+			li {
+				display: block;
+
+				a {
+					display: block;
+					padding: 15px 20px;
+					border-bottom: solid 1px #efefef;
+					color: $color-content;
+					text-decoration: none !important;
+					background: #fff;
+					cursor: pointer;
+
+					&:hover {
+						color: $color-primary;
+					}
+				}
+
+				&.active {
+					a {
+						color: $color-primary;
+						font-weight: bold;
+					}
+				}
+			}
+		}
+	}
+
+	.content {
+		display: block;
+		position: relative;
+		padding: 20px;
+
+		.table-form {
+			width: 100%;
+
+			th.info,
+			td.info {
+				width: 50px !important;
+				background: #fafafa;
+			}
+
+			td {
+				text-align: center;
+				border: 0;
+			}
+
+			tr.line > td {
+				background: #fafafa;
+			}
+		}
+	}
+}
+
+.form-price-cancelation {
+	display: block;
+	overflow-x: scroll;
+
+	table.table-form {
+		width: 2000px !important;
+
+		th,
+		td {
+			width: 300px !important;
+		}
+	}
+}
+.form-budget-payment {
+	display: block;
+	overflow-x: scroll;
+	table.table-form {
+		width: 1400px !important;
+
+		th,
+		td {
+			width: 10% !important;
+		}
+	}
+}
+
+// PRODUCT PRICE => Table info dialog
+// ==================================== //
+.table-info.dialog {
+	width: 100%;
+	border: solid 1px #dfdfdf;
+	@include border-radius(2px);
+	@extend .panel-shadow;
+	padding: 10px;
+	margin-bottom: 20px;
+
+	td.label {
+		width: 100px;
+	}
+
+	td.point {
+		width: 10px;
+		text-align: center;
+	}
+}
+.table-info.middle {
+	td {
+		&.w-60 {
+			width: 60%;
+		}
+	}
+}
+.empty {
+	text-align: center;
+	padding: 100px;
+	font-style: italic;
+	color: #999;
+}
+
+td.topup {
+	width: 150px;
+}
+
+.title-tab {
+	position: relative;
+	z-index: 3;
+}
+
+.wrap-loading-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #fff;
+	z-index: 2;
+	width: 100%;
+	height: 100%;
+
+	.content {
+		padding: 100px 0 0 0;
+	}
+}
+
+.tab-price {
+	position: relative;
+	z-index: 1;
+}
+
+.topdays {
+	max-width: 250px;
+}
+
+.wrap-loading-content.product-price {
+	.content {
+		padding-top: 100px;
+		display: table;
+		margin: auto;
+	}
+}
+
+.wrap-btn-calendar {
+	display: block;
+	padding: 10px 15px 5px;
+	text-align: center;
+}
+.btn.btn-sm.w-80 {
+	min-width: 100px !important;
+}

@@ -1,0 +1,21 @@
+<div *ngIf="loading && !failed" class="wrap-loading-content">
+	<div class="content">
+		<p-progressSpinner strokeWidth="5" [style]="{width: '30px', height: '30px'}"></p-progressSpinner>
+	</div>
+</div>
+
+<div *ngIf="!loading && !failed" class="text-center padding-top70">
+	<img src="./assets/images/icons/success.png" width="70" alt="" />
+	<h5 class="margin-bottom10 margin-top20">{{title}}</h5>
+	<p class="margin-bottom40">{{message}}</p>
+	<p *ngIf="!isLoged">Continue <a href="#" class="single-link primary" routerLink="/user/login">Login</a></p>
+	<p *ngIf="isLoged">Continue to <a href="#" class="single-link primary" routerLink="/p/dashboard">Dashboard</a></p>
+</div>
+
+<div *ngIf="failed && !loading" class="text-center padding-top70">
+	<img src="./assets/images/icons/error.png" width="70" alt="" />
+	<h5 class="margin-bottom10 margin-top20">Failed Approved!</h5>
+	<p class="margin-bottom40">{{message}}</p>
+	<p *ngIf="!isLoged">Continue <a href="#" class="single-link primary" routerLink="/user/login">Login</a></p>
+	<p *ngIf="isLoged">Continue to <a href="#" class="single-link primary" routerLink="/p/dashboard">Dashboard</a></p>
+</div>
