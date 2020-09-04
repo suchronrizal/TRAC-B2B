@@ -46,7 +46,7 @@
 		"node-gyp": "^3.6.2",
 		"node-sass": "^4.7.2",
 		"package.json": "^2.0.1",
-		"papaparse": "^4.3.6",
+		"papaparse": "^5.2.0",
 		"primeng": "^5.2.0",
 		"query-string": "^6.1.0",
 		"redux": "^4.0.0",
